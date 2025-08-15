@@ -77,6 +77,11 @@
           <version>3.3.1</version>
         </plugin>
         <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>3.6.1</version>
+        </plugin>
+        <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.13.0</version>
           <configuration>
@@ -88,6 +93,11 @@
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>3.3.0</version>
+        </plugin>
+        <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>3.5.3</version>
         </plugin>
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>
@@ -137,6 +147,63 @@
         </plugin>
       </plugins>
     </pluginManagement>
+    
+    <plugins>
+    <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+        <execution>
+        <id>codehaus-add-test-source</id>
+        <phase>generate-test-sources</phase>
+        <goals>
+        <goal>add-test-source</goal>
+        </goals>
+        <configuration>
+        <sources>
+        <source>src/it/java</source>
+        <source>src/e2e/java</source>
+        </sources>
+        </configuration>
+        </execution>
+        </executions>
+        </plugin>
+        <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <executions>
+        <execution>
+        <id>failsafe-integration-test</id>
+        <phase>integration-test</phase>
+        <goals>
+        <goal>integration-test</goal>
+        </goals>
+        </execution>
+        <execution>
+        <id>failsafe-e2e-test</id>
+        <phase>integration-test</phase>
+        <goals>
+        <goal>integration-test</goal>
+        </goals>
+        <configuration>
+        <excludes>
+        <exclude>**/*IT.java</exclude>
+        </excludes>
+        <includes>
+        <include>**/*E2E.java</include>
+        </includes>
+        </configuration>
+        </execution>
+        <execution>
+        <id>failsafe-verify</id>
+        <phase>verify</phase>
+        <goals>
+        <goal>verify</goal>
+        </goals>
+        </execution>
+        </executions>
+        </plugin>
+    </plugins>
   </build>
   
   <profiles>
