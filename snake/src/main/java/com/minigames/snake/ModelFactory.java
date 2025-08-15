@@ -2,6 +2,7 @@ package com.minigames.snake;
 
 import java.util.UUID;
 
+@Generated
 public class ModelFactory {
 
 	private ModelFactory() {
