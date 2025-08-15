@@ -13,9 +13,11 @@ public abstract class BaseEntity {
 	private String uuid;
 
 	// for JPA
+	@Generated
 	protected BaseEntity() {
 	}
 
+	@Generated
 	public BaseEntity(String uuid) {
 		if (uuid == null) {
 			throw new IllegalArgumentException("uuid cannot be null");

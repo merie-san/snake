@@ -3,6 +3,7 @@ package com.minigames.snake;
 import java.time.LocalDate;
 import jakarta.persistence.*;
 
+@Generated
 @Entity
 public class GameRecord extends BaseEntity {
 

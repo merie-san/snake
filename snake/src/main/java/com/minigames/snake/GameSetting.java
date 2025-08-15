@@ -2,6 +2,7 @@ package com.minigames.snake;
 
 import jakarta.persistence.*;
 
+@Generated
 @Entity
 public class GameSetting extends BaseEntity {
 
