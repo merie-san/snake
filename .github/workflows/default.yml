@@ -1,0 +1,47 @@
+name: default workflow with maven
+
+on:
+   push:
+      branches:
+         - main
+   pull_request:
+      branches:
+         - main
+         
+jobs:
+   build:
+      runs-on: ${{matrix.os}}
+      strategy:
+         matrix:
+            os: [ubuntu-latest,windows-latest,macos-latest]
+      
+      steps:
+         - name: Clone the repository
+           uses: actions/checkout@v2
+           
+         - name: Set up JDK 21 on ${{matrix.os}}
+           uses: actions/setup-java@v3
+           with: 
+              java-version: "21"
+          
+         - name: Cache Maven packages
+           uses: actions/cache@v3
+           with:
+              path: ~/.m2
+              key: ${{matrix.os}}-m2-${{hashFiles('**/pom.xml', '**/*.yml')}}
+              restore-keys: ${{matrix.os}}-m2-
+              
+         - name: Build with Maven # Right now it will compile, run the unit tests, create the jar, run coverage, perform mutation testing , generate the reports and communicate with coveralls.
+           if: ${{always()}}
+           run: "mvn -f snake/pom.xml verify -Pcode-coverage,mutation-testing coveralls:report -DrepoToken=$COVERALLS_REPO_TOKEN"
+           env:
+              COVERALLS_REPO_TOKEN: ${{secrets.COVERALLS_REPO_TOKEN}}
+         - name: Archive generated reports
+           if: ${{always()}}
+           uses: actions/upload-artifact@v4
+           with:
+              name: reports-os-${{matrix.os}}
+              path: |
+                 **/target/site
+                 **/target/pit-reports
+                 **/surefire-reports

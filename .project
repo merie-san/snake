@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>snake</name>
+	<name>com.minigames.snake</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -24,12 +24,12 @@
 		<link>
 			<name>.github</name>
 			<type>2</type>
-			<locationURI>PARENT1-1-PROJECT_LOC/.github</locationURI>
+			<locationURI>copy_PARENT1/.github</locationURI>
 		</link>
 		<link>
 			<name>README.md</name>
 			<type>1</type>
-			<locationURI>PARENT1-1-PROJECT_LOC/README.md</locationURI>
+			<locationURI>copy_PARENT1/README.md</locationURI>
 		</link>
 	</linkedResources>
 	<variableList>
