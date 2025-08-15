@@ -24,12 +24,12 @@
 		<link>
 			<name>.github</name>
 			<type>2</type>
-			<locationURI>copy_PARENT1/.github</locationURI>
+			<locationURI>PARENT1-1-PROJECT_LOC/.github</locationURI>
 		</link>
 		<link>
 			<name>README.md</name>
 			<type>1</type>
-			<locationURI>copy_PARENT1/README.md</locationURI>
+			<locationURI>PARENT1-1-PROJECT_LOC/README.md</locationURI>
 		</link>
 	</linkedResources>
 	<variableList>
