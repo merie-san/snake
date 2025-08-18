@@ -20,4 +20,17 @@ public class GameRecordDAO {
 		});
 	}
 
+	public void create(GameRecord record) {
+		emf.runInTransaction(em -> {
+			em.persist(record);
+		});
+	}
+
+	public void delete(GameRecord record) {
+		emf.runInTransaction(em -> {
+			GameRecord managedRecord=em.merge(record);
+			em.remove(managedRecord);
+		});
+	}
+
 }

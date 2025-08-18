@@ -1,6 +1,6 @@
 package com.minigames.snake;
 
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -53,8 +53,61 @@ public class GameSettingDAOTest {
 	}
 
 	@Test
-	public void test() {
-		fail("Not yet implemented");
+	public void testFindAllSettingEmpty() {
+		assertThat(dao.findAll()).isEmpty();
+	}
+
+	@Test
+	public void testFindAllSettingOne() {
+		GameSetting setting = new GameSetting("1", 10, 10, 2);
+		emf.runInTransaction(em -> {
+			em.persist(setting);
+		});
+		assertThat(dao.findAll()).containsExactly(new GameSetting[] { setting });
+	}
+
+	@Test
+	public void testFindAllSettingTwo() {
+		GameSetting setting1 = new GameSetting("1", 10, 10, 2);
+		GameSetting setting2 = new GameSetting("2", 10, 20, 2);
+		emf.runInTransaction(em -> {
+			em.persist(setting1);
+			em.persist(setting2);
+		});
+		assertThat(dao.findAll()).containsExactlyInAnyOrder(new GameSetting[] { setting1, setting2 });
+	}
+
+	@Test
+	public void testCreateSetting() {
+		GameSetting setting = new GameSetting("1", 10, 10, 2);
+		dao.create(setting);
+		assertThat(emf.<GameSetting>callInTransaction(em -> {
+			return em.find(GameSetting.class, setting.getId());
+		})).isNotNull();
+	}
+
+	@Test
+	public void testDeleteSetting() {
+		GameSetting setting = new GameSetting("1", 10, 10, 2);
+		emf.runInTransaction(em -> {
+			em.persist(setting);
+		});
+		dao.delete(setting);
+		assertThat(emf.<GameSetting>callInTransaction(em -> {
+			return em.find(GameSetting.class, setting.getId());
+		}).isDeleted()).isTrue();
+	}
+
+	@Test
+	public void testRenameSetting() {
+		GameSetting setting = new GameSetting("1", 10, 10, 2);
+		emf.runInTransaction(em -> {
+			em.persist(setting);
+		});
+		dao.rename(setting, "New name");
+		assertThat(emf.<GameSetting>callInTransaction(em -> {
+			return em.find(GameSetting.class, setting.getId());
+		}).getName()).isEqualTo("New name");
 	}
 
 }
