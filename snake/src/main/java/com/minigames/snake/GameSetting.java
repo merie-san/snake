@@ -16,7 +16,7 @@ public class GameSetting extends BaseEntity {
 	@Column(nullable = false)
 	private boolean deleted = false;
 	@Column(nullable = false)
-	private String name = "";
+	private String name;
 
 	// for JPA
 	protected GameSetting() {
@@ -28,6 +28,7 @@ public class GameSetting extends BaseEntity {
 		this.height = height;
 		this.width = width;
 		this.velocity = velocity;
+		this.name="SETTING_"+uuid;
 	}
 
 	public int getHeight() {

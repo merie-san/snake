@@ -59,7 +59,7 @@ public class GameRecordDAOTest {
 	}
 
 	@Test
-	public void testFindAllRecordOne() {
+	public void testFindAllRecordSingle() {
 		GameSetting setting = new GameSetting("2", 10, 10, 2);
 		GameRecord record = new GameRecord("1", 10, LocalDate.now(), setting);
 		emf.runInTransaction(em -> {
@@ -70,7 +70,7 @@ public class GameRecordDAOTest {
 	}
 
 	@Test
-	public void testFindAllRecordTwo() {
+	public void testFindAllRecordMultiple() {
 		GameSetting setting1 = new GameSetting("1", 10, 10, 2);
 		GameSetting setting2 = new GameSetting("2", 10, 20, 2);
 		GameRecord record1 = new GameRecord("3", 10, LocalDate.now(), setting1);

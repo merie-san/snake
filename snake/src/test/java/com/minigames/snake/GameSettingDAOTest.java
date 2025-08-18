@@ -58,7 +58,7 @@ public class GameSettingDAOTest {
 	}
 
 	@Test
-	public void testFindAllSettingOne() {
+	public void testFindAllSettingSingle() {
 		GameSetting setting = new GameSetting("1", 10, 10, 2);
 		emf.runInTransaction(em -> {
 			em.persist(setting);
@@ -67,7 +67,7 @@ public class GameSettingDAOTest {
 	}
 
 	@Test
-	public void testFindAllSettingTwo() {
+	public void testFindAllSettingMultiple() {
 		GameSetting setting1 = new GameSetting("1", 10, 10, 2);
 		GameSetting setting2 = new GameSetting("2", 10, 20, 2);
 		emf.runInTransaction(em -> {

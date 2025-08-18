@@ -3,7 +3,6 @@ package com.minigames.snake;
 import java.time.LocalDate;
 import java.util.UUID;
 
-@Generated
 public class ModelFactory {
 
 	private ModelFactory() {
