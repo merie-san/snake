@@ -44,4 +44,8 @@ public abstract class BaseEntity {
 		return Objects.hash(uuid);
 	}
 
+	public long getId() {
+		return id;
+	}
+
 }
