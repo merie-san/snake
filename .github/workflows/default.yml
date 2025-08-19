@@ -23,15 +23,16 @@ jobs:
       steps:
          - name: Clone the repository
            uses: actions/checkout@v4
-         - name: Set up JDK ${{JAVA_VERSION}} on ${{matrix.os}}
+         - name: Set up JDK $JAVA_VERSION on ${{matrix.os}}
            uses: actions/setup-java@v4
            with: 
-              java-version: ${{JAVA_VERSION}}
-              distribution: ${{JAVA_DISTRIBUTION}}
+              java-version: $JAVA_VERSION
+              distribution: $JAVA_DISTRIBUTION
          - name: Configure docker to work with docker-maven-plugin in Windows
            if: ${{matrix.os}} == "windows-latest"
            run: sc config docker binpath="dockerd.exe --run-service -H tcp://localhost:2375"
          - name: Restart docker
+           if: ${{matrix.os}} == "windows-latest"
            run: restart-service *docker* 
          - name: Cache Maven and SonarQube packages
            uses: actions/cache@v3
@@ -44,7 +45,7 @@ jobs:
               
          - name: Build with Maven and SonarCloud
            if: ${{always()}}
-           run: mvn verify -Pcode-coverage -Pmutation-testing coveralls:report sonar:sonar ${{additional-maven-properties}}
+           run: mvn verify -Pcode-coverage -Pmutation-testing coveralls:report sonar:sonar $additional-maven-properties
            working-directory: snake
            env:
               SONAR_TOKEN: ${{secrets.SONAR_TOKEN}}
