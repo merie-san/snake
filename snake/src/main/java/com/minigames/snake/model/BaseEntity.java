@@ -48,6 +48,7 @@ public abstract class BaseEntity {
 		return Objects.hash(uuid);
 	}
 
+	@Generated
 	public long getId() {
 		return id;
 	}

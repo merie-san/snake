@@ -162,9 +162,9 @@
 						<!-- We exclude domain model classes but compute coverage for the non-automatically generated 
 							equals and hashCode methods -->
 						<excludes>
-							<exclude>**/App.*</exclude>
-							<exclude>**/GameRecord.*</exclude>
-							<exclude>**/GameSetting.*</exclude>
+							<exclude>**/App*</exclude>
+							<exclude>**/GameRecord*</exclude>
+							<exclude>**/GameSetting*</exclude>
 						</excludes>
 					</configuration>
 				</plugin>
