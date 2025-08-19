@@ -1,5 +1,7 @@
 package com.minigames.snake;
 
+import com.minigames.snake.model.Generated;
+
 /**
  * Hello world!
  */

@@ -1,12 +1,14 @@
-package com.minigames.snake;
+package com.minigames.snake.model;
 
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 public class SnakeSQLRepository implements SnakeRepository {
 
 	private GameSettingDAO settingDao;
 	private GameRecordDAO recordDao;
 
+	@Generated
 	public SnakeSQLRepository(GameSettingDAO settingDao, GameRecordDAO recordDao) {
 		this.settingDao = settingDao;
 		this.recordDao = recordDao;
@@ -19,7 +21,9 @@ public class SnakeSQLRepository implements SnakeRepository {
 
 	@Override
 	public Collection<GameSetting> findAllSettings() {
-		return settingDao.findAll();
+		return settingDao.findAll().stream().filter(setting -> {
+			return !setting.isDeleted();
+		}).collect(Collectors.toList());
 	}
 
 	@Override

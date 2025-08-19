@@ -159,13 +159,12 @@
 					<artifactId>jacoco-maven-plugin</artifactId>
 					<version>0.8.13</version>
 					<configuration>
-						<!-- We exclude domain model classes but compute coverage for the new 
+						<!-- We exclude domain model classes but compute coverage for the non-automatically generated 
 							equals and hashCode methods -->
 						<excludes>
 							<exclude>**/App.*</exclude>
 							<exclude>**/GameRecord.*</exclude>
 							<exclude>**/GameSetting.*</exclude>
-							<exclude>**/ModelFactory.*</exclude>
 						</excludes>
 					</configuration>
 				</plugin>
@@ -319,17 +318,20 @@
 									<!-- We exclude domain model classes from mutation testing -->
 									<excludedClasses>
 										<param>com.minigames.snake.App</param>
-										<param>com.minigames.snake.Game*</param>
-										<param>com.minigames.snake.ModelFactory</param>
-										<param>com.minigames.snake.BaseEntity</param>
+										<param>com.minigames.snake.model.Game*</param>
+										<param>com.minigames.snake.model.BaseEntity</param>
+										<param>com.minigames.snake.model.ModelFactory</param>
 									</excludedClasses>
+									<excludedMethods>
+										<param>get*</param>
+										<param>set*</param>
+									</excludedMethods>
 									<targetTests>
 										<param>com.minigames.snake.*</param>
 									</targetTests>
 								</configuration>
 							</execution>
 						</executions>
-						<version>1.19.1</version>
 					</plugin>
 				</plugins>
 			</build>

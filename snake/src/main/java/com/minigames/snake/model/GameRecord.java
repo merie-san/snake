@@ -1,4 +1,4 @@
-package com.minigames.snake;
+package com.minigames.snake.model;
 
 import java.time.LocalDate;
 

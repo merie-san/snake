@@ -1,10 +1,11 @@
-package com.minigames.snake;
+package com.minigames.snake.model;
 
 import java.time.LocalDate;
 import java.util.UUID;
 
 public class ModelFactory {
 
+	@Generated
 	private ModelFactory() {
 	}
 

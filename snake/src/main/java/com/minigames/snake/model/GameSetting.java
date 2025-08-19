@@ -1,4 +1,4 @@
-package com.minigames.snake;
+package com.minigames.snake.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,7 +22,7 @@ public class GameSetting extends BaseEntity {
 	protected GameSetting() {
 		super();
 	}
-
+	
 	public GameSetting(String uuid, int height, int width, float velocity) {
 		super(uuid);
 		this.height = height;

@@ -1,4 +1,4 @@
-package com.minigames.snake;
+package com.minigames.snake.model;
 
 import java.util.Collection;
 
@@ -8,6 +8,7 @@ import jakarta.persistence.TypedQuery;
 public class GameSettingDAO {
 	private EntityManagerFactory emf;
 
+	@Generated
 	public GameSettingDAO(EntityManagerFactory entityManagerFactory) {
 		emf = entityManagerFactory;
 	}

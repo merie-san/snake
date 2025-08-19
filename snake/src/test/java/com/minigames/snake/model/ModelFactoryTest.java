@@ -1,5 +1,6 @@
-package com.minigames.snake;
+package com.minigames.snake.model;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -54,7 +55,10 @@ public class ModelFactoryTest {
 	@Test
 	public void testGameSettingNoException() {
 		assertThatCode(() -> {
-			ModelFactory.gameSetting(1, 1, 1);
+			GameSetting setting = ModelFactory.gameSetting(1, 1, 1);
+			assertThat(setting.getHeight()).isEqualTo(1);
+			assertThat(setting.getWidth()).isEqualTo(1);
+			assertThat(setting.getVelocity()).isEqualTo(1);
 		}).doesNotThrowAnyException();
 	}
 
@@ -82,7 +86,12 @@ public class ModelFactoryTest {
 	@Test
 	public void testGameRecordNoException() {
 		assertThatCode(() -> {
-			ModelFactory.gameRecord(0, LocalDate.now(), new GameSetting());
+			LocalDate date = LocalDate.now();
+			GameSetting setting = new GameSetting();
+			GameRecord record = ModelFactory.gameRecord(0, date, setting);
+			assertThat(record.getScore()).isEqualTo(0);
+			assertThat(record.getDate()).isEqualTo(date);
+			assertThat(record.getSetting()).isEqualTo(setting);
 		}).doesNotThrowAnyException();
 	}
 }
