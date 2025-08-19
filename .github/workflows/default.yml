@@ -18,10 +18,11 @@ jobs:
       steps:
          - name: Clone the repository
            uses: actions/checkout@v4
-         - name: Set up JDK 11 on ${{matrix.os}}
+         - name: Set up JDK 17 on ${{matrix.os}}
            uses: actions/setup-java@v4
            with: 
               java-version: "17"
+              distribution: "oracle"
          - name: Cache Maven and SonarQube packages
            uses: actions/cache@v3
            with:
