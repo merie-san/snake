@@ -3,57 +3,54 @@ name: default workflow with maven
 on:
    push:
       branches:
-         - main
+      - main
    pull_request:
       branches:
-         - main
+      - main
 
 jobs:
    build:
       runs-on: ${{matrix.os}}
       strategy:
          matrix:
-            os: [ubuntu-latest, windows-latest]
-            additional-maven-properties: [ -Dsonar.organization=merie-san -Dsonar.projectKey=merie-san_snake -DrepoToken=$COVERALLS_REPO_TOKEN -Dsonar.token=$SONAR_TOKEN ]
-            java-version: [ 17 ]
-            java-distribution: [ oracle ]
-            
+            os: ubuntu-latest
+            additional-maven-properties:
+            - -Dsonar.organization=merie-san -Dsonar.projectKey=merie-san_snake -DrepoToken=$COVERALLS_REPO_TOKEN -Dsonar.token=$SONAR_TOKEN
+            java-version:
+
+            - 17
+            java-distribution:
+            - oracle
       steps:
-         - name: Clone the repository
-           uses: actions/checkout@v4
-         - name: Set up JDK ${{matrix.java-version}} on ${{matrix.os}}
-           uses: actions/setup-java@v4
-           with: 
-              java-version: ${{matrix.java-version}}
-              distribution: ${{matrix.java-distribution}}
-         - name: Configure docker to work with docker-maven-plugin in Windows
-           if: ${{ matrix.os == 'windows-latest' }}
-           run: sc config docker binpath="dockerd.exe --run-service -H tcp://localhost:2375"
-         - name: Restart docker
-           if: ${{ matrix.os == 'windows-latest' }}
-           run: restart-service *docker* 
-         - name: Cache Maven and SonarQube packages
-           uses: actions/cache@v3
-           with:
-              path: |
-                 ~/.m2
-                 `/.sonar/cache
-              key: ${{matrix.os}}-m2&sonar-${{hashFiles('**/pom.xml', '**/*.yml')}}
-              restore-keys: ${{matrix.os}}-m2&sonar-
-              
-         - name: Build with Maven and SonarCloud
-           if: ${{always()}}
-           run: mvn verify -Pcode-coverage -Pmutation-testing coveralls:report sonar:sonar ${{matrix.additional-maven-properties}}
-           working-directory: snake
-           env:
-              SONAR_TOKEN: ${{secrets.SONAR_TOKEN}}
-              COVERALLS_REPO_TOKEN: ${{secrets.COVERALLS_REPO_TOKEN}}
-         - name: Archive generated reports
-           if: ${{always()}}
-           uses: actions/upload-artifact@v4
-           with:
-              name: reports-os-${{matrix.os}}
-              path: |
-                 **/target/site
-                 **/target/pit-reports
-                 **/surefire-reports
+      -  name: Clone the repository
+         uses: actions/checkout@v4
+      -  name: Set up JDK ${{matrix.java-version}} on ${{matrix.os}}
+         uses: actions/setup-java@v4
+         with:
+            java-version: ${{matrix.java-version}}
+            distribution: ${{matrix.java-distribution}}
+      -  name: Cache Maven and SonarQube packages
+         uses: actions/cache@v3
+         with:
+            path: |
+               ~/.m2
+
+               `/.sonar/cache
+            key: ${{matrix.os}}-m2&sonar-${{hashFiles('**/pom.xml', '**/*.yml')}}
+            restore-keys: ${{matrix.os}}-m2&sonar-
+      -  name: Build with Maven and SonarCloud
+         if: ${{always()}}
+         run: mvn verify -Pcode-coverage -Pmutation-testing coveralls:report sonar:sonar ${{matrix.additional-maven-properties}}
+         working-directory: snake
+         env:
+            SONAR_TOKEN: ${{secrets.SONAR_TOKEN}}
+            COVERALLS_REPO_TOKEN: ${{secrets.COVERALLS_REPO_TOKEN}}
+      -  name: Archive generated reports
+         if: ${{always()}}
+         uses: actions/upload-artifact@v4
+         with:
+            name: reports-os-${{matrix.os}}
+            path: |-
+               **/target/site
+               **/target/pit-reports
+               **/surefire-reports
