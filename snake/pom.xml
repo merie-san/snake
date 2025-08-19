@@ -8,13 +8,20 @@
 	<artifactId>snake</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
-	<name>snake</name>
-	<!-- FIXME change it to the project's website -->
-	<url>http://www.example.com</url>
+	<name>com.minigames.snake</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.release>17</maven.compiler.release>
+		<sonar.coverage.exclusions>
+		**/App.*, 
+		**/GameRecord.*, 
+		**/GameSetting.*
+		</sonar.coverage.exclusions>
+		<sonar.junit.reportPaths>
+			${project.build.directory}/surefire-reports,
+			${project.build.directory}/failsafe-reports
+		</sonar.junit.reportPaths>
 	</properties>
 
 	<dependencyManagement>
@@ -40,8 +47,8 @@
 				<version>7.1.0.Final</version>
 			</dependency>
 			<dependency>
-					<groupId>com.mysql</groupId>
-			<artifactId>mysql-connector-j</artifactId>
+				<groupId>com.mysql</groupId>
+				<artifactId>mysql-connector-j</artifactId>
 				<version>8.0.33</version>
 			</dependency>
 			<dependency>
@@ -159,13 +166,12 @@
 					<artifactId>jacoco-maven-plugin</artifactId>
 					<version>0.8.13</version>
 					<configuration>
-						<!-- We exclude domain model classes but compute coverage for the new 
-							equals and hashCode methods -->
+						<!-- We exclude domain model classes but compute coverage for the non-automatically 
+							generated equals and hashCode methods -->
 						<excludes>
 							<exclude>**/App.*</exclude>
 							<exclude>**/GameRecord.*</exclude>
 							<exclude>**/GameSetting.*</exclude>
-							<exclude>**/ModelFactory.*</exclude>
 						</excludes>
 					</configuration>
 				</plugin>
@@ -178,6 +184,11 @@
 					<groupId>org.pitest</groupId>
 					<artifactId>pitest-maven</artifactId>
 					<version>1.20.1</version>
+				</plugin>
+				<plugin>
+					<groupId>org.sonarsource.scanner.maven</groupId>
+					<artifactId>sonar-maven-plugin</artifactId>
+					<version>5.1.0.4751</version>
 				</plugin>
 				<!-- site lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#site_Lifecycle -->
 				<plugin>
@@ -319,17 +330,20 @@
 									<!-- We exclude domain model classes from mutation testing -->
 									<excludedClasses>
 										<param>com.minigames.snake.App</param>
-										<param>com.minigames.snake.Game*</param>
-										<param>com.minigames.snake.ModelFactory</param>
-										<param>com.minigames.snake.BaseEntity</param>
+										<param>com.minigames.snake.model.Game*</param>
+										<param>com.minigames.snake.model.BaseEntity</param>
+										<param>com.minigames.snake.model.ModelFactory</param>
 									</excludedClasses>
+									<excludedMethods>
+										<param>get*</param>
+										<param>set*</param>
+									</excludedMethods>
 									<targetTests>
 										<param>com.minigames.snake.*</param>
 									</targetTests>
 								</configuration>
 							</execution>
 						</executions>
-						<version>1.19.1</version>
 					</plugin>
 				</plugins>
 			</build>

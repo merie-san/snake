@@ -1,5 +1,6 @@
-package com.minigames.snake;
+package com.minigames.snake.model;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -54,35 +55,47 @@ public class ModelFactoryTest {
 	@Test
 	public void testGameSettingNoException() {
 		assertThatCode(() -> {
-			ModelFactory.gameSetting(1, 1, 1);
+			GameSetting setting = ModelFactory.gameSetting(1, 1, 1);
+			assertThat(setting.getHeight()).isEqualTo(1);
+			assertThat(setting.getWidth()).isEqualTo(1);
+			assertThat(setting.getVelocity()).isEqualTo(1);
 		}).doesNotThrowAnyException();
 	}
 
 	@Test
 	public void testGameRecordNegativeScore() {
+		LocalDate date = LocalDate.now();
+		GameSetting setting = new GameSetting();
 		assertThatThrownBy(() -> {
-			ModelFactory.gameRecord(-1, LocalDate.now(), new GameSetting());
+			ModelFactory.gameRecord(-1, date, setting);
 		}).isInstanceOf(IllegalArgumentException.class).hasMessage("score cannot be negative");
 	}
 
 	@Test
 	public void testGameRecordNullDate() {
+		GameSetting setting = new GameSetting();
 		assertThatThrownBy(() -> {
-			ModelFactory.gameRecord(0, null, new GameSetting());
+			ModelFactory.gameRecord(0, null, setting);
 		}).isInstanceOf(IllegalArgumentException.class).hasMessage("date cannot be null");
 	}
 
 	@Test
 	public void testGameRecordNullSetting() {
+		LocalDate date = LocalDate.now();
 		assertThatThrownBy(() -> {
-			ModelFactory.gameRecord(0, LocalDate.now(), null);
+			ModelFactory.gameRecord(0, date, null);
 		}).isInstanceOf(IllegalArgumentException.class).hasMessage("setting cannot be null");
 	}
 
 	@Test
 	public void testGameRecordNoException() {
 		assertThatCode(() -> {
-			ModelFactory.gameRecord(0, LocalDate.now(), new GameSetting());
+			LocalDate date = LocalDate.now();
+			GameSetting setting = new GameSetting();
+			GameRecord gameRecord = ModelFactory.gameRecord(0, date, setting);
+			assertThat(gameRecord.getScore()).isZero();
+			assertThat(gameRecord.getDate()).isEqualTo(date);
+			assertThat(gameRecord.getSetting()).isEqualTo(setting);
 		}).doesNotThrowAnyException();
 	}
 }

@@ -1,8 +1,12 @@
-package com.minigames.snake;
+package com.minigames.snake.model;
 
 import java.util.Objects;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
 
 @MappedSuperclass
 public abstract class BaseEntity {
@@ -18,7 +22,7 @@ public abstract class BaseEntity {
 	}
 
 	@Generated
-	public BaseEntity(String uuid) {
+	protected BaseEntity(String uuid) {
 		if (uuid == null) {
 			throw new IllegalArgumentException("uuid cannot be null");
 		}
@@ -44,6 +48,7 @@ public abstract class BaseEntity {
 		return Objects.hash(uuid);
 	}
 
+	@Generated
 	public long getId() {
 		return id;
 	}

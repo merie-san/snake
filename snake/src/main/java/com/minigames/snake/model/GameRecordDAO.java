@@ -1,4 +1,4 @@
-package com.minigames.snake;
+package com.minigames.snake.model;
 
 import java.util.Collection;
 
@@ -9,6 +9,7 @@ public class GameRecordDAO {
 
 	private EntityManagerFactory emf;
 
+	@Generated
 	public GameRecordDAO(EntityManagerFactory entityManagerFactory) {
 		emf = entityManagerFactory;
 	}
@@ -20,15 +21,13 @@ public class GameRecordDAO {
 		});
 	}
 
-	public void create(GameRecord record) {
-		emf.runInTransaction(em -> {
-			em.persist(record);
-		});
+	public void create(GameRecord gameRecord) {
+		emf.runInTransaction(em -> em.persist(gameRecord));
 	}
 
-	public void delete(GameRecord record) {
+	public void delete(GameRecord gameRecord) {
 		emf.runInTransaction(em -> {
-			GameRecord managedRecord=em.merge(record);
+			GameRecord managedRecord = em.merge(gameRecord);
 			em.remove(managedRecord);
 		});
 	}

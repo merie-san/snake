@@ -1,7 +1,8 @@
-package com.minigames.snake;
+package com.minigames.snake.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,14 +17,14 @@ import org.testcontainers.containers.MySQLContainer;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceConfiguration;
 
-public class GameSettingDAOTest {
+public class GameRecordDAOTest {
 
 	@SuppressWarnings("resource")
 	@ClassRule
 	public static final MySQLContainer<?> mysql = new MySQLContainer<>("mysql:8.0.33").withDatabaseName("snakedb")
 			.withUsername("root").withPassword("root");
 	private static EntityManagerFactory emf;
-	private GameSettingDAO dao;
+	private GameRecordDAO dao;
 
 	@BeforeClass
 	public static void setupEMF() {
@@ -39,7 +40,7 @@ public class GameSettingDAOTest {
 
 	@Before
 	public void setup() {
-		dao = new GameSettingDAO(emf);
+		dao = new GameRecordDAO(emf);
 	}
 
 	@After
@@ -53,61 +54,60 @@ public class GameSettingDAOTest {
 	}
 
 	@Test
-	public void testFindAllSettingEmpty() {
+	public void testFindAllRecordEmpty() {
 		assertThat(dao.findAll()).isEmpty();
 	}
 
 	@Test
-	public void testFindAllSettingSingle() {
+	public void testFindAllRecordSingle() {
+		GameSetting setting = new GameSetting("2", 10, 10, 2);
+		GameRecord gameRecord = new GameRecord("1", 10, LocalDate.now(), setting);
+		emf.runInTransaction(em -> {
+			em.persist(setting);
+			em.persist(gameRecord);
+		});
+		assertThat(dao.findAll()).containsExactly(new GameRecord[] { gameRecord });
+	}
+
+	@Test
+	public void testFindAllRecordMultiple() {
+		GameSetting setting1 = new GameSetting("1", 10, 10, 2);
+		GameSetting setting2 = new GameSetting("2", 10, 20, 2);
+		GameRecord record1 = new GameRecord("3", 10, LocalDate.now(), setting1);
+		GameRecord record2 = new GameRecord("4", 5, LocalDate.now(), setting2);
+		emf.runInTransaction(em -> {
+			em.persist(setting1);
+			em.persist(setting2);
+			em.persist(record1);
+			em.persist(record2);
+		});
+		assertThat(dao.findAll()).containsExactlyInAnyOrder(new GameRecord[] { record1, record2 });
+	}
+
+	@Test
+	public void testCreateRecord() {
 		GameSetting setting = new GameSetting("1", 10, 10, 2);
 		emf.runInTransaction(em -> {
 			em.persist(setting);
 		});
-		assertThat(dao.findAll()).containsExactly(new GameSetting[] { setting });
-	}
-
-	@Test
-	public void testFindAllSettingMultiple() {
-		GameSetting setting1 = new GameSetting("1", 10, 10, 2);
-		GameSetting setting2 = new GameSetting("2", 10, 20, 2);
-		emf.runInTransaction(em -> {
-			em.persist(setting1);
-			em.persist(setting2);
-		});
-		assertThat(dao.findAll()).containsExactlyInAnyOrder(new GameSetting[] { setting1, setting2 });
-	}
-
-	@Test
-	public void testCreateSetting() {
-		GameSetting setting = new GameSetting("1", 10, 10, 2);
-		dao.create(setting);
-		assertThat(emf.<GameSetting>callInTransaction(em -> {
-			return em.find(GameSetting.class, setting.getId());
+		GameRecord gameRecord = new GameRecord("2", 2, LocalDate.now(), setting);
+		dao.create(gameRecord);
+		assertThat(emf.<GameRecord>callInTransaction(em -> {
+			return em.find(GameRecord.class, gameRecord.getId());
 		})).isNotNull();
 	}
 
 	@Test
-	public void testDeleteSetting() {
+	public void testDeleteRecord() {
 		GameSetting setting = new GameSetting("1", 10, 10, 2);
+		GameRecord gameRecord = new GameRecord("2", 2, LocalDate.now(), setting);
 		emf.runInTransaction(em -> {
 			em.persist(setting);
+			em.persist(gameRecord);
 		});
-		dao.delete(setting);
-		assertThat(emf.<GameSetting>callInTransaction(em -> {
-			return em.find(GameSetting.class, setting.getId());
-		}).isDeleted()).isTrue();
+		dao.delete(gameRecord);
+		assertThat(emf.<GameRecord>callInTransaction(em -> {
+			return em.find(GameRecord.class, gameRecord.getId());
+		})).isNull();
 	}
-
-	@Test
-	public void testRenameSetting() {
-		GameSetting setting = new GameSetting("1", 10, 10, 2);
-		emf.runInTransaction(em -> {
-			em.persist(setting);
-		});
-		dao.rename(setting, "New name");
-		assertThat(emf.<GameSetting>callInTransaction(em -> {
-			return em.find(GameSetting.class, setting.getId());
-		}).getName()).isEqualTo("New name");
-	}
-
 }
