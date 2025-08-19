@@ -47,7 +47,7 @@ public class EntityTest {
 		BaseEntity entity1 = new GameSetting("1",10,10,10);
 		BaseEntity entity2 = new GameSetting("1",10,10,10);
 		BaseEntity entity3 = new GameSetting("2",10,10,10);
-		assertThat(entity1.hashCode()).isEqualTo(entity2.hashCode());
+		assertThat(entity1).hasSameHashCodeAs(entity2);
 		assertThat(entity1.hashCode()).isNotEqualTo(entity3.hashCode());
 	}
 

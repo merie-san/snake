@@ -22,7 +22,7 @@ public abstract class BaseEntity {
 	}
 
 	@Generated
-	public BaseEntity(String uuid) {
+	protected BaseEntity(String uuid) {
 		if (uuid == null) {
 			throw new IllegalArgumentException("uuid cannot be null");
 		}

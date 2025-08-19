@@ -42,10 +42,10 @@ public class SnakeSQLRepositoryTest {
 	@Test
 	public void testFindAllRecordsSingle() {
 		ArrayList<GameRecord> records = new ArrayList<GameRecord>();
-		GameRecord record = new GameRecord();
-		records.add(record);
+		GameRecord gameRecord = new GameRecord();
+		records.add(gameRecord);
 		when(recordDao.findAll()).thenReturn(records);
-		assertThat(repository.findAllRecords()).containsExactly(record);
+		assertThat(repository.findAllRecords()).containsExactly(gameRecord);
 		verify(recordDao).findAll();
 		verifyNoMoreInteractions(recordDao);
 	}
@@ -68,7 +68,6 @@ public class SnakeSQLRepositoryTest {
 		ArrayList<GameSetting> settings = new ArrayList<GameSetting>();
 		when(settingDao.findAll()).thenReturn(settings);
 		assertThat(repository.findAllSettings()).isEmpty();
-		;
 		verify(settingDao).findAll();
 		verifyNoMoreInteractions(settingDao);
 	}
@@ -98,7 +97,7 @@ public class SnakeSQLRepositoryTest {
 	}
 
 	@Test
-	public void testFindAllSettingsAllDeleted() throws Exception {
+	public void testFindAllSettingsAllDeleted() {
 		ArrayList<GameSetting> settings = new ArrayList<GameSetting>();
 		GameSetting setting1 = new GameSetting("1", 20, 1, 1);
 		GameSetting setting2 = new GameSetting("2", 30, 1, 2);
@@ -113,7 +112,7 @@ public class SnakeSQLRepositoryTest {
 	}
 
 	@Test
-	public void testFindAllSettingsDeletedAndNotDeleted() throws Exception {
+	public void testFindAllSettingsDeletedAndNotDeleted() {
 		ArrayList<GameSetting> settings = new ArrayList<GameSetting>();
 		GameSetting setting1 = new GameSetting("1", 20, 1, 1);
 		GameSetting setting2 = new GameSetting("2", 30, 1, 2);
@@ -128,9 +127,9 @@ public class SnakeSQLRepositoryTest {
 
 	@Test
 	public void testCreateRecord() {
-		GameRecord record = new GameRecord();
-		repository.createRecord(record);
-		verify(recordDao).create(record);
+		GameRecord gameRecord = new GameRecord();
+		repository.createRecord(gameRecord);
+		verify(recordDao).create(gameRecord);
 		verifyNoMoreInteractions(recordDao);
 	}
 
@@ -144,9 +143,9 @@ public class SnakeSQLRepositoryTest {
 
 	@Test
 	public void testDeleteRecord() {
-		GameRecord record = new GameRecord();
-		repository.deleteRecord(record);
-		verify(recordDao).delete(record);
+		GameRecord gameRecord = new GameRecord();
+		repository.deleteRecord(gameRecord);
+		verify(recordDao).delete(gameRecord);
 		verifyNoMoreInteractions(recordDao);
 	}
 

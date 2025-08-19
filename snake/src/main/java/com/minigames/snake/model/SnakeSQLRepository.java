@@ -21,14 +21,12 @@ public class SnakeSQLRepository implements SnakeRepository {
 
 	@Override
 	public Collection<GameSetting> findAllSettings() {
-		return settingDao.findAll().stream().filter(setting -> {
-			return !setting.isDeleted();
-		}).collect(Collectors.toList());
+		return settingDao.findAll().stream().filter(setting -> !setting.isDeleted()).collect(Collectors.toList());
 	}
 
 	@Override
-	public void createRecord(GameRecord record) {
-		recordDao.create(record);
+	public void createRecord(GameRecord gameRecord) {
+		recordDao.create(gameRecord);
 	}
 
 	@Override
@@ -37,15 +35,13 @@ public class SnakeSQLRepository implements SnakeRepository {
 	}
 
 	@Override
-	public void deleteRecord(GameRecord record) {
-		recordDao.delete(record);
+	public void deleteRecord(GameRecord gameRecord) {
+		recordDao.delete(gameRecord);
 	}
 
 	@Override
 	public void clearHistory() {
-		recordDao.findAll().stream().forEach(record -> {
-			recordDao.delete(record);
-		});
+		recordDao.findAll().stream().forEach(gameRecord -> recordDao.delete(gameRecord));
 	}
 
 	@Override

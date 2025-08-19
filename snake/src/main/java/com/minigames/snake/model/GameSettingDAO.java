@@ -21,9 +21,7 @@ public class GameSettingDAO {
 	}
 
 	public void create(GameSetting setting) {
-		emf.runInTransaction(em -> {
-			em.persist(setting);
-		});
+		emf.runInTransaction(em -> em.persist(setting));
 
 	}
 

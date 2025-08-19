@@ -61,12 +61,12 @@ public class GameRecordDAOTest {
 	@Test
 	public void testFindAllRecordSingle() {
 		GameSetting setting = new GameSetting("2", 10, 10, 2);
-		GameRecord record = new GameRecord("1", 10, LocalDate.now(), setting);
+		GameRecord gameRecord = new GameRecord("1", 10, LocalDate.now(), setting);
 		emf.runInTransaction(em -> {
 			em.persist(setting);
-			em.persist(record);
+			em.persist(gameRecord);
 		});
-		assertThat(dao.findAll()).containsExactly(new GameRecord[] { record });
+		assertThat(dao.findAll()).containsExactly(new GameRecord[] { gameRecord });
 	}
 
 	@Test
@@ -90,24 +90,24 @@ public class GameRecordDAOTest {
 		emf.runInTransaction(em -> {
 			em.persist(setting);
 		});
-		GameRecord record = new GameRecord("2", 2, LocalDate.now(), setting);
-		dao.create(record);
+		GameRecord gameRecord = new GameRecord("2", 2, LocalDate.now(), setting);
+		dao.create(gameRecord);
 		assertThat(emf.<GameRecord>callInTransaction(em -> {
-			return em.find(GameRecord.class, record.getId());
+			return em.find(GameRecord.class, gameRecord.getId());
 		})).isNotNull();
 	}
 
 	@Test
 	public void testDeleteRecord() {
 		GameSetting setting = new GameSetting("1", 10, 10, 2);
-		GameRecord record = new GameRecord("2", 2, LocalDate.now(), setting);
+		GameRecord gameRecord = new GameRecord("2", 2, LocalDate.now(), setting);
 		emf.runInTransaction(em -> {
 			em.persist(setting);
-			em.persist(record);
+			em.persist(gameRecord);
 		});
-		dao.delete(record);
+		dao.delete(gameRecord);
 		assertThat(emf.<GameRecord>callInTransaction(em -> {
-			return em.find(GameRecord.class, record.getId());
+			return em.find(GameRecord.class, gameRecord.getId());
 		})).isNull();
 	}
 }

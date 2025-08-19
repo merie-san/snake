@@ -64,22 +64,26 @@ public class ModelFactoryTest {
 
 	@Test
 	public void testGameRecordNegativeScore() {
+		LocalDate date = LocalDate.now();
+		GameSetting setting = new GameSetting();
 		assertThatThrownBy(() -> {
-			ModelFactory.gameRecord(-1, LocalDate.now(), new GameSetting());
+			ModelFactory.gameRecord(-1, date, setting);
 		}).isInstanceOf(IllegalArgumentException.class).hasMessage("score cannot be negative");
 	}
 
 	@Test
 	public void testGameRecordNullDate() {
+		GameSetting setting = new GameSetting();
 		assertThatThrownBy(() -> {
-			ModelFactory.gameRecord(0, null, new GameSetting());
+			ModelFactory.gameRecord(0, null, setting);
 		}).isInstanceOf(IllegalArgumentException.class).hasMessage("date cannot be null");
 	}
 
 	@Test
 	public void testGameRecordNullSetting() {
+		LocalDate date = LocalDate.now();
 		assertThatThrownBy(() -> {
-			ModelFactory.gameRecord(0, LocalDate.now(), null);
+			ModelFactory.gameRecord(0, date, null);
 		}).isInstanceOf(IllegalArgumentException.class).hasMessage("setting cannot be null");
 	}
 
@@ -88,10 +92,10 @@ public class ModelFactoryTest {
 		assertThatCode(() -> {
 			LocalDate date = LocalDate.now();
 			GameSetting setting = new GameSetting();
-			GameRecord record = ModelFactory.gameRecord(0, date, setting);
-			assertThat(record.getScore()).isEqualTo(0);
-			assertThat(record.getDate()).isEqualTo(date);
-			assertThat(record.getSetting()).isEqualTo(setting);
+			GameRecord gameRecord = ModelFactory.gameRecord(0, date, setting);
+			assertThat(gameRecord.getScore()).isZero();
+			assertThat(gameRecord.getDate()).isEqualTo(date);
+			assertThat(gameRecord.getSetting()).isEqualTo(setting);
 		}).doesNotThrowAnyException();
 	}
 }

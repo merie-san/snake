@@ -8,11 +8,11 @@ public interface SnakeRepository {
 
 	Collection<GameSetting> findAllSettings();
 
-	void createRecord(GameRecord record);
+	void createRecord(GameRecord gameRecord);
 
 	void createSetting(GameSetting setting);
 
-	void deleteRecord(GameRecord record);
+	void deleteRecord(GameRecord gameRecord);
 
 	void clearHistory();
 
