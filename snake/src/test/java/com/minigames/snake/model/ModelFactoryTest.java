@@ -58,7 +58,7 @@ public class ModelFactoryTest {
 			GameSetting setting = ModelFactory.gameSetting(1, 1, 1);
 			assertThat(setting.getHeight()).isEqualTo(1);
 			assertThat(setting.getWidth()).isEqualTo(1);
-			assertThat(setting.getObstacleN()).isEqualTo(1);
+			assertThat(setting.getObstacleNumber()).isEqualTo(1);
 		}).doesNotThrowAnyException();
 	}
 

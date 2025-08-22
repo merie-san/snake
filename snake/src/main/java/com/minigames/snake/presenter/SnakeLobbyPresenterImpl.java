@@ -6,16 +6,14 @@ import com.minigames.snake.model.GameRecord;
 import com.minigames.snake.model.GameSetting;
 import com.minigames.snake.model.ModelFactory;
 import com.minigames.snake.model.SnakeRepository;
-import com.minigames.snake.view.SnakeLobbyView;
+import com.minigames.snake.view.SnakeView;
 
 public class SnakeLobbyPresenterImpl implements SnakeLobbyPresenter {
 
 	private SnakeRepository repository;
-	private SnakeLobbyView view;
 
-	public SnakeLobbyPresenterImpl(SnakeRepository repository, SnakeLobbyView view) {
+	public SnakeLobbyPresenterImpl(SnakeRepository repository) {
 		this.repository = repository;
-		this.view = view;
 	}
 
 	@Override
@@ -29,18 +27,18 @@ public class SnakeLobbyPresenterImpl implements SnakeLobbyPresenter {
 	}
 
 	@Override
-	public void saveConfiguration(int height, int width, int obstacleN, String name) {
+	public void saveConfiguration(int height, int width, int obstacleN, String name, SnakeView view) {
 		if (name == null) {
 			throw new IllegalArgumentException("name cannot be null");
 		}
 		GameSetting newSetting = ModelFactory.gameSetting(height, width, obstacleN);
 		newSetting.setName(name);
 		repository.createSetting(newSetting);
-		view.updateView();
+		view.update();
 	}
 
 	@Override
-	public void renameConfiguration(GameSetting configuration, String newName) {
+	public void renameConfiguration(GameSetting configuration, String newName, SnakeView view) {
 		if (newName == null) {
 			throw new IllegalArgumentException("name cannot be null");
 		}
@@ -48,16 +46,16 @@ public class SnakeLobbyPresenterImpl implements SnakeLobbyPresenter {
 			throw new IllegalArgumentException("configuration cannot be null");
 		}
 		repository.renameSetting(configuration, newName);
-		view.updateView();
+		view.update();
 	}
 
 	@Override
-	public void removeConfiguration(GameSetting configuration) {
+	public void removeConfiguration(GameSetting configuration, SnakeView view) {
 		if (configuration == null) {
 			throw new IllegalArgumentException("configuration cannot be null");
 		}
 		repository.deleteSetting(configuration);
-		view.updateView();
+		view.update();
 	}
 
 	@Override
@@ -72,18 +70,18 @@ public class SnakeLobbyPresenterImpl implements SnakeLobbyPresenter {
 	}
 
 	@Override
-	public void removeRecord(GameRecord gameRecord) {
+	public void removeRecord(GameRecord gameRecord, SnakeView view) {
 		if (gameRecord == null) {
 			throw new IllegalArgumentException("record cannot be null");
 		}
 		repository.deleteRecord(gameRecord);
-		view.updateView();
+		view.update();
 	}
 
 	@Override
-	public void clearGameHistory() {
+	public void clearGameHistory(SnakeView view) {
 		repository.clearHistory();
-		view.updateView();
+		view.update();
 	}
 
 }

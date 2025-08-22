@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import com.minigames.snake.model.GameRecord;
 import com.minigames.snake.model.GameSetting;
+import com.minigames.snake.view.SnakeView;
 
 public interface SnakeLobbyPresenter {
 
@@ -11,18 +12,18 @@ public interface SnakeLobbyPresenter {
 
 	Collection<GameSetting> loadConfigurations();
 
-	void saveConfiguration(int height, int width, int obstacleN, String name);
+	void saveConfiguration(int height, int width, int obstacleN, String name, SnakeView view);
 
-	void renameConfiguration(GameSetting configuration, String newName);
+	void renameConfiguration(GameSetting configuration, String newName, SnakeView view);
 
-	void removeConfiguration(GameSetting configuration);
+	void removeConfiguration(GameSetting configuration, SnakeView view);
 
 	Collection<GameRecord> loadHistory();
 
 	int loadHighScore();
 
-	void removeRecord(GameRecord gameRecord);
+	void removeRecord(GameRecord gameRecord, SnakeView view);
 
-	void clearGameHistory();
+	void clearGameHistory(SnakeView view);
 
 }

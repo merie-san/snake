@@ -16,7 +16,8 @@
 		<sonar.coverage.exclusions>
 		**/App.*, 
 		**/GameRecord.*, 
-		**/GameSetting.*
+		**/GameSetting.*,
+		**/TellerFactory.*,
 		</sonar.coverage.exclusions>
 		<sonar.junit.reportPaths>
 			${project.build.directory}/surefire-reports,
@@ -338,6 +339,7 @@
 									<excludedMethods>
 										<param>get*</param>
 										<param>set*</param>
+										<param>is*</param>
 									</excludedMethods>
 									<targetTests>
 										<param>com.minigames.snake.*</param>

@@ -15,7 +15,7 @@ public class GameSetting extends BaseEntity {
 	@Column(nullable = false)
 	private int width;
 	@Column(nullable = false)
-	private int obstacleN;
+	private int obstacleNumber;
 	@Column(nullable = false)
 	private boolean deleted = false;
 	@Column(nullable = false)
@@ -25,13 +25,13 @@ public class GameSetting extends BaseEntity {
 	protected GameSetting() {
 		super();
 	}
-	
+
 	public GameSetting(String uuid, int height, int width, int obstacleN) {
 		super(uuid);
 		this.height = height;
 		this.width = width;
-		this.obstacleN = obstacleN;
-		this.name="SETTING_"+uuid;
+		this.obstacleNumber = obstacleN;
+		this.name = "SETTING_" + uuid;
 	}
 
 	public int getHeight() {
@@ -42,8 +42,8 @@ public class GameSetting extends BaseEntity {
 		return width;
 	}
 
-	public float getObstacleN() {
-		return obstacleN;
+	public int getObstacleNumber() {
+		return obstacleNumber;
 	}
 
 	public boolean isDeleted() {

@@ -2,6 +2,7 @@ package com.minigames.snake.presenter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -20,12 +21,11 @@ import org.mockito.MockitoAnnotations;
 import com.minigames.snake.model.GameRecord;
 import com.minigames.snake.model.GameSetting;
 import com.minigames.snake.model.SnakeRepository;
-import com.minigames.snake.view.SnakeLobbyView;
+import com.minigames.snake.view.SnakeView;
 
 public class SnakeLobbyPresenterTest {
 
-	@Mock
-	private SnakeLobbyView view;
+	private SnakeView view;
 
 	@Mock
 	private SnakeRepository repository;
@@ -38,6 +38,7 @@ public class SnakeLobbyPresenterTest {
 	@Before
 	public void setup() {
 		closeable = MockitoAnnotations.openMocks(this);
+		view=mock(SnakeView.class);
 	}
 
 	@After
@@ -88,20 +89,20 @@ public class SnakeLobbyPresenterTest {
 	@Test
 	public void testSaveConfiguration() {
 		ArgumentCaptor<GameSetting> settingCaptor = ArgumentCaptor.forClass(GameSetting.class);
-		presenter.saveConfiguration(10, 10, 10, "new setting");
+		presenter.saveConfiguration(10, 10, 10, "new setting", view);
 		verify(repository).createSetting(settingCaptor.capture());
-		verify(view).updateView();
+		verify(view).update();
 		verifyNoMoreInteractions(repository);
 		GameSetting newConfiguration = settingCaptor.getValue();
 		assertThat(newConfiguration.getHeight()).isEqualTo(10);
 		assertThat(newConfiguration.getWidth()).isEqualTo(10);
-		assertThat(newConfiguration.getObstacleN()).isEqualTo(10);
+		assertThat(newConfiguration.getObstacleNumber()).isEqualTo(10);
 		assertThat(newConfiguration.getName()).isEqualTo("new setting");
 	}
 
 	@Test
 	public void testSaveConfigurationNullName() {
-		assertThatThrownBy(() -> presenter.saveConfiguration(10, 10, 10, null))
+		assertThatThrownBy(() -> presenter.saveConfiguration(10, 10, 10, null, null))
 				.isInstanceOf(IllegalArgumentException.class).hasMessage("name cannot be null");
 	}
 
@@ -109,37 +110,37 @@ public class SnakeLobbyPresenterTest {
 	public void testRenameConfiguration() {
 		GameSetting setting = new GameSetting("1", 10, 10, 10);
 		String newName = "new name";
-		presenter.renameConfiguration(setting, newName);
+		presenter.renameConfiguration(setting, newName, view);
 		verify(repository).renameSetting(setting, newName);
-		verify(view).updateView();
+		verify(view).update();
 		verifyNoMoreInteractions(repository);
 	}
 
 	@Test
 	public void testRenameConfigurationNullName() {
 		GameSetting setting = new GameSetting("1", 10, 10, 10);
-		assertThatThrownBy(() -> presenter.renameConfiguration(setting, null))
+		assertThatThrownBy(() -> presenter.renameConfiguration(setting, null, null))
 				.isInstanceOf(IllegalArgumentException.class).hasMessage("name cannot be null");
 	}
 
 	@Test
 	public void testRenameConfigurationNullConfiguration() {
-		assertThatThrownBy(() -> presenter.renameConfiguration(null, "new name"))
+		assertThatThrownBy(() -> presenter.renameConfiguration(null, "new name", null))
 				.isInstanceOf(IllegalArgumentException.class).hasMessage("configuration cannot be null");
 	}
 
 	@Test
 	public void testRemoveConfiguration() {
 		GameSetting setting = new GameSetting("1", 10, 10, 10);
-		presenter.removeConfiguration(setting);
+		presenter.removeConfiguration(setting, view);
 		verify(repository).deleteSetting(setting);
-		verify(view).updateView();
+		verify(view).update();
 		verifyNoMoreInteractions(repository);
 	}
 
 	@Test
 	public void testRemoveConfigurationNullConfiguration() {
-		assertThatThrownBy(() -> presenter.removeConfiguration(null)).isInstanceOf(IllegalArgumentException.class)
+		assertThatThrownBy(() -> presenter.removeConfiguration(null, null)).isInstanceOf(IllegalArgumentException.class)
 				.hasMessage("configuration cannot be null");
 	}
 
@@ -207,24 +208,24 @@ public class SnakeLobbyPresenterTest {
 
 	@Test
 	public void testRemoveRecordNullRecord() {
-		assertThatThrownBy(() -> presenter.removeRecord(null)).isInstanceOf(IllegalArgumentException.class)
+		assertThatThrownBy(() -> presenter.removeRecord(null, null)).isInstanceOf(IllegalArgumentException.class)
 				.hasMessage("record cannot be null");
 	}
 
 	@Test
 	public void testRemoveRecord() {
 		GameRecord gameRecord = new GameRecord("1", 0, null, null);
-		presenter.removeRecord(gameRecord);
+		presenter.removeRecord(gameRecord, view);
 		verify(repository).deleteRecord(gameRecord);
-		verify(view).updateView();
+		verify(view).update();
 		verifyNoMoreInteractions(repository);
 	}
 
 	@Test
 	public void testClearGameHistory() {
-		presenter.clearGameHistory();
+		presenter.clearGameHistory(view);
 		verify(repository).clearHistory();
-		verify(view).updateView();
+		verify(view).update();
 		verifyNoMoreInteractions(repository);
 	}
 }
