@@ -42,14 +42,14 @@ public class ModelFactoryTest {
 	public void testGameSettingNegativeVelocity() {
 		assertThatThrownBy(() -> {
 			ModelFactory.gameSetting(1, 1, 0);
-		}).isInstanceOf(IllegalArgumentException.class).hasMessage("velocity cannot be zero o negative");
+		}).isInstanceOf(IllegalArgumentException.class).hasMessage("number of obstacles cannot be zero o negative");
 	}
 
 	@Test
 	public void testGameSettingZeroVelocity() {
 		assertThatThrownBy(() -> {
 			ModelFactory.gameSetting(1, 1, 0);
-		}).isInstanceOf(IllegalArgumentException.class).hasMessage("velocity cannot be zero o negative");
+		}).isInstanceOf(IllegalArgumentException.class).hasMessage("number of obstacles cannot be zero o negative");
 	}
 
 	@Test
@@ -58,7 +58,7 @@ public class ModelFactoryTest {
 			GameSetting setting = ModelFactory.gameSetting(1, 1, 1);
 			assertThat(setting.getHeight()).isEqualTo(1);
 			assertThat(setting.getWidth()).isEqualTo(1);
-			assertThat(setting.getVelocity()).isEqualTo(1);
+			assertThat(setting.getObstacleN()).isEqualTo(1);
 		}).doesNotThrowAnyException();
 	}
 

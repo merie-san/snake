@@ -15,7 +15,7 @@ public class GameSetting extends BaseEntity {
 	@Column(nullable = false)
 	private int width;
 	@Column(nullable = false)
-	private float velocity;
+	private int obstacleN;
 	@Column(nullable = false)
 	private boolean deleted = false;
 	@Column(nullable = false)
@@ -26,11 +26,11 @@ public class GameSetting extends BaseEntity {
 		super();
 	}
 	
-	public GameSetting(String uuid, int height, int width, float velocity) {
+	public GameSetting(String uuid, int height, int width, int obstacleN) {
 		super(uuid);
 		this.height = height;
 		this.width = width;
-		this.velocity = velocity;
+		this.obstacleN = obstacleN;
 		this.name="SETTING_"+uuid;
 	}
 
@@ -42,8 +42,8 @@ public class GameSetting extends BaseEntity {
 		return width;
 	}
 
-	public float getVelocity() {
-		return velocity;
+	public float getObstacleN() {
+		return obstacleN;
 	}
 
 	public boolean isDeleted() {

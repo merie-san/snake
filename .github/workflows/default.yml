@@ -34,8 +34,7 @@ jobs:
          with:
             path: |
                ~/.m2
-
-               `/.sonar/cache
+               ~/.sonar/cache
             key: ${{matrix.os}}-m2&sonar-${{hashFiles('**/pom.xml', '**/*.yml')}}
             restore-keys: ${{matrix.os}}-m2&sonar-
       -  name: Build with Maven and SonarCloud

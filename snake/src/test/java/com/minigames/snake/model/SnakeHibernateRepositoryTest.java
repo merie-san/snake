@@ -1,38 +1,54 @@
 package com.minigames.snake.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-public class SnakeSQLRepositoryTest {
+import jakarta.persistence.EntityManagerFactory;
+
+public class SnakeHibernateRepositoryTest {
 
 	@Mock
-	private GameRecordDAO recordDao;
+	private GameRecordHibernateDao recordDao;
 
 	@Mock
-	private GameSettingDAO settingDao;
+	private GameSettingHibernateDao settingDao;
+
+	@Mock
+	private EntityManagerFactory emf;
 
 	@InjectMocks
-	private SnakeSQLRepository repository;
+	private SnakeHibernateRepository repository;
+
+	private AutoCloseable closeable;
 
 	@Before
 	public void setup() {
-		MockitoAnnotations.openMocks(this);
+		closeable = MockitoAnnotations.openMocks(this);
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		closeable.close();
 	}
 
 	@Test
 	public void testFindAllRecordsEmpty() {
-		ArrayList<GameRecord> records = new ArrayList<GameRecord>();
+		clearInvocations(recordDao);
+		Collection<GameRecord> records = new ArrayList<GameRecord>();
 		when(recordDao.findAll()).thenReturn(records);
 		assertThat(repository.findAllRecords()).isEmpty();
 		verify(recordDao).findAll();
@@ -41,7 +57,8 @@ public class SnakeSQLRepositoryTest {
 
 	@Test
 	public void testFindAllRecordsSingle() {
-		ArrayList<GameRecord> records = new ArrayList<GameRecord>();
+		clearInvocations(recordDao);
+		Collection<GameRecord> records = new ArrayList<GameRecord>();
 		GameRecord gameRecord = new GameRecord();
 		records.add(gameRecord);
 		when(recordDao.findAll()).thenReturn(records);
@@ -52,7 +69,8 @@ public class SnakeSQLRepositoryTest {
 
 	@Test
 	public void testFindAllRecordsMultiple() {
-		ArrayList<GameRecord> records = new ArrayList<GameRecord>();
+		clearInvocations(recordDao);
+		Collection<GameRecord> records = new ArrayList<GameRecord>();
 		GameRecord record1 = new GameRecord("1", 20, LocalDate.now(), new GameSetting());
 		GameRecord record2 = new GameRecord("2", 30, LocalDate.now(), new GameSetting());
 		records.add(record1);
@@ -65,7 +83,8 @@ public class SnakeSQLRepositoryTest {
 
 	@Test
 	public void testFindAllSettingsEmpty() {
-		ArrayList<GameSetting> settings = new ArrayList<GameSetting>();
+		clearInvocations(settingDao);
+		Collection<GameSetting> settings = new ArrayList<GameSetting>();
 		when(settingDao.findAll()).thenReturn(settings);
 		assertThat(repository.findAllSettings()).isEmpty();
 		verify(settingDao).findAll();
@@ -74,7 +93,8 @@ public class SnakeSQLRepositoryTest {
 
 	@Test
 	public void testFindAllSettingsSingle() {
-		ArrayList<GameSetting> settings = new ArrayList<GameSetting>();
+		clearInvocations(settingDao);
+		Collection<GameSetting> settings = new ArrayList<GameSetting>();
 		GameSetting setting = new GameSetting();
 		settings.add(setting);
 		when(settingDao.findAll()).thenReturn(settings);
@@ -85,7 +105,8 @@ public class SnakeSQLRepositoryTest {
 
 	@Test
 	public void testFindAllSettingsMultiple() {
-		ArrayList<GameSetting> settings = new ArrayList<GameSetting>();
+		clearInvocations(settingDao);
+		Collection<GameSetting> settings = new ArrayList<GameSetting>();
 		GameSetting setting1 = new GameSetting("1", 20, 1, 1);
 		GameSetting setting2 = new GameSetting("2", 30, 1, 2);
 		settings.add(setting1);
@@ -98,7 +119,8 @@ public class SnakeSQLRepositoryTest {
 
 	@Test
 	public void testFindAllSettingsAllDeleted() {
-		ArrayList<GameSetting> settings = new ArrayList<GameSetting>();
+		clearInvocations(settingDao);
+		Collection<GameSetting> settings = new ArrayList<GameSetting>();
 		GameSetting setting1 = new GameSetting("1", 20, 1, 1);
 		GameSetting setting2 = new GameSetting("2", 30, 1, 2);
 		setting1.setDeleted(true);
@@ -112,8 +134,9 @@ public class SnakeSQLRepositoryTest {
 	}
 
 	@Test
-	public void testFindAllSettingsDeletedAndNotDeleted() {
-		ArrayList<GameSetting> settings = new ArrayList<GameSetting>();
+	public void testFindAllSettingsBothPresent() {
+		clearInvocations(settingDao);
+		Collection<GameSetting> settings = new ArrayList<GameSetting>();
 		GameSetting setting1 = new GameSetting("1", 20, 1, 1);
 		GameSetting setting2 = new GameSetting("2", 30, 1, 2);
 		setting2.setDeleted(true);
@@ -127,6 +150,7 @@ public class SnakeSQLRepositoryTest {
 
 	@Test
 	public void testCreateRecord() {
+		clearInvocations(recordDao);
 		GameRecord gameRecord = new GameRecord();
 		repository.createRecord(gameRecord);
 		verify(recordDao).create(gameRecord);
@@ -135,6 +159,7 @@ public class SnakeSQLRepositoryTest {
 
 	@Test
 	public void testCreateSetting() {
+		clearInvocations(settingDao);
 		GameSetting setting = new GameSetting();
 		repository.createSetting(setting);
 		verify(settingDao).create(setting);
@@ -143,6 +168,7 @@ public class SnakeSQLRepositoryTest {
 
 	@Test
 	public void testDeleteRecord() {
+		clearInvocations(recordDao);
 		GameRecord gameRecord = new GameRecord();
 		repository.deleteRecord(gameRecord);
 		verify(recordDao).delete(gameRecord);
@@ -151,6 +177,7 @@ public class SnakeSQLRepositoryTest {
 
 	@Test
 	public void testDeletesetting() {
+		clearInvocations(settingDao);
 		GameSetting setting = new GameSetting();
 		repository.deleteSetting(setting);
 		verify(settingDao).delete(setting);
@@ -159,7 +186,9 @@ public class SnakeSQLRepositoryTest {
 
 	@Test
 	public void testClearHistoryEmpty() {
-		when(recordDao.findAll()).thenReturn(new ArrayList<GameRecord>());
+		clearInvocations(recordDao);
+		Collection<GameRecord> records = new ArrayList<GameRecord>();
+		when(recordDao.findAll()).thenReturn(records);
 		repository.clearHistory();
 		verify(recordDao).findAll();
 		verifyNoMoreInteractions(recordDao);
@@ -167,7 +196,8 @@ public class SnakeSQLRepositoryTest {
 
 	@Test
 	public void testClearHistorySingle() {
-		ArrayList<GameRecord> records = new ArrayList<GameRecord>();
+		clearInvocations(recordDao);
+		Collection<GameRecord> records = new ArrayList<GameRecord>();
 		records.add(new GameRecord());
 		when(recordDao.findAll()).thenReturn(records);
 		repository.clearHistory();
@@ -180,7 +210,8 @@ public class SnakeSQLRepositoryTest {
 
 	@Test
 	public void testClearHistoryMultiple() {
-		ArrayList<GameRecord> records = new ArrayList<GameRecord>();
+		clearInvocations(recordDao);
+		Collection<GameRecord> records = new ArrayList<GameRecord>();
 		records.add(new GameRecord("1", 20, LocalDate.now(), new GameSetting()));
 		records.add(new GameRecord("2", 20, LocalDate.now(), new GameSetting()));
 		when(recordDao.findAll()).thenReturn(records);
@@ -194,11 +225,18 @@ public class SnakeSQLRepositoryTest {
 
 	@Test
 	public void testRenameSetting() {
+		clearInvocations(settingDao);
 		GameSetting setting = new GameSetting();
 		repository.renameSetting(setting, "New name");
 		verify(settingDao).rename(setting, "New name");
 		verifyNoMoreInteractions(settingDao);
+	}
 
+	@Test
+	public void testCloseRepository() {
+		repository.close();
+		verify(emf).close();
+		verifyNoMoreInteractions(emf);
 	}
 
 }

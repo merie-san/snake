@@ -5,14 +5,10 @@ import java.util.Collection;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.TypedQuery;
 
-public class GameSettingDAO {
+public class GameSettingHibernateDaoImpl implements GameSettingHibernateDao {
 	private EntityManagerFactory emf;
 
-	@Generated
-	public GameSettingDAO(EntityManagerFactory entityManagerFactory) {
-		emf = entityManagerFactory;
-	}
-
+	@Override
 	public Collection<GameSetting> findAll() {
 		return emf.callInTransaction(em -> {
 			TypedQuery<GameSetting> query = em.createQuery("SELECT g from GameSetting g", GameSetting.class);
@@ -20,11 +16,13 @@ public class GameSettingDAO {
 		});
 	}
 
+	@Override
 	public void create(GameSetting setting) {
 		emf.runInTransaction(em -> em.persist(setting));
 
 	}
 
+	@Override
 	public void delete(GameSetting setting) {
 		emf.runInTransaction(em -> {
 			setting.setDeleted(true);
@@ -32,11 +30,18 @@ public class GameSettingDAO {
 		});
 	}
 
+	@Override
 	public void rename(GameSetting setting, String string) {
 		emf.runInTransaction(em -> {
 			setting.setName(string);
 			em.merge(setting);
 		});
+	}
+
+	@Generated
+	@Override
+	public void setEmf(EntityManagerFactory emf) {
+		this.emf = emf;
 	}
 
 }

@@ -9,17 +9,17 @@ public class ModelFactory {
 	private ModelFactory() {
 	}
 
-	public static GameSetting gameSetting(int height, int width, float velocity) {
+	public static GameSetting gameSetting(int height, int width, int obstacleN) {
 		if (height <= 0) {
 			throw new IllegalArgumentException("height cannot be zero o negative");
 		}
 		if (width <= 0) {
 			throw new IllegalArgumentException("width cannot be zero o negative");
 		}
-		if (velocity <= 0) {
-			throw new IllegalArgumentException("velocity cannot be zero o negative");
+		if (obstacleN <= 0) {
+			throw new IllegalArgumentException("number of obstacles cannot be zero o negative");
 		}
-		return new GameSetting(UUID.randomUUID().toString(), height, width, velocity);
+		return new GameSetting(UUID.randomUUID().toString(), height, width, obstacleN);
 	}
 
 	public static GameRecord gameRecord(int score, LocalDate date, GameSetting setting) {

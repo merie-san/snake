@@ -172,6 +172,7 @@
 							<exclude>**/App.*</exclude>
 							<exclude>**/GameRecord.*</exclude>
 							<exclude>**/GameSetting.*</exclude>
+							<exclude>**/TellerFactory.*</exclude>
 						</excludes>
 					</configuration>
 				</plugin>
@@ -332,7 +333,7 @@
 										<param>com.minigames.snake.App</param>
 										<param>com.minigames.snake.model.Game*</param>
 										<param>com.minigames.snake.model.BaseEntity</param>
-										<param>com.minigames.snake.model.ModelFactory</param>
+										<param>com.minigames.snake.model.*Factory</param>
 									</excludedClasses>
 									<excludedMethods>
 										<param>get*</param>

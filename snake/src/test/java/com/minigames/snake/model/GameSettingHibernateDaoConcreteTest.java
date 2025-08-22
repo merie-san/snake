@@ -16,14 +16,14 @@ import org.testcontainers.containers.MySQLContainer;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceConfiguration;
 
-public class GameSettingDAOTest {
+public class GameSettingHibernateDaoConcreteTest {
 
 	@SuppressWarnings("resource")
 	@ClassRule
 	public static final MySQLContainer<?> mysql = new MySQLContainer<>("mysql:8.0.33").withDatabaseName("snakedb")
 			.withUsername("root").withPassword("root");
 	private static EntityManagerFactory emf;
-	private GameSettingDAO dao;
+	private GameSettingHibernateDaoImpl dao;
 
 	@BeforeClass
 	public static void setupEMF() {
@@ -39,7 +39,8 @@ public class GameSettingDAOTest {
 
 	@Before
 	public void setup() {
-		dao = new GameSettingDAO(emf);
+		dao = new GameSettingHibernateDaoImpl();
+		dao.setEmf(emf);
 	}
 
 	@After
