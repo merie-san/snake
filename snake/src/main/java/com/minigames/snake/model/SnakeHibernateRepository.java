@@ -2,16 +2,21 @@ package com.minigames.snake.model;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
+import jakarta.persistence.EntityManagerFactory;
 
-public class SnakeSQLRepository implements SnakeRepository {
+public class SnakeHibernateRepository implements SnakeRepository {
 
-	private GameSettingDAO settingDao;
-	private GameRecordDAO recordDao;
+	private GameSettingHibernateDao settingDao;
+	private GameRecordHibernateDao recordDao;
+	private EntityManagerFactory emf;
 
 	@Generated
-	public SnakeSQLRepository(GameSettingDAO settingDao, GameRecordDAO recordDao) {
+	public SnakeHibernateRepository(GameSettingHibernateDao settingDao, GameRecordHibernateDao recordDao, EntityManagerFactory emf) {
+		this.emf=emf;
 		this.settingDao = settingDao;
 		this.recordDao = recordDao;
+		this.settingDao.setEmf(emf);
+		this.recordDao.setEmf(emf);
 	}
 
 	@Override
@@ -52,6 +57,11 @@ public class SnakeSQLRepository implements SnakeRepository {
 	@Override
 	public void renameSetting(GameSetting setting, String newName) {
 		settingDao.rename(setting, newName);
+	}
+
+	@Override
+	public void close() {
+		emf.close();
 	}
 
 }
