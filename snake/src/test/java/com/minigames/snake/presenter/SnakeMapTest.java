@@ -3,7 +3,6 @@ package com.minigames.snake.presenter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.*;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -141,8 +140,8 @@ public class SnakeMapTest {
 	public void testPutSnakeAtBoundaryXMax() {
 		assertThatCode(() -> {
 			SnakeMap map = SnakeMap.of(20, 20, new ArrayList<Point>());
-			map.putSnakeHead(new Point(20, 10));
-			assertThat(map.getSnakeHead()).isEqualTo(new Point(20, 10));
+			map.putSnakeHead(new Point(19, 10));
+			assertThat(map.getSnakeHead()).isEqualTo(new Point(19, 10));
 			assertThat(map.getSnakeBody()).isEmpty();
 		}).doesNotThrowAnyException();
 	}
@@ -161,8 +160,8 @@ public class SnakeMapTest {
 	public void testPutSnakeAtBoundaryYMax() {
 		assertThatCode(() -> {
 			SnakeMap map = SnakeMap.of(20, 20, new ArrayList<Point>());
-			map.putSnakeHead(new Point(10, 20));
-			assertThat(map.getSnakeHead()).isEqualTo(new Point(10, 20));
+			map.putSnakeHead(new Point(10, 19));
+			assertThat(map.getSnakeHead()).isEqualTo(new Point(10, 19));
 			assertThat(map.getSnakeBody()).isEmpty();
 		}).doesNotThrowAnyException();
 	}
@@ -180,7 +179,7 @@ public class SnakeMapTest {
 	@Test
 	public void testPutSnakeOutOfBoundsX() {
 		SnakeMap map = SnakeMap.of(20, 20, new ArrayList<Point>());
-		Point snake = new Point(21, 1);
+		Point snake = new Point(20, 1);
 		assertThatThrownBy(() -> map.putSnakeHead(snake)).isInstanceOf(IllegalArgumentException.class)
 				.hasMessage("the snake is out of bounds of the map");
 	}
@@ -188,7 +187,7 @@ public class SnakeMapTest {
 	@Test
 	public void testPutSnakeOutOfBoundsY() {
 		SnakeMap map = SnakeMap.of(20, 20, new ArrayList<Point>());
-		Point snake = new Point(1, 21);
+		Point snake = new Point(1, 20);
 		assertThatThrownBy(() -> map.putSnakeHead(snake)).isInstanceOf(IllegalArgumentException.class)
 				.hasMessage("the snake is out of bounds of the map");
 	}
@@ -261,8 +260,8 @@ public class SnakeMapTest {
 			ArrayList<Point> obstacles = new ArrayList<Point>();
 			SnakeMap map = SnakeMap.of(10, 10, obstacles);
 			map.setSnakeHead(new Point(0, 0));
-			map.putApple(new Point(10, 1));
-			assertThat(map.getApple()).isEqualTo(new Point(10, 1));
+			map.putApple(new Point(9, 1));
+			assertThat(map.getApple()).isEqualTo(new Point(9, 1));
 		}).doesNotThrowAnyException();
 	}
 
@@ -283,8 +282,8 @@ public class SnakeMapTest {
 			ArrayList<Point> obstacles = new ArrayList<Point>();
 			SnakeMap map = SnakeMap.of(10, 10, obstacles);
 			map.setSnakeHead(new Point(0, 0));
-			map.putApple(new Point(5, 10));
-			assertThat(map.getApple()).isEqualTo(new Point(5, 10));
+			map.putApple(new Point(5, 9));
+			assertThat(map.getApple()).isEqualTo(new Point(5, 9));
 		}).doesNotThrowAnyException();
 	}
 
@@ -302,7 +301,7 @@ public class SnakeMapTest {
 	@Test
 	public void testPutAppleOutOfBoundsX() {
 		SnakeMap map = SnakeMap.of(20, 20, new ArrayList<Point>());
-		Point apple = new Point(21, 1);
+		Point apple = new Point(20, 1);
 		assertThatThrownBy(() -> map.putApple(apple)).isInstanceOf(IllegalArgumentException.class)
 				.hasMessage("the apple is out of bounds of the map");
 	}
@@ -318,7 +317,7 @@ public class SnakeMapTest {
 	@Test
 	public void testPutAppleOutOfBoundsY() {
 		SnakeMap map = SnakeMap.of(20, 20, new ArrayList<Point>());
-		Point apple = new Point(1, 21);
+		Point apple = new Point(1, 20);
 		assertThatThrownBy(() -> map.putApple(apple)).isInstanceOf(IllegalArgumentException.class)
 				.hasMessage("the apple is out of bounds of the map");
 	}
@@ -438,7 +437,7 @@ public class SnakeMapTest {
 	public void testCheckFreeUpHitMapBoundary() {
 		ArrayList<Point> obstacles = new ArrayList<>();
 		SnakeMap map = SnakeMap.of(10, 10, obstacles);
-		map.setSnakeHead(new Point(0, 10));
+		map.setSnakeHead(new Point(0, 9));
 		assertThat(map.checkFree(new UpTeller())).isFalse();
 	}
 
@@ -462,7 +461,7 @@ public class SnakeMapTest {
 	public void testCheckFreeRightHitMapBoundary() {
 		ArrayList<Point> obstacles = new ArrayList<>();
 		SnakeMap map = SnakeMap.of(10, 10, obstacles);
-		map.setSnakeHead(new Point(10, 10));
+		map.setSnakeHead(new Point(9, 9));
 		assertThat(map.checkFree(new RightTeller())).isFalse();
 	}
 	
@@ -470,7 +469,7 @@ public class SnakeMapTest {
 	public void testCheckFreeAtMapBoundaryXMax() {
 		ArrayList<Point> obstacles = new ArrayList<>();
 		SnakeMap map = SnakeMap.of(10, 10, obstacles);
-		map.setSnakeHead(new Point(5, 9));
+		map.setSnakeHead(new Point(5, 8));
 		assertThat(map.checkFree(new UpTeller())).isTrue();
 	}
 	
@@ -486,7 +485,7 @@ public class SnakeMapTest {
 	public void testCheckFreeAtMapBoundaryYMax() {
 		ArrayList<Point> obstacles = new ArrayList<>();
 		SnakeMap map = SnakeMap.of(10, 10, obstacles);
-		map.setSnakeHead(new Point(9, 5));
+		map.setSnakeHead(new Point(8, 5));
 		assertThat(map.checkFree(new RightTeller())).isTrue();
 	}
 	

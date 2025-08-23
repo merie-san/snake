@@ -19,7 +19,7 @@ public class ModelFactory {
 		if (obstacleN <= 0) {
 			throw new IllegalArgumentException("number of obstacles cannot be zero o negative");
 		}
-		return new GameSetting(UUID.randomUUID().toString(), height, width, obstacleN);
+		return new GameSetting(UUID.randomUUID().toString(), width, height, obstacleN);
 	}
 
 	public static GameRecord gameRecord(int score, LocalDate date, GameSetting setting) {

@@ -58,7 +58,7 @@ public class SnakeMap {
 	}
 
 	public void putSnakeHead(Point head) {
-		if (head.x > mapWidth || head.y > mapHeight || head.x < 0 || head.y < 0) {
+		if (head.x >= mapWidth || head.y >= mapHeight || head.x < 0 || head.y < 0) {
 			throw new IllegalArgumentException("the snake is out of bounds of the map");
 		}
 		if (obstacles.stream().anyMatch(obstacle -> obstacle.equals(head))) {
@@ -68,12 +68,8 @@ public class SnakeMap {
 		snakeHead = head;
 	}
 
-	public Point getSnakeHead() {
-		return snakeHead;
-	}
-
 	public void putApple(Point apple) {
-		if (apple.x > mapWidth || apple.y > mapHeight || apple.x < 0 || apple.y < 0) {
+		if (apple.x >= mapWidth || apple.y >= mapHeight || apple.x < 0 || apple.y < 0) {
 			throw new IllegalArgumentException("the apple is out of bounds of the map");
 		}
 		if (obstacles.stream().anyMatch(obstacle -> obstacle.equals(apple))) {
@@ -94,7 +90,7 @@ public class SnakeMap {
 			throw new IllegalArgumentException("the teller cannot be null");
 		}
 		Point nextPosition = teller.tellNextPosition(snakeHead);
-		return !(nextPosition.x < 0 || nextPosition.x > mapWidth || nextPosition.y < 0 || nextPosition.y > mapHeight
+		return !(nextPosition.x < 0 || nextPosition.x >= mapWidth || nextPosition.y < 0 || nextPosition.y >= mapHeight
 				|| obstacles.stream().anyMatch(obstacle -> obstacle.equals(nextPosition))
 				|| !snakeBody.isEmpty() && snakeBody.peekLast().equals(nextPosition));
 	}
@@ -110,6 +106,11 @@ public class SnakeMap {
 			snakeBody.remove();
 		}
 		return nextPosition.equals(apple);
+	}
+
+	@Generated
+	public Point getSnakeHead() {
+		return snakeHead;
 	}
 
 	// for testing

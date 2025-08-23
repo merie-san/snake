@@ -77,7 +77,7 @@ public class SnakeLobbyPresenterTest {
 	public void testLoadConfigurationsMultiple() {
 		Collection<GameSetting> configurations = new ArrayList<GameSetting>();
 		GameSetting setting1 = new GameSetting("1", 10, 10, 10);
-		GameSetting setting2 = new GameSetting("2", 10, 20, 10);
+		GameSetting setting2 = new GameSetting("2", 20, 10, 10);
 		configurations.add(setting1);
 		configurations.add(setting2);
 		when(repository.findAllSettings()).thenReturn(configurations);

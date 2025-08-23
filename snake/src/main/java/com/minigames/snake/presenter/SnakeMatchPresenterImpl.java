@@ -68,9 +68,12 @@ public class SnakeMatchPresenterImpl implements SnakeMatchPresenter {
 
 	private void goDirection(SnakeView view, PositionTeller teller) {
 		if (map.checkFree(teller)) {
-			if (map.moveSnake(teller, isSnakeBigger())) {
+			if (map.moveSnake(teller, snakeBigger)) {
 				snakeBigger = true;
 				rawScore++;
+				if (map.getMapHeight() * map.getMapWidth() - configuration.getObstacleNumber() == rawScore) {
+					gameOver = true;
+				}
 			} else {
 				snakeBigger = false;
 			}

@@ -26,7 +26,7 @@ public class GameSetting extends BaseEntity {
 		super();
 	}
 
-	public GameSetting(String uuid, int height, int width, int obstacleN) {
+	public GameSetting(String uuid, int width, int height, int obstacleN) {
 		super(uuid);
 		this.height = height;
 		this.width = width;

@@ -17,7 +17,7 @@
 		**/App.*, 
 		**/GameRecord.*, 
 		**/GameSetting.*,
-		**/TellerFactory.*,
+		**/TellerCatalog.*,
 		</sonar.coverage.exclusions>
 		<sonar.junit.reportPaths>
 			${project.build.directory}/surefire-reports,
@@ -173,7 +173,7 @@
 							<exclude>**/App.*</exclude>
 							<exclude>**/GameRecord.*</exclude>
 							<exclude>**/GameSetting.*</exclude>
-							<exclude>**/TellerFactory.*</exclude>
+							<exclude>**/TellerCatalog.*</exclude>
 						</excludes>
 					</configuration>
 				</plugin>

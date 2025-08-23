@@ -73,7 +73,7 @@ public class GameRecordHibernateDaoConcreteTest {
 	@Test
 	public void testFindAllRecordMultiple() {
 		GameSetting setting1 = new GameSetting("1", 10, 10, 2);
-		GameSetting setting2 = new GameSetting("2", 10, 20, 2);
+		GameSetting setting2 = new GameSetting("2", 20, 10, 2);
 		GameRecord record1 = new GameRecord("3", 10, LocalDate.now(), setting1);
 		GameRecord record2 = new GameRecord("4", 5, LocalDate.now(), setting2);
 		emf.runInTransaction(em -> {

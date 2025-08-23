@@ -70,7 +70,7 @@ public class GameSettingHibernateDaoConcreteTest {
 	@Test
 	public void testFindAllSettingMultiple() {
 		GameSetting setting1 = new GameSetting("1", 10, 10, 2);
-		GameSetting setting2 = new GameSetting("2", 10, 20, 2);
+		GameSetting setting2 = new GameSetting("2", 20, 10, 2);
 		emf.runInTransaction(em -> {
 			em.persist(setting1);
 			em.persist(setting2);

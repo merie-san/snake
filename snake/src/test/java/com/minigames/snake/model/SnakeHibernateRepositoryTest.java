@@ -107,8 +107,8 @@ public class SnakeHibernateRepositoryTest {
 	public void testFindAllSettingsMultiple() {
 		clearInvocations(settingDao);
 		Collection<GameSetting> settings = new ArrayList<GameSetting>();
-		GameSetting setting1 = new GameSetting("1", 20, 1, 1);
-		GameSetting setting2 = new GameSetting("2", 30, 1, 2);
+		GameSetting setting1 = new GameSetting("1", 1, 20, 1);
+		GameSetting setting2 = new GameSetting("2", 1, 30, 2);
 		settings.add(setting1);
 		settings.add(setting2);
 		when(settingDao.findAll()).thenReturn(settings);
@@ -121,8 +121,8 @@ public class SnakeHibernateRepositoryTest {
 	public void testFindAllSettingsAllDeleted() {
 		clearInvocations(settingDao);
 		Collection<GameSetting> settings = new ArrayList<GameSetting>();
-		GameSetting setting1 = new GameSetting("1", 20, 1, 1);
-		GameSetting setting2 = new GameSetting("2", 30, 1, 2);
+		GameSetting setting1 = new GameSetting("1", 1, 20, 1);
+		GameSetting setting2 = new GameSetting("2", 1, 30, 2);
 		setting1.setDeleted(true);
 		setting2.setDeleted(true);
 		settings.add(setting1);
@@ -137,8 +137,8 @@ public class SnakeHibernateRepositoryTest {
 	public void testFindAllSettingsBothPresent() {
 		clearInvocations(settingDao);
 		Collection<GameSetting> settings = new ArrayList<GameSetting>();
-		GameSetting setting1 = new GameSetting("1", 20, 1, 1);
-		GameSetting setting2 = new GameSetting("2", 30, 1, 2);
+		GameSetting setting1 = new GameSetting("1", 1, 20, 1);
+		GameSetting setting2 = new GameSetting("2", 1, 30, 2);
 		setting2.setDeleted(true);
 		settings.add(setting1);
 		settings.add(setting2);

@@ -1,13 +1,16 @@
 package com.minigames.snake.presenter;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Queue;
 
 import org.junit.After;
 import org.junit.Before;
@@ -407,4 +410,140 @@ public class SnakeMatchPresenterImplTest {
 		verifyNoMoreInteractions(view);
 	}
 
+	@Test
+	public void testGoUpBeatGameNoObstacles() {
+		GameSetting configuration = new GameSetting("1", 2, 2, 0);
+		ArrayList<Point> obstacles = new ArrayList<Point>();
+		SnakeMap map = SnakeMap.of(2, 2, obstacles);
+		map.setSnakeHead(new Point(0, 0));
+		Collection<Point> body = map.getSnakeBody();
+		body.add(new Point(1, 1));
+		body.add(new Point(1, 0));
+		map.setApple(new Point(0, 1));
+		presenter.setConfiguration(configuration);
+		presenter.setMap(map);
+		presenter.setRawScore(3);
+		presenter.goUp(view);
+		assertThat(presenter.isGameOver()).isTrue();
+	}
+	
+	@Test
+	public void testGoUpBeatGameWithObstacles() {
+		GameSetting configuration = new GameSetting("1", 2, 2, 1);
+		ArrayList<Point> obstacles = new ArrayList<Point>();
+		obstacles.add(new Point(1, 1));
+		SnakeMap map = SnakeMap.of(2, 2, obstacles);
+		map.setSnakeHead(new Point(0, 0));
+		Collection<Point> body = map.getSnakeBody();
+		body.add(new Point(1, 0));
+		map.setApple(new Point(0, 1));
+		presenter.setConfiguration(configuration);
+		presenter.setMap(map);
+		presenter.setRawScore(2);
+		presenter.goUp(view);
+		assertThat(presenter.isGameOver()).isTrue();
+	}
+	
+	@Test
+	public void testGoDownBeatGameNoObstacles() {
+		GameSetting configuration = new GameSetting("1", 2, 2, 0);
+		ArrayList<Point> obstacles = new ArrayList<Point>();
+		SnakeMap map = SnakeMap.of(2, 2, obstacles);
+		map.setSnakeHead(new Point(0, 1));
+		Collection<Point> body = map.getSnakeBody();
+		body.add(new Point(1, 0));
+		body.add(new Point(1, 1));
+		map.setApple(new Point(0, 0));
+		presenter.setConfiguration(configuration);
+		presenter.setMap(map);
+		presenter.setRawScore(3);
+		presenter.goDown(view);
+		assertThat(presenter.isGameOver()).isTrue();
+	}
+	
+	@Test
+	public void testGoDownBeatGameWithObstacles() {
+		GameSetting configuration = new GameSetting("1", 2, 2, 1);
+		ArrayList<Point> obstacles = new ArrayList<Point>();
+		obstacles.add(new Point(1, 0));
+		SnakeMap map = SnakeMap.of(2, 2, obstacles);
+		map.setSnakeHead(new Point(0, 1));
+		Collection<Point> body = map.getSnakeBody();
+		body.add(new Point(1, 1));
+		map.setApple(new Point(0, 0));
+		presenter.setConfiguration(configuration);
+		presenter.setMap(map);
+		presenter.setRawScore(2);
+		presenter.goDown(view);
+		assertThat(presenter.isGameOver()).isTrue();
+	}
+	
+	@Test
+	public void testGoLeftBeatGameNoObstacles() {
+		GameSetting configuration = new GameSetting("1", 2, 2, 0);
+		ArrayList<Point> obstacles = new ArrayList<Point>();
+		SnakeMap map = SnakeMap.of(2, 2, obstacles);
+		map.setSnakeHead(new Point(1, 0));
+		Collection<Point> body = map.getSnakeBody();
+		body.add(new Point(0, 1));
+		body.add(new Point(1, 1));
+		map.setApple(new Point(0, 0));
+		presenter.setConfiguration(configuration);
+		presenter.setMap(map);
+		presenter.setRawScore(3);
+		presenter.goLeft(view);
+		assertThat(presenter.isGameOver()).isTrue();
+	}
+	
+	@Test
+	public void testGoLeftBeatGameWithObstacles() {
+		GameSetting configuration = new GameSetting("1", 2, 2, 1);
+		ArrayList<Point> obstacles = new ArrayList<Point>();
+		obstacles.add(new Point(0, 1));
+		SnakeMap map = SnakeMap.of(2, 2, obstacles);
+		map.setSnakeHead(new Point(1, 0));
+		Collection<Point> body = map.getSnakeBody();
+		body.add(new Point(1, 1));
+		map.setApple(new Point(0, 0));
+		presenter.setConfiguration(configuration);
+		presenter.setMap(map);
+		presenter.setRawScore(2);
+		presenter.goLeft(view);
+		assertThat(presenter.isGameOver()).isTrue();
+	}
+	
+	@Test
+	public void testGoRightBeatGameNoObstacles() {
+		GameSetting configuration = new GameSetting("1", 2, 2, 0);
+		ArrayList<Point> obstacles = new ArrayList<Point>();
+		SnakeMap map = SnakeMap.of(2, 2, obstacles);
+		map.setSnakeHead(new Point(0, 0));
+		Collection<Point> body = map.getSnakeBody();
+		body.add(new Point(1, 1));
+		body.add(new Point(0, 1));
+		map.setApple(new Point(1, 0));
+		presenter.setConfiguration(configuration);
+		presenter.setMap(map);
+		presenter.setRawScore(3);
+		presenter.goRight(view);
+		assertThat(presenter.isGameOver()).isTrue();
+	}
+	
+	@Test
+	public void testGoRightBeatGameWithObstacles() {
+		GameSetting configuration = new GameSetting("1", 2, 2, 1);
+		ArrayList<Point> obstacles = new ArrayList<Point>();
+		obstacles.add(new Point(1, 1));
+		SnakeMap map = SnakeMap.of(2, 2, obstacles);
+		map.setSnakeHead(new Point(0, 0));
+		Collection<Point> body = map.getSnakeBody();
+		body.add(new Point(0, 1));
+		map.setApple(new Point(1, 0));
+		presenter.setConfiguration(configuration);
+		presenter.setMap(map);
+		presenter.setRawScore(2);
+		presenter.goRight(view);
+		assertThat(presenter.isGameOver()).isTrue();
+	}
+	
 }
