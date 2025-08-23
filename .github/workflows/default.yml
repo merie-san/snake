@@ -13,14 +13,10 @@ jobs:
       runs-on: ${{matrix.os}}
       strategy:
          matrix:
-            os: ubuntu-latest
-            additional-maven-properties:
-            - -Dsonar.organization=merie-san -Dsonar.projectKey=merie-san_snake -DrepoToken=$COVERALLS_REPO_TOKEN -Dsonar.token=$SONAR_TOKEN
-            java-version:
-
-            - 17
-            java-distribution:
-            - oracle
+            os: [ubuntu-latest]
+            additional-maven-properties: [-Dsonar.organization=merie-san -Dsonar.projectKey=merie-san_snake -DrepoToken=$COVERALLS_REPO_TOKEN -Dsonar.token=$SONAR_TOKEN]
+            java-version: [17]
+            java-distribution: [oracle]
       steps:
       -  name: Clone the repository
          uses: actions/checkout@v4
