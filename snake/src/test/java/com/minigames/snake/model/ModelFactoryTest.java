@@ -3,6 +3,7 @@ package com.minigames.snake.model;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.Assert.*;
 
 import java.time.LocalDate;
 
@@ -13,51 +14,57 @@ public class ModelFactoryTest {
 	@Test
 	public void testGameSettingNegativeHeight() {
 		assertThatThrownBy(() -> {
-			ModelFactory.gameSetting(-1, 1, 1);
+			ModelFactory.gameSetting(1, -1, 1);
 		}).isInstanceOf(IllegalArgumentException.class).hasMessage("height cannot be zero o negative");
 	}
 
 	@Test
 	public void testGameSettingZeroHeight() {
 		assertThatThrownBy(() -> {
-			ModelFactory.gameSetting(0, 1, 1);
+			ModelFactory.gameSetting(1, 0, 1);
 		}).isInstanceOf(IllegalArgumentException.class).hasMessage("height cannot be zero o negative");
 	}
 
 	@Test
 	public void testGameSettingNegativeWidth() {
 		assertThatThrownBy(() -> {
-			ModelFactory.gameSetting(1, -1, 1);
+			ModelFactory.gameSetting(-1, 1, 1);
 		}).isInstanceOf(IllegalArgumentException.class).hasMessage("width cannot be zero o negative");
 	}
 
 	@Test
 	public void testGameSettingZeroWidth() {
 		assertThatThrownBy(() -> {
-			ModelFactory.gameSetting(1, 0, 1);
+			ModelFactory.gameSetting(0, 1, 1);
 		}).isInstanceOf(IllegalArgumentException.class).hasMessage("width cannot be zero o negative");
 	}
 
 	@Test
-	public void testGameSettingNegativeVelocity() {
+	public void testGameSettingNegativeObstacles() {
 		assertThatThrownBy(() -> {
 			ModelFactory.gameSetting(1, 1, 0);
 		}).isInstanceOf(IllegalArgumentException.class).hasMessage("number of obstacles cannot be zero o negative");
 	}
 
 	@Test
-	public void testGameSettingZeroVelocity() {
+	public void testGameSettingZeroObstacles() {
 		assertThatThrownBy(() -> {
 			ModelFactory.gameSetting(1, 1, 0);
 		}).isInstanceOf(IllegalArgumentException.class).hasMessage("number of obstacles cannot be zero o negative");
 	}
+	
+	@Test
+	public void testGameSettingToomanyObstacles(){
+		assertThatThrownBy(()-> ModelFactory.gameSetting(2, 1, 2)).isInstanceOf(IllegalArgumentException.class).hasMessage("number of obstacles must be less than the surface of the map");
+		
+	}
 
 	@Test
-	public void testGameSettingNoException() {
+	public void testGameSettingMaxObstacles() {
 		assertThatCode(() -> {
-			GameSetting setting = ModelFactory.gameSetting(1, 1, 1);
+			GameSetting setting = ModelFactory.gameSetting(2, 1, 1);
 			assertThat(setting.getHeight()).isEqualTo(1);
-			assertThat(setting.getWidth()).isEqualTo(1);
+			assertThat(setting.getWidth()).isEqualTo(2);
 			assertThat(setting.getObstacleNumber()).isEqualTo(1);
 		}).doesNotThrowAnyException();
 	}

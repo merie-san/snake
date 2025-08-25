@@ -31,7 +31,7 @@ public class SnakeLobbyPresenterImpl implements SnakeLobbyPresenter {
 		if (name == null) {
 			throw new IllegalArgumentException("name cannot be null");
 		}
-		GameSetting newSetting = ModelFactory.gameSetting(height, width, obstacleN);
+		GameSetting newSetting = ModelFactory.gameSetting(width, height, obstacleN);
 		newSetting.setName(name);
 		repository.createSetting(newSetting);
 		view.update();

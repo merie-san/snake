@@ -9,17 +9,20 @@ public class ModelFactory {
 	private ModelFactory() {
 	}
 
-	public static GameSetting gameSetting(int height, int width, int obstacleN) {
+	public static GameSetting gameSetting(int width, int height, int obstacleNumber) {
 		if (height <= 0) {
 			throw new IllegalArgumentException("height cannot be zero o negative");
 		}
 		if (width <= 0) {
 			throw new IllegalArgumentException("width cannot be zero o negative");
 		}
-		if (obstacleN <= 0) {
+		if (obstacleNumber <= 0) {
 			throw new IllegalArgumentException("number of obstacles cannot be zero o negative");
 		}
-		return new GameSetting(UUID.randomUUID().toString(), width, height, obstacleN);
+		if (obstacleNumber>=width*height) {
+			throw new IllegalArgumentException("number of obstacles must be less than the surface of the map");
+		}
+		return new GameSetting(UUID.randomUUID().toString(), width, height, obstacleNumber);
 	}
 
 	public static GameRecord gameRecord(int score, LocalDate date, GameSetting setting) {
