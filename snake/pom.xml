@@ -144,6 +144,9 @@
 				<plugin>
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>3.3.0</version>
+					<configuration>
+						<argLine>--add-opens java.base/java.util=ALL-UNNAMED</argLine>
+					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -348,6 +351,9 @@
 									<targetTests>
 										<param>com.minigames.snake.*</param>
 									</targetTests>
+									<excludedTestClasses>
+										<param>com.minigames.snake.view.*</param>
+									</excludedTestClasses>
 								</configuration>
 							</execution>
 						</executions>

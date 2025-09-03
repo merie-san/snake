@@ -44,7 +44,7 @@ jobs:
          if: ${{always()}}
          uses: actions/upload-artifact@v4
          with:
-            name: reports-os-${{matrix.os}}
+            name: report
             path: |-
                **/target/site
                **/target/pit-reports

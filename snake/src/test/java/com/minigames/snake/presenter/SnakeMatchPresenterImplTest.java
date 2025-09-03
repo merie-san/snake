@@ -227,12 +227,15 @@ public class SnakeMatchPresenterImplTest {
 		map.setSnakeHead(new Point(5, 5));
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
+		presenter.setPlaying(true);
 		presenter.goUp(lobbyView, matchView);
-		assertThat(presenter.isPlaying()).isFalse();
+		assertThat(presenter.isPlaying()).isTrue();
 		assertThat(presenter.isSnakeBigger()).isFalse();
 		assertThat(presenter.getRawScore()).isZero();
 		verify(matchView).update();
 		verifyNoMoreInteractions(matchView);
+		verifyNoInteractions(lobbyView);
+		verifyNoInteractions(repository);
 	}
 
 	@Test
@@ -244,13 +247,22 @@ public class SnakeMatchPresenterImplTest {
 		map.setSnakeHead(new Point(5, 5));
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
+		presenter.setPlaying(true);
 		presenter.goUp(lobbyView, matchView);
 		assertThat(presenter.isPlaying()).isFalse();
 		assertThat(presenter.isSnakeBigger()).isFalse();
 		assertThat(presenter.getRawScore()).isZero();
 		verify(matchView).update();
+		ArgumentCaptor<GameRecord> recordCaptor=ArgumentCaptor.forClass(GameRecord.class);
+		verify(repository).createRecord(recordCaptor.capture());
+		GameRecord capturedRecord=recordCaptor.getValue();
+		assertThat(capturedRecord.getScore()).isEqualTo(0);
+		assertThat(capturedRecord.getDate()).isToday();
+		assertThat(capturedRecord.getSetting()).isEqualTo(configuration);
 		verify(lobbyView).update();
 		verifyNoMoreInteractions(matchView);
+		verifyNoMoreInteractions(repository);
+		verifyNoMoreInteractions(lobbyView);
 	}
 
 	@Test
@@ -262,12 +274,15 @@ public class SnakeMatchPresenterImplTest {
 		map.setApple(new Point(5, 6));
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
+		presenter.setPlaying(true);
 		presenter.goUp(lobbyView, matchView);
-		assertThat(presenter.isPlaying()).isFalse();
+		assertThat(presenter.isPlaying()).isTrue();
 		assertThat(presenter.isSnakeBigger()).isTrue();
 		assertThat(presenter.getRawScore()).isEqualTo(1);
 		verify(matchView).update();
 		verifyNoMoreInteractions(matchView);
+		verifyNoInteractions(lobbyView);
+		verifyNoInteractions(repository);
 	}
 
 	@Test
@@ -278,12 +293,15 @@ public class SnakeMatchPresenterImplTest {
 		map.setSnakeHead(new Point(5, 5));
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
+		presenter.setPlaying(true);
 		presenter.goDown(lobbyView, matchView);
-		assertThat(presenter.isPlaying()).isFalse();
+		assertThat(presenter.isPlaying()).isTrue();
 		assertThat(presenter.isSnakeBigger()).isFalse();
 		assertThat(presenter.getRawScore()).isZero();
 		verify(matchView).update();
 		verifyNoMoreInteractions(matchView);
+		verifyNoInteractions(lobbyView);
+		verifyNoInteractions(repository);
 	}
 
 	@Test
@@ -295,13 +313,22 @@ public class SnakeMatchPresenterImplTest {
 		map.setSnakeHead(new Point(5, 5));
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
+		presenter.setPlaying(true);
 		presenter.goDown(lobbyView, matchView);
 		assertThat(presenter.isPlaying()).isFalse();
 		assertThat(presenter.isSnakeBigger()).isFalse();
 		assertThat(presenter.getRawScore()).isZero();
 		verify(matchView).update();
+		ArgumentCaptor<GameRecord> recordCaptor=ArgumentCaptor.forClass(GameRecord.class);
+		verify(repository).createRecord(recordCaptor.capture());
+		GameRecord capturedRecord=recordCaptor.getValue();
+		assertThat(capturedRecord.getScore()).isEqualTo(0);
+		assertThat(capturedRecord.getDate()).isToday();
+		assertThat(capturedRecord.getSetting()).isEqualTo(configuration);
 		verify(lobbyView).update();
 		verifyNoMoreInteractions(matchView);
+		verifyNoMoreInteractions(repository);
+		verifyNoMoreInteractions(lobbyView);
 	}
 
 	@Test
@@ -313,12 +340,15 @@ public class SnakeMatchPresenterImplTest {
 		map.setApple(new Point(5, 4));
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
+		presenter.setPlaying(true);
 		presenter.goDown(lobbyView, matchView);
-		assertThat(presenter.isPlaying()).isFalse();
+		assertThat(presenter.isPlaying()).isTrue();
 		assertThat(presenter.isSnakeBigger()).isTrue();
 		assertThat(presenter.getRawScore()).isEqualTo(1);
 		verify(matchView).update();
 		verifyNoMoreInteractions(matchView);
+		verifyNoInteractions(lobbyView);
+		verifyNoInteractions(repository);
 	}
 
 	@Test
@@ -329,12 +359,15 @@ public class SnakeMatchPresenterImplTest {
 		map.setSnakeHead(new Point(5, 5));
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
+		presenter.setPlaying(true);
 		presenter.goLeft(lobbyView, matchView);
-		assertThat(presenter.isPlaying()).isFalse();
+		assertThat(presenter.isPlaying()).isTrue();
 		assertThat(presenter.isSnakeBigger()).isFalse();
 		assertThat(presenter.getRawScore()).isZero();
 		verify(matchView).update();
 		verifyNoMoreInteractions(matchView);
+		verifyNoInteractions(lobbyView);
+		verifyNoInteractions(repository);
 	}
 
 	@Test
@@ -346,13 +379,22 @@ public class SnakeMatchPresenterImplTest {
 		map.setSnakeHead(new Point(5, 5));
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
+		presenter.setPlaying(true);
 		presenter.goLeft(lobbyView, matchView);
 		assertThat(presenter.isPlaying()).isFalse();
 		assertThat(presenter.isSnakeBigger()).isFalse();
 		assertThat(presenter.getRawScore()).isZero();
 		verify(matchView).update();
+		ArgumentCaptor<GameRecord> recordCaptor=ArgumentCaptor.forClass(GameRecord.class);
+		verify(repository).createRecord(recordCaptor.capture());
+		GameRecord capturedRecord=recordCaptor.getValue();
+		assertThat(capturedRecord.getScore()).isEqualTo(0);
+		assertThat(capturedRecord.getDate()).isToday();
+		assertThat(capturedRecord.getSetting()).isEqualTo(configuration);
 		verify(lobbyView).update();
 		verifyNoMoreInteractions(matchView);
+		verifyNoMoreInteractions(repository);
+		verifyNoMoreInteractions(lobbyView);
 	}
 
 	@Test
@@ -364,12 +406,15 @@ public class SnakeMatchPresenterImplTest {
 		map.setApple(new Point(4, 5));
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
+		presenter.setPlaying(true);
 		presenter.goLeft(lobbyView, matchView);
-		assertThat(presenter.isPlaying()).isFalse();
+		assertThat(presenter.isPlaying()).isTrue();
 		assertThat(presenter.isSnakeBigger()).isTrue();
 		assertThat(presenter.getRawScore()).isEqualTo(1);
 		verify(matchView).update();
 		verifyNoMoreInteractions(matchView);
+		verifyNoInteractions(lobbyView);
+		verifyNoInteractions(repository);
 	}
 
 	@Test
@@ -380,12 +425,15 @@ public class SnakeMatchPresenterImplTest {
 		map.setSnakeHead(new Point(5, 5));
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
+		presenter.setPlaying(true);
 		presenter.goRight(lobbyView, matchView);
-		assertThat(presenter.isPlaying()).isFalse();
+		assertThat(presenter.isPlaying()).isTrue();
 		assertThat(presenter.isSnakeBigger()).isFalse();
 		assertThat(presenter.getRawScore()).isZero();
 		verify(matchView).update();
 		verifyNoMoreInteractions(matchView);
+		verifyNoInteractions(lobbyView);
+		verifyNoInteractions(repository);
 	}
 
 	@Test
@@ -397,13 +445,22 @@ public class SnakeMatchPresenterImplTest {
 		map.setSnakeHead(new Point(5, 5));
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
+		presenter.setPlaying(true);
 		presenter.goRight(lobbyView, matchView);
 		assertThat(presenter.isPlaying()).isFalse();
 		assertThat(presenter.isSnakeBigger()).isFalse();
 		assertThat(presenter.getRawScore()).isZero();
 		verify(matchView).update();
+		ArgumentCaptor<GameRecord> recordCaptor=ArgumentCaptor.forClass(GameRecord.class);
+		verify(repository).createRecord(recordCaptor.capture());
+		GameRecord capturedRecord=recordCaptor.getValue();
+		assertThat(capturedRecord.getScore()).isEqualTo(0);
+		assertThat(capturedRecord.getDate()).isToday();
+		assertThat(capturedRecord.getSetting()).isEqualTo(configuration);
 		verify(lobbyView).update();
 		verifyNoMoreInteractions(matchView);
+		verifyNoMoreInteractions(repository);
+		verifyNoMoreInteractions(lobbyView);
 	}
 
 	@Test
@@ -415,12 +472,15 @@ public class SnakeMatchPresenterImplTest {
 		map.setApple(new Point(6, 5));
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
+		presenter.setPlaying(true);
 		presenter.goRight(lobbyView, matchView);
-		assertThat(presenter.isPlaying()).isFalse();
+		assertThat(presenter.isPlaying()).isTrue();
 		assertThat(presenter.isSnakeBigger()).isTrue();
 		assertThat(presenter.getRawScore()).isEqualTo(1);
 		verify(matchView).update();
 		verifyNoMoreInteractions(matchView);
+		verifyNoInteractions(repository);
+		verifyNoInteractions(lobbyView);
 	}
 
 	@Test
@@ -435,9 +495,20 @@ public class SnakeMatchPresenterImplTest {
 		map.setApple(new Point(0, 1));
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
-		presenter.setRawScore(3);
+		presenter.setRawScore(2);
 		presenter.goUp(lobbyView, matchView);
 		assertThat(presenter.isPlaying()).isFalse();
+		ArgumentCaptor<GameRecord> recordCaptor=ArgumentCaptor.forClass(GameRecord.class);
+		verify(repository).createRecord(recordCaptor.capture());
+		GameRecord capturedRecord=recordCaptor.getValue();
+		assertThat(capturedRecord.getScore()).isEqualTo(3);
+		assertThat(capturedRecord.getDate()).isToday();
+		assertThat(capturedRecord.getSetting()).isEqualTo(configuration);
+		verify(lobbyView).update();
+		verifyNoMoreInteractions(repository);
+		verifyNoMoreInteractions(lobbyView);
+		verify(matchView).update();
+		verifyNoMoreInteractions(matchView);
 	}
 
 	@Test
@@ -452,9 +523,20 @@ public class SnakeMatchPresenterImplTest {
 		map.setApple(new Point(0, 1));
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
-		presenter.setRawScore(2);
+		presenter.setRawScore(1);
 		presenter.goUp(lobbyView, matchView);
 		assertThat(presenter.isPlaying()).isFalse();
+		ArgumentCaptor<GameRecord> recordCaptor=ArgumentCaptor.forClass(GameRecord.class);
+		verify(repository).createRecord(recordCaptor.capture());
+		GameRecord capturedRecord=recordCaptor.getValue();
+		assertThat(capturedRecord.getScore()).isEqualTo(2);
+		assertThat(capturedRecord.getDate()).isToday();
+		assertThat(capturedRecord.getSetting()).isEqualTo(configuration);
+		verify(lobbyView).update();
+		verifyNoMoreInteractions(repository);
+		verifyNoMoreInteractions(lobbyView);
+		verify(matchView).update();
+		verifyNoMoreInteractions(matchView);
 	}
 
 	@Test
@@ -469,9 +551,20 @@ public class SnakeMatchPresenterImplTest {
 		map.setApple(new Point(0, 0));
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
-		presenter.setRawScore(3);
+		presenter.setRawScore(2);
 		presenter.goDown(lobbyView, matchView);
 		assertThat(presenter.isPlaying()).isFalse();
+		ArgumentCaptor<GameRecord> recordCaptor=ArgumentCaptor.forClass(GameRecord.class);
+		verify(repository).createRecord(recordCaptor.capture());
+		GameRecord capturedRecord=recordCaptor.getValue();
+		assertThat(capturedRecord.getScore()).isEqualTo(3);
+		assertThat(capturedRecord.getDate()).isToday();
+		assertThat(capturedRecord.getSetting()).isEqualTo(configuration);
+		verify(lobbyView).update();
+		verifyNoMoreInteractions(repository);
+		verifyNoMoreInteractions(lobbyView);
+		verify(matchView).update();
+		verifyNoMoreInteractions(matchView);
 	}
 
 	@Test
@@ -486,9 +579,20 @@ public class SnakeMatchPresenterImplTest {
 		map.setApple(new Point(0, 0));
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
-		presenter.setRawScore(2);
+		presenter.setRawScore(1);
 		presenter.goDown(lobbyView, matchView);
 		assertThat(presenter.isPlaying()).isFalse();
+		ArgumentCaptor<GameRecord> recordCaptor=ArgumentCaptor.forClass(GameRecord.class);
+		verify(repository).createRecord(recordCaptor.capture());
+		GameRecord capturedRecord=recordCaptor.getValue();
+		assertThat(capturedRecord.getScore()).isEqualTo(2);
+		assertThat(capturedRecord.getDate()).isToday();
+		assertThat(capturedRecord.getSetting()).isEqualTo(configuration);
+		verify(lobbyView).update();
+		verifyNoMoreInteractions(repository);
+		verifyNoMoreInteractions(lobbyView);
+		verify(matchView).update();
+		verifyNoMoreInteractions(matchView);
 	}
 
 	@Test
@@ -503,9 +607,20 @@ public class SnakeMatchPresenterImplTest {
 		map.setApple(new Point(0, 0));
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
-		presenter.setRawScore(3);
+		presenter.setRawScore(2);
 		presenter.goLeft(lobbyView, matchView);
 		assertThat(presenter.isPlaying()).isFalse();
+		ArgumentCaptor<GameRecord> recordCaptor=ArgumentCaptor.forClass(GameRecord.class);
+		verify(repository).createRecord(recordCaptor.capture());
+		GameRecord capturedRecord=recordCaptor.getValue();
+		assertThat(capturedRecord.getScore()).isEqualTo(3);
+		assertThat(capturedRecord.getDate()).isToday();
+		assertThat(capturedRecord.getSetting()).isEqualTo(configuration);
+		verify(lobbyView).update();
+		verifyNoMoreInteractions(repository);
+		verifyNoMoreInteractions(lobbyView);
+		verify(matchView).update();
+		verifyNoMoreInteractions(matchView);
 	}
 
 	@Test
@@ -520,9 +635,20 @@ public class SnakeMatchPresenterImplTest {
 		map.setApple(new Point(0, 0));
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
-		presenter.setRawScore(2);
+		presenter.setRawScore(1);
 		presenter.goLeft(lobbyView, matchView);
 		assertThat(presenter.isPlaying()).isFalse();
+		ArgumentCaptor<GameRecord> recordCaptor=ArgumentCaptor.forClass(GameRecord.class);
+		verify(repository).createRecord(recordCaptor.capture());
+		GameRecord capturedRecord=recordCaptor.getValue();
+		assertThat(capturedRecord.getScore()).isEqualTo(2);
+		assertThat(capturedRecord.getDate()).isToday();
+		assertThat(capturedRecord.getSetting()).isEqualTo(configuration);
+		verify(lobbyView).update();
+		verifyNoMoreInteractions(repository);
+		verifyNoMoreInteractions(lobbyView);
+		verify(matchView).update();
+		verifyNoMoreInteractions(matchView);
 	}
 
 	@Test
@@ -537,9 +663,20 @@ public class SnakeMatchPresenterImplTest {
 		map.setApple(new Point(1, 0));
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
-		presenter.setRawScore(3);
+		presenter.setRawScore(2);
 		presenter.goRight(lobbyView, matchView);
 		assertThat(presenter.isPlaying()).isFalse();
+		ArgumentCaptor<GameRecord> recordCaptor=ArgumentCaptor.forClass(GameRecord.class);
+		verify(repository).createRecord(recordCaptor.capture());
+		GameRecord capturedRecord=recordCaptor.getValue();
+		assertThat(capturedRecord.getScore()).isEqualTo(3);
+		assertThat(capturedRecord.getDate()).isToday();
+		assertThat(capturedRecord.getSetting()).isEqualTo(configuration);
+		verify(lobbyView).update();
+		verifyNoMoreInteractions(repository);
+		verifyNoMoreInteractions(lobbyView);
+		verify(matchView).update();
+		verifyNoMoreInteractions(matchView);
 	}
 
 	@Test
@@ -554,9 +691,21 @@ public class SnakeMatchPresenterImplTest {
 		map.setApple(new Point(1, 0));
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
-		presenter.setRawScore(2);
+		presenter.setRawScore(1);
 		presenter.goRight(lobbyView, matchView);
 		assertThat(presenter.isPlaying()).isFalse();
+		ArgumentCaptor<GameRecord> recordCaptor=ArgumentCaptor.forClass(GameRecord.class);
+		verify(repository).createRecord(recordCaptor.capture());
+		GameRecord capturedRecord=recordCaptor.getValue();
+		assertThat(capturedRecord.getScore()).isEqualTo(2);
+		assertThat(capturedRecord.getDate()).isToday();
+		assertThat(capturedRecord.getSetting()).isEqualTo(configuration);
+		verify(lobbyView).update();
+		verifyNoMoreInteractions(repository);
+		verifyNoMoreInteractions(lobbyView);
+		verify(matchView).update();
+		verifyNoMoreInteractions(matchView);
+		
 	}
 
 }

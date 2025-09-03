@@ -73,7 +73,7 @@ public class SnakeMatchPresenterImpl implements SnakeMatchPresenter {
 			if (map.moveSnake(teller, snakeBigger)) {
 				snakeBigger = true;
 				rawScore++;
-				if (map.getMapHeight() * map.getMapWidth() - configuration.getObstacleNumber() == rawScore) {
+				if (map.getMapHeight() * map.getMapWidth() - configuration.getObstacleNumber() - 1 == rawScore) {
 					matchEnded(globalView);
 				}
 			} else {
@@ -131,6 +131,11 @@ public class SnakeMatchPresenterImpl implements SnakeMatchPresenter {
 	@Generated
 	public boolean isPlaying() {
 		return playing;
+	}
+
+	@Generated
+	void setPlaying(boolean isPlaying) {
+		this.playing = isPlaying;
 	}
 
 	// for testing
