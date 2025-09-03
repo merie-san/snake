@@ -35,13 +35,15 @@ public class SnakeMatchPresenterImplTest {
 	SnakeRepository repository;
 	@InjectMocks
 	private SnakeMatchPresenterImpl presenter;
-	private SnakeView view;
+	private SnakeView matchView;
+	private SnakeView lobbyView;
 	private AutoCloseable closeable;
 
 	@Before
 	public void setup() {
 		closeable = MockitoAnnotations.openMocks(this);
-		view = mock(SnakeView.class);
+		matchView = mock(SnakeView.class);
+		lobbyView = mock(SnakeView.class);
 	}
 
 	@After
@@ -57,7 +59,9 @@ public class SnakeMatchPresenterImplTest {
 		when(poSupplier.generateApplePosition(isA(SnakeMap.class))).thenReturn(new Point(5, 5));
 		ArgumentCaptor<SnakeMap> mapCaptor1 = ArgumentCaptor.forClass(SnakeMap.class);
 		ArgumentCaptor<SnakeMap> mapCaptor2 = ArgumentCaptor.forClass(SnakeMap.class);
+		assertThat(presenter.isPlaying()).isFalse();
 		presenter.startMatch(configuration);
+		assertThat(presenter.isPlaying()).isTrue();
 		verify(obSupplier).generateObstacles(configuration);
 		verify(poSupplier).generateSnakeHeadPosition(mapCaptor1.capture());
 		verify(poSupplier).generateApplePosition(mapCaptor2.capture());
@@ -92,7 +96,9 @@ public class SnakeMatchPresenterImplTest {
 		when(poSupplier.generateApplePosition(isA(SnakeMap.class))).thenReturn(new Point(5, 5));
 		ArgumentCaptor<SnakeMap> mapCaptor1 = ArgumentCaptor.forClass(SnakeMap.class);
 		ArgumentCaptor<SnakeMap> mapCaptor2 = ArgumentCaptor.forClass(SnakeMap.class);
+		assertThat(presenter.isPlaying()).isFalse();
 		presenter.startMatch(configuration);
+		assertThat(presenter.isPlaying()).isTrue();
 		verify(obSupplier).generateObstacles(configuration);
 		verify(poSupplier).generateSnakeHeadPosition(mapCaptor1.capture());
 		verify(poSupplier).generateApplePosition(mapCaptor2.capture());
@@ -128,7 +134,9 @@ public class SnakeMatchPresenterImplTest {
 		when(poSupplier.generateApplePosition(isA(SnakeMap.class))).thenReturn(new Point(5, 5));
 		ArgumentCaptor<SnakeMap> mapCaptor1 = ArgumentCaptor.forClass(SnakeMap.class);
 		ArgumentCaptor<SnakeMap> mapCaptor2 = ArgumentCaptor.forClass(SnakeMap.class);
+		assertThat(presenter.isPlaying()).isFalse();
 		presenter.startMatch(configuration);
+		assertThat(presenter.isPlaying()).isTrue();
 		verify(obSupplier).generateObstacles(configuration);
 		verify(poSupplier).generateSnakeHeadPosition(mapCaptor1.capture());
 		verify(poSupplier).generateApplePosition(mapCaptor2.capture());
@@ -160,14 +168,15 @@ public class SnakeMatchPresenterImplTest {
 		presenter.setMap(SnakeMap.of(10, 10, obstacles));
 		presenter.setRawScore(10);
 		presenter.setConfiguration(setting);
-		presenter.endMatch(view);
+		presenter.endMatch(lobbyView);
 		ArgumentCaptor<GameRecord> recordCaptor = ArgumentCaptor.forClass(GameRecord.class);
-		verify(view).update();
-		verifyNoMoreInteractions(view);
+		verify(lobbyView).update();
+		verifyNoMoreInteractions(lobbyView);
 		verify(repository).createRecord(recordCaptor.capture());
 		verifyNoMoreInteractions(repository);
 		GameRecord newRecord = recordCaptor.getValue();
 		assertThat(newRecord.getDate()).isToday();
+		assertThat(presenter.isPlaying()).isFalse();
 		assertThat(newRecord.getSetting()).isEqualTo(setting);
 		assertThat(newRecord.getScore()).isEqualTo(10);
 	}
@@ -218,12 +227,12 @@ public class SnakeMatchPresenterImplTest {
 		map.setSnakeHead(new Point(5, 5));
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
-		presenter.goUp(view);
-		assertThat(presenter.isGameOver()).isFalse();
+		presenter.goUp(lobbyView, matchView);
+		assertThat(presenter.isPlaying()).isFalse();
 		assertThat(presenter.isSnakeBigger()).isFalse();
 		assertThat(presenter.getRawScore()).isZero();
-		verify(view).update();
-		verifyNoMoreInteractions(view);
+		verify(matchView).update();
+		verifyNoMoreInteractions(matchView);
 	}
 
 	@Test
@@ -235,12 +244,13 @@ public class SnakeMatchPresenterImplTest {
 		map.setSnakeHead(new Point(5, 5));
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
-		presenter.goUp(view);
-		assertThat(presenter.isGameOver()).isTrue();
+		presenter.goUp(lobbyView, matchView);
+		assertThat(presenter.isPlaying()).isFalse();
 		assertThat(presenter.isSnakeBigger()).isFalse();
 		assertThat(presenter.getRawScore()).isZero();
-		verify(view).update();
-		verifyNoMoreInteractions(view);
+		verify(matchView).update();
+		verify(lobbyView).update();
+		verifyNoMoreInteractions(matchView);
 	}
 
 	@Test
@@ -252,12 +262,12 @@ public class SnakeMatchPresenterImplTest {
 		map.setApple(new Point(5, 6));
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
-		presenter.goUp(view);
-		assertThat(presenter.isGameOver()).isFalse();
+		presenter.goUp(lobbyView, matchView);
+		assertThat(presenter.isPlaying()).isFalse();
 		assertThat(presenter.isSnakeBigger()).isTrue();
 		assertThat(presenter.getRawScore()).isEqualTo(1);
-		verify(view).update();
-		verifyNoMoreInteractions(view);
+		verify(matchView).update();
+		verifyNoMoreInteractions(matchView);
 	}
 
 	@Test
@@ -268,12 +278,12 @@ public class SnakeMatchPresenterImplTest {
 		map.setSnakeHead(new Point(5, 5));
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
-		presenter.goDown(view);
-		assertThat(presenter.isGameOver()).isFalse();
+		presenter.goDown(lobbyView, matchView);
+		assertThat(presenter.isPlaying()).isFalse();
 		assertThat(presenter.isSnakeBigger()).isFalse();
 		assertThat(presenter.getRawScore()).isZero();
-		verify(view).update();
-		verifyNoMoreInteractions(view);
+		verify(matchView).update();
+		verifyNoMoreInteractions(matchView);
 	}
 
 	@Test
@@ -285,12 +295,13 @@ public class SnakeMatchPresenterImplTest {
 		map.setSnakeHead(new Point(5, 5));
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
-		presenter.goDown(view);
-		assertThat(presenter.isGameOver()).isTrue();
+		presenter.goDown(lobbyView, matchView);
+		assertThat(presenter.isPlaying()).isFalse();
 		assertThat(presenter.isSnakeBigger()).isFalse();
 		assertThat(presenter.getRawScore()).isZero();
-		verify(view).update();
-		verifyNoMoreInteractions(view);
+		verify(matchView).update();
+		verify(lobbyView).update();
+		verifyNoMoreInteractions(matchView);
 	}
 
 	@Test
@@ -302,12 +313,12 @@ public class SnakeMatchPresenterImplTest {
 		map.setApple(new Point(5, 4));
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
-		presenter.goDown(view);
-		assertThat(presenter.isGameOver()).isFalse();
+		presenter.goDown(lobbyView, matchView);
+		assertThat(presenter.isPlaying()).isFalse();
 		assertThat(presenter.isSnakeBigger()).isTrue();
 		assertThat(presenter.getRawScore()).isEqualTo(1);
-		verify(view).update();
-		verifyNoMoreInteractions(view);
+		verify(matchView).update();
+		verifyNoMoreInteractions(matchView);
 	}
 
 	@Test
@@ -318,12 +329,12 @@ public class SnakeMatchPresenterImplTest {
 		map.setSnakeHead(new Point(5, 5));
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
-		presenter.goLeft(view);
-		assertThat(presenter.isGameOver()).isFalse();
+		presenter.goLeft(lobbyView, matchView);
+		assertThat(presenter.isPlaying()).isFalse();
 		assertThat(presenter.isSnakeBigger()).isFalse();
 		assertThat(presenter.getRawScore()).isZero();
-		verify(view).update();
-		verifyNoMoreInteractions(view);
+		verify(matchView).update();
+		verifyNoMoreInteractions(matchView);
 	}
 
 	@Test
@@ -335,12 +346,13 @@ public class SnakeMatchPresenterImplTest {
 		map.setSnakeHead(new Point(5, 5));
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
-		presenter.goLeft(view);
-		assertThat(presenter.isGameOver()).isTrue();
+		presenter.goLeft(lobbyView, matchView);
+		assertThat(presenter.isPlaying()).isFalse();
 		assertThat(presenter.isSnakeBigger()).isFalse();
 		assertThat(presenter.getRawScore()).isZero();
-		verify(view).update();
-		verifyNoMoreInteractions(view);
+		verify(matchView).update();
+		verify(lobbyView).update();
+		verifyNoMoreInteractions(matchView);
 	}
 
 	@Test
@@ -352,12 +364,12 @@ public class SnakeMatchPresenterImplTest {
 		map.setApple(new Point(4, 5));
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
-		presenter.goLeft(view);
-		assertThat(presenter.isGameOver()).isFalse();
+		presenter.goLeft(lobbyView, matchView);
+		assertThat(presenter.isPlaying()).isFalse();
 		assertThat(presenter.isSnakeBigger()).isTrue();
 		assertThat(presenter.getRawScore()).isEqualTo(1);
-		verify(view).update();
-		verifyNoMoreInteractions(view);
+		verify(matchView).update();
+		verifyNoMoreInteractions(matchView);
 	}
 
 	@Test
@@ -368,12 +380,12 @@ public class SnakeMatchPresenterImplTest {
 		map.setSnakeHead(new Point(5, 5));
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
-		presenter.goRight(view);
-		assertThat(presenter.isGameOver()).isFalse();
+		presenter.goRight(lobbyView, matchView);
+		assertThat(presenter.isPlaying()).isFalse();
 		assertThat(presenter.isSnakeBigger()).isFalse();
 		assertThat(presenter.getRawScore()).isZero();
-		verify(view).update();
-		verifyNoMoreInteractions(view);
+		verify(matchView).update();
+		verifyNoMoreInteractions(matchView);
 	}
 
 	@Test
@@ -385,12 +397,13 @@ public class SnakeMatchPresenterImplTest {
 		map.setSnakeHead(new Point(5, 5));
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
-		presenter.goRight(view);
-		assertThat(presenter.isGameOver()).isTrue();
+		presenter.goRight(lobbyView, matchView);
+		assertThat(presenter.isPlaying()).isFalse();
 		assertThat(presenter.isSnakeBigger()).isFalse();
 		assertThat(presenter.getRawScore()).isZero();
-		verify(view).update();
-		verifyNoMoreInteractions(view);
+		verify(matchView).update();
+		verify(lobbyView).update();
+		verifyNoMoreInteractions(matchView);
 	}
 
 	@Test
@@ -402,12 +415,12 @@ public class SnakeMatchPresenterImplTest {
 		map.setApple(new Point(6, 5));
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
-		presenter.goRight(view);
-		assertThat(presenter.isGameOver()).isFalse();
+		presenter.goRight(lobbyView, matchView);
+		assertThat(presenter.isPlaying()).isFalse();
 		assertThat(presenter.isSnakeBigger()).isTrue();
 		assertThat(presenter.getRawScore()).isEqualTo(1);
-		verify(view).update();
-		verifyNoMoreInteractions(view);
+		verify(matchView).update();
+		verifyNoMoreInteractions(matchView);
 	}
 
 	@Test
@@ -423,10 +436,10 @@ public class SnakeMatchPresenterImplTest {
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
 		presenter.setRawScore(3);
-		presenter.goUp(view);
-		assertThat(presenter.isGameOver()).isTrue();
+		presenter.goUp(lobbyView, matchView);
+		assertThat(presenter.isPlaying()).isFalse();
 	}
-	
+
 	@Test
 	public void testGoUpBeatGameWithObstacles() {
 		GameSetting configuration = new GameSetting("1", 2, 2, 1);
@@ -440,10 +453,10 @@ public class SnakeMatchPresenterImplTest {
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
 		presenter.setRawScore(2);
-		presenter.goUp(view);
-		assertThat(presenter.isGameOver()).isTrue();
+		presenter.goUp(lobbyView, matchView);
+		assertThat(presenter.isPlaying()).isFalse();
 	}
-	
+
 	@Test
 	public void testGoDownBeatGameNoObstacles() {
 		GameSetting configuration = new GameSetting("1", 2, 2, 0);
@@ -457,10 +470,10 @@ public class SnakeMatchPresenterImplTest {
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
 		presenter.setRawScore(3);
-		presenter.goDown(view);
-		assertThat(presenter.isGameOver()).isTrue();
+		presenter.goDown(lobbyView, matchView);
+		assertThat(presenter.isPlaying()).isFalse();
 	}
-	
+
 	@Test
 	public void testGoDownBeatGameWithObstacles() {
 		GameSetting configuration = new GameSetting("1", 2, 2, 1);
@@ -474,10 +487,10 @@ public class SnakeMatchPresenterImplTest {
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
 		presenter.setRawScore(2);
-		presenter.goDown(view);
-		assertThat(presenter.isGameOver()).isTrue();
+		presenter.goDown(lobbyView, matchView);
+		assertThat(presenter.isPlaying()).isFalse();
 	}
-	
+
 	@Test
 	public void testGoLeftBeatGameNoObstacles() {
 		GameSetting configuration = new GameSetting("1", 2, 2, 0);
@@ -491,10 +504,10 @@ public class SnakeMatchPresenterImplTest {
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
 		presenter.setRawScore(3);
-		presenter.goLeft(view);
-		assertThat(presenter.isGameOver()).isTrue();
+		presenter.goLeft(lobbyView, matchView);
+		assertThat(presenter.isPlaying()).isFalse();
 	}
-	
+
 	@Test
 	public void testGoLeftBeatGameWithObstacles() {
 		GameSetting configuration = new GameSetting("1", 2, 2, 1);
@@ -508,10 +521,10 @@ public class SnakeMatchPresenterImplTest {
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
 		presenter.setRawScore(2);
-		presenter.goLeft(view);
-		assertThat(presenter.isGameOver()).isTrue();
+		presenter.goLeft(lobbyView, matchView);
+		assertThat(presenter.isPlaying()).isFalse();
 	}
-	
+
 	@Test
 	public void testGoRightBeatGameNoObstacles() {
 		GameSetting configuration = new GameSetting("1", 2, 2, 0);
@@ -525,10 +538,10 @@ public class SnakeMatchPresenterImplTest {
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
 		presenter.setRawScore(3);
-		presenter.goRight(view);
-		assertThat(presenter.isGameOver()).isTrue();
+		presenter.goRight(lobbyView, matchView);
+		assertThat(presenter.isPlaying()).isFalse();
 	}
-	
+
 	@Test
 	public void testGoRightBeatGameWithObstacles() {
 		GameSetting configuration = new GameSetting("1", 2, 2, 1);
@@ -542,8 +555,8 @@ public class SnakeMatchPresenterImplTest {
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
 		presenter.setRawScore(2);
-		presenter.goRight(view);
-		assertThat(presenter.isGameOver()).isTrue();
+		presenter.goRight(lobbyView, matchView);
+		assertThat(presenter.isPlaying()).isFalse();
 	}
-	
+
 }

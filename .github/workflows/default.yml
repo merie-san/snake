@@ -35,7 +35,7 @@ jobs:
             restore-keys: ${{matrix.os}}-m2&sonar-
       -  name: Build with Maven and SonarCloud
          if: ${{always()}}
-         run: mvn verify -Pcode-coverage -Pmutation-testing coveralls:report sonar:sonar ${{matrix.additional-maven-properties}}
+         run: xvfb-run mvn verify -Pcode-coverage -Pmutation-testing coveralls:report sonar:sonar ${{matrix.additional-maven-properties}}
          working-directory: snake
          env:
             SONAR_TOKEN: ${{secrets.SONAR_TOKEN}}

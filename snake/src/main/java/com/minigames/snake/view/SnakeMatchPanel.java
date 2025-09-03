@@ -8,7 +8,11 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class SnakeMatchPanel extends JPanel implements SnakeWindowPanel {
+import com.minigames.snake.model.GameSetting;
+import com.minigames.snake.model.Generated;
+import com.minigames.snake.presenter.SnakeMatchPresenter;
+
+public class SnakeMatchPanel extends JPanel {
 
 	public static final String HISTORY_BUTTON_TEXT_M = "History";
 	public static final String HISTORY_BUTTON_NAME_M = "historyButton";
@@ -36,15 +40,17 @@ public class SnakeMatchPanel extends JPanel implements SnakeWindowPanel {
 	private JLabel messageLabel;
 	private JButton startButton;
 	private JButton quitButton;
+	private transient GameSetting currentSetting;
 
-	public SnakeMatchPanel(JPanel parentCards, String cardName) {
+	public SnakeMatchPanel(SnakeWindowView rootPanel, JPanel parentCards, String cardName,
+			SnakeMatchPresenter presenter) {
 		this.parentCards = parentCards;
 		parentCards.add(this, cardName);
 		this.setName(cardName);
 		this.setLayout(new GridBagLayout());
+		matchCanvas = new SnakeCanvas(rootPanel, presenter, this);
 	}
 
-	@Override
 	public void initializeComponents() {
 		createComponents();
 		configureComponents();
@@ -76,15 +82,14 @@ public class SnakeMatchPanel extends JPanel implements SnakeWindowPanel {
 		ComponentInitializer.initializeButton(settingsButtonM, SETTINGS_BUTTON_NAME_M, true);
 		ComponentInitializer.initializeButton(startButton, START_BUTTON_NAME, false);
 		ComponentInitializer.initializeButton(quitButton, QUIT_BUTTON_NAME, false);
-		ComponentInitializer.initializeLabel(scoreLabel, SCORE_LABEL_NAME, null);
-		ComponentInitializer.initializeLabel(messageLabel, MESSAGE_LABEL_NAME, null);
+		ComponentInitializer.initializeLabel(scoreLabel, SCORE_LABEL_NAME, null, null);
+		ComponentInitializer.initializeLabel(messageLabel, MESSAGE_LABEL_NAME, null, null);
 		ComponentInitializer.initializePanel(matchCanvas, MATCH_CANVAS_NAME, true);
 	}
 
 	private void createComponents() {
 		historyButtonM = new JButton(HISTORY_BUTTON_TEXT_M);
 		settingsButtonM = new JButton(SETTINGS_BUTTON_TEXT_M);
-		matchCanvas = new SnakeCanvas(15);
 		scoreLabel = new JLabel(SCORE_LABEL_TEXT + "0");
 		messageLabel = new JLabel(MESSAGE_LABEL_TEXT);
 		startButton = new JButton(START_BUTTON_TEXT);
@@ -94,6 +99,39 @@ public class SnakeMatchPanel extends JPanel implements SnakeWindowPanel {
 	private void initializeListeners() {
 		historyButtonM.addMouseListener(new PanelSwitchButtonListener(parentCards, SnakeWindowView.HISTORY_PANEL));
 		settingsButtonM.addMouseListener(new PanelSwitchButtonListener(parentCards, SnakeWindowView.SETTINGS_PANEL));
+		startButton.addMouseListener(
+				new MatchButtonsListener(historyButtonM, settingsButtonM, startButton, quitButton, true, matchCanvas));
+		quitButton.addMouseListener(
+				new MatchButtonsListener(historyButtonM, settingsButtonM, startButton, quitButton, false, matchCanvas));
+	}
+
+	public void refresh(GameSetting setting) {
+		if (setting != null) {
+			currentSetting = setting;
+			matchCanvas.newSetting(currentSetting);
+		}
+		historyButtonM.setEnabled(true);
+		settingsButtonM.setEnabled(true);
+		startButton.setEnabled(true);
+		quitButton.setEnabled(false);
+
+	}
+
+	public void updateMatchMessage(int score, String message) {
+		scoreLabel.setText(SCORE_LABEL_TEXT + score);
+		messageLabel.setText(message);
+	}
+
+	// for testing
+	@Generated
+	GameSetting getCurrentSetting() {
+		return currentSetting;
+	}
+
+	// for testing
+	@Generated
+	SnakeCanvas getCanvas() {
+		return matchCanvas;
 	}
 
 }

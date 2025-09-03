@@ -4,7 +4,7 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.text.NumberFormat;
+import java.util.Collection;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -17,8 +17,9 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 
 import com.minigames.snake.model.GameSetting;
+import com.minigames.snake.model.Generated;
 
-public class SnakeSettingsPanel extends JPanel implements SnakeWindowPanel {
+public class SnakeSettingsPanel extends JPanel {
 
 	public static final String HISTORY_BUTTON_TEXT_S = "History";
 	public static final String HISTORY_BUTTON_NAME_S = "historyButton";
@@ -45,11 +46,11 @@ public class SnakeSettingsPanel extends JPanel implements SnakeWindowPanel {
 	public static final String OBSTACLES_LABEL_NAME = "obstaclesLabel";
 	public static final String NAME_TEXTBOX_TEXT = "New setting";
 	public static final String NAME_TEXTBOX_NAME = "nameTextBox";
-	public static final int WIDTH_TEXTBOX_VALUE = 10;
+	public static final int WIDTH_TEXTBOX_VALUE = 5;
 	public static final String WIDTH_TEXTBOX_NAME = "widthTextBox";
-	public static final int HEIGHT_TEXTBOX_VALUE = 10;
+	public static final int HEIGHT_TEXTBOX_VALUE = 5;
 	public static final String HEIGHT_TEXTBOX_NAME = "heightTextBox";
-	public static final int OBSTACLES_TEXTBOX_VALUE = 2;
+	public static final int OBSTACLES_TEXTBOX_VALUE = 5;
 	public static final String OBSTACLES_TEXTBOX_NAME = "obstaclesTextBox";
 	public static final String SUBMIT_BUTTON_TEXT = "Submit";
 	public static final String SUBMIT_BUTTON_NAME = "submitButton";
@@ -74,15 +75,17 @@ public class SnakeSettingsPanel extends JPanel implements SnakeWindowPanel {
 	private JFormattedTextField heightTextBox;
 	private JFormattedTextField obstaclesTextBox;
 	private JButton submitButton;
+	private DefaultListModel<GameSetting> listModel;
+	private SnakeWindowView parentView;
 
-	public SnakeSettingsPanel(JPanel parentCards, String cardName) {
+	public SnakeSettingsPanel(SnakeWindowView parentView, JPanel parentCards, String cardName) {
+		this.parentView = parentView;
 		this.parentCards = parentCards;
 		parentCards.add(this, cardName);
 		this.setName(cardName);
 		this.setLayout(new GridBagLayout());
 	}
 
-	@Override
 	public void initializeComponents() {
 		createComponents();
 		configureComponents();
@@ -99,25 +102,26 @@ public class SnakeSettingsPanel extends JPanel implements SnakeWindowPanel {
 		ComponentInitializer.initializeButton(deleteSettingButton, DELETE_SETTING_BUTTON_NAME, false);
 		ComponentInitializer.initializeTextField(newNameTextBox, NEW_NAME_TEXTBOX_NAME, true, false, 10);
 		ComponentInitializer.initializeButton(renameButton, RENAME_BUTTON_NAME, false);
-		ComponentInitializer.initializeLabel(createSettingLabel, CREATE_SETTING_LABEL_NAME, null);
-		ComponentInitializer.initializeLabel(nameLabel, NAME_LABEL_NAME, null);
-		ComponentInitializer.initializeLabel(widthLabel, WIDTH_LABEL_NAME, null);
-		ComponentInitializer.initializeLabel(heightLabel, HEIGHT_LABEL_NAME, null);
-		ComponentInitializer.initializeLabel(obstaclesLabel, OBSTACLES_LABEL_NAME, null);
+		ComponentInitializer.initializeLabel(createSettingLabel, CREATE_SETTING_LABEL_NAME, null, null);
+		ComponentInitializer.initializeLabel(nameLabel, NAME_LABEL_NAME, null, nameTextBox);
+		ComponentInitializer.initializeLabel(widthLabel, WIDTH_LABEL_NAME, null, widthTextBox);
+		ComponentInitializer.initializeLabel(heightLabel, HEIGHT_LABEL_NAME, null, heightTextBox);
+		ComponentInitializer.initializeLabel(obstaclesLabel, OBSTACLES_LABEL_NAME, null, obstaclesTextBox);
 		ComponentInitializer.initializeTextField(nameTextBox, NAME_TEXTBOX_NAME, true, true, 10);
 		ComponentInitializer.initializeFormattedTextField(obstaclesTextBox, OBSTACLES_TEXTBOX_NAME,
-				OBSTACLES_TEXTBOX_VALUE, true, true, 5);
+				OBSTACLES_TEXTBOX_VALUE, true, 5, ComponentInitializer.createIntFormatter());
 		ComponentInitializer.initializeFormattedTextField(widthTextBox, WIDTH_TEXTBOX_NAME, WIDTH_TEXTBOX_VALUE, true,
-				true, 5);
+				5, ComponentInitializer.createIntFormatter());
 		ComponentInitializer.initializeFormattedTextField(heightTextBox, HEIGHT_TEXTBOX_NAME, HEIGHT_TEXTBOX_VALUE,
-				true, true, 5);
+				true, 5, ComponentInitializer.createIntFormatter());
 		ComponentInitializer.initializeButton(submitButton, SUBMIT_BUTTON_NAME, true);
 	}
 
 	private void createComponents() {
 		historyButtonS = new JButton(HISTORY_BUTTON_TEXT_S);
 		matchButtonS = new JButton(MATCH_BUTTON_TEXT_S);
-		settingsList = new JList<>(new DefaultListModel<>());
+		listModel = new DefaultListModel<>();
+		settingsList = new JList<>(listModel);
 		useSettingButton = new JButton(USE_SETTING_BUTTON_TEXT);
 		deleteSettingButton = new JButton(DELETE_SETTING_BUTTON_TEXT);
 		newNameTextBox = new JTextField(NEW_NAME_TEXTBOX_TEXT);
@@ -128,9 +132,9 @@ public class SnakeSettingsPanel extends JPanel implements SnakeWindowPanel {
 		heightLabel = new JLabel(HEIGHT_LABEL_TEXT);
 		obstaclesLabel = new JLabel(OBSTACLES_LABEL_TEXT);
 		nameTextBox = new JTextField(NAME_TEXTBOX_TEXT);
-		widthTextBox = new JFormattedTextField(NumberFormat.getIntegerInstance());
-		heightTextBox = new JFormattedTextField(NumberFormat.getIntegerInstance());
-		obstaclesTextBox = new JFormattedTextField(NumberFormat.getIntegerInstance());
+		widthTextBox = new JFormattedTextField();
+		heightTextBox = new JFormattedTextField();
+		obstaclesTextBox = new JFormattedTextField();
 		submitButton = new JButton(SUBMIT_BUTTON_TEXT);
 	}
 
@@ -174,6 +178,26 @@ public class SnakeSettingsPanel extends JPanel implements SnakeWindowPanel {
 	private void initializeListeners() {
 		historyButtonS.addMouseListener(new PanelSwitchButtonListener(parentCards, SnakeWindowView.HISTORY_PANEL));
 		matchButtonS.addMouseListener(new PanelSwitchButtonListener(parentCards, SnakeWindowView.MATCH_PANEL));
+		settingsList.addListSelectionListener(
+				new PanelListSelectionButtonListener(renameButton, useSettingButton, deleteSettingButton));
+		settingsList.addListSelectionListener(new PanelListSelectionTextBoxListener(newNameTextBox, settingsList));
+		useSettingButton.addMouseListener(new UseSettingButtonListener(parentView, settingsList));
+		deleteSettingButton.addMouseListener(new DeleteSettingButtonListener(settingsList, parentView));
+		renameButton.addMouseListener(new RenameSettingButtonListener(parentView, newNameTextBox, settingsList));
+		submitButton.addMouseListener(new SubmitSettingButtonListener(parentView, nameTextBox, widthTextBox,
+				heightTextBox, obstaclesTextBox));
+	}
+
+	public void refresh(Collection<GameSetting> newSettingList) {
+		DefaultListModel<GameSetting> model = (DefaultListModel<GameSetting>) settingsList.getModel();
+		model.clear();
+		model.addAll(newSettingList);
+	}
+
+	// for tests
+	@Generated
+	DefaultListModel<GameSetting> getListModel() {
+		return listModel;
 	}
 
 }

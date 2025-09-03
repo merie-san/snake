@@ -17,7 +17,7 @@ public class SnakeMatchPresenterImpl implements SnakeMatchPresenter {
 	private ObstaclesSupplier obstaclesSupplier;
 	private PositionSupplier positionSupplier;
 	private int rawScore;
-	private boolean gameOver;
+	private boolean playing = false;
 	private boolean snakeBigger;
 	private GameSetting configuration;
 	private SnakeRepository repository;
@@ -37,50 +37,58 @@ public class SnakeMatchPresenterImpl implements SnakeMatchPresenter {
 		map.setSnakeHead(positionSupplier.generateSnakeHeadPosition(map));
 		map.setApple(positionSupplier.generateApplePosition(map));
 		snakeBigger = false;
+		playing = true;
 		rawScore = 0;
 	}
 
 	@Override
-	public void endMatch(SnakeView view) {
+	public void endMatch(SnakeView globalView) {
 		repository.createRecord(ModelFactory.gameRecord(currentScore(), LocalDate.now(), configuration));
-		view.update();
+		playing = false;
+		globalView.update();
 	}
 
 	@Override
-	public void goUp(SnakeView view) {
-		goDirection(view, TellerCatalog.UP);
+	public void goUp(SnakeView globalView, SnakeView matchView) {
+		goDirection(globalView, matchView, TellerCatalog.UP);
 	}
 
 	@Override
-	public void goDown(SnakeView view) {
-		goDirection(view, TellerCatalog.DOWN);
+	public void goDown(SnakeView globalView, SnakeView matchView) {
+		goDirection(globalView, matchView, TellerCatalog.DOWN);
 	}
 
 	@Override
-	public void goRight(SnakeView view) {
-		goDirection(view, TellerCatalog.RIGHT);
+	public void goRight(SnakeView globalView, SnakeView matchView) {
+		goDirection(globalView, matchView, TellerCatalog.RIGHT);
 	}
 
 	@Override
-	public void goLeft(SnakeView view) {
-		goDirection(view, TellerCatalog.LEFT);
+	public void goLeft(SnakeView globalView, SnakeView matchView) {
+		goDirection(globalView, matchView, TellerCatalog.LEFT);
 	}
 
-	private void goDirection(SnakeView view, PositionTeller teller) {
-		if (map.checkFree(teller)) {
+	private void goDirection(SnakeView globalView, SnakeView matchView, PositionTeller teller) {
+		if (map.checkFree(teller, snakeBigger)) {
 			if (map.moveSnake(teller, snakeBigger)) {
 				snakeBigger = true;
 				rawScore++;
 				if (map.getMapHeight() * map.getMapWidth() - configuration.getObstacleNumber() == rawScore) {
-					gameOver = true;
+					matchEnded(globalView);
 				}
 			} else {
 				snakeBigger = false;
 			}
 		} else {
-			gameOver = true;
+			matchEnded(globalView);
 		}
-		view.update();
+		matchView.update();
+	}
+
+	private void matchEnded(SnakeView globalView) {
+		playing = false;
+		repository.createRecord(ModelFactory.gameRecord(currentScore(), LocalDate.now(), configuration));
+		globalView.update();
 	}
 
 	@Override
@@ -121,8 +129,8 @@ public class SnakeMatchPresenterImpl implements SnakeMatchPresenter {
 
 	@Override
 	@Generated
-	public boolean isGameOver() {
-		return gameOver;
+	public boolean isPlaying() {
+		return playing;
 	}
 
 	// for testing

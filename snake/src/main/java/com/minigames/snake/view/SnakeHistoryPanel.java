@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.Collection;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -15,8 +16,9 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 
 import com.minigames.snake.model.GameRecord;
+import com.minigames.snake.model.Generated;
 
-public class SnakeHistoryPanel extends JPanel implements SnakeWindowPanel {
+public class SnakeHistoryPanel extends JPanel {
 
 	public static final String SETTINGS_BUTTON_TEXT_H = "Settings";
 	public static final String SETTINGS_BUTTON_NAME_H = "settingsButton";
@@ -40,15 +42,17 @@ public class SnakeHistoryPanel extends JPanel implements SnakeWindowPanel {
 	private JList<GameRecord> historyList;
 	private JLabel highScoreLabel;
 	private JButton deleteSelectedButton;
+	private DefaultListModel<GameRecord> listModel;
+	private SnakeWindowView parentview;
 
-	public SnakeHistoryPanel(JPanel parentCards, String cardName) {
+	public SnakeHistoryPanel(SnakeWindowView parentview, JPanel parentCards, String cardName) {
+		this.parentview = parentview;
 		this.parentCards = parentCards;
 		parentCards.add(this, cardName);
 		this.setName(cardName);
 		this.setLayout(new GridBagLayout());
 	}
 
-	@Override
 	public void initializeComponents() {
 		createComponents();
 		configureComponents();
@@ -60,9 +64,9 @@ public class SnakeHistoryPanel extends JPanel implements SnakeWindowPanel {
 		ComponentInitializer.initializeButton(settingsButtonH, SETTINGS_BUTTON_NAME_H, true);
 		ComponentInitializer.initializeButton(matchButtonH, MATCH_BUTTON_NAME_H, true);
 		scroller = ComponentInitializer.initializeList(historyList, HISTORY_LIST_NAME,
-				ListSelectionModel.MULTIPLE_INTERVAL_SELECTION, 12, new Dimension(400, 200));
+				ListSelectionModel.SINGLE_SELECTION, 12, new Dimension(400, 200));
 		ComponentInitializer.initializeLabel(highScoreLabel, HIGH_SCORE_LABEL_NAME,
-				new Font("New times roman", Font.PLAIN, 12));
+				new Font("New times roman", Font.PLAIN, 12), null);
 		ComponentInitializer.initializeButton(deleteAllButton, DELETE_ALL_BUTTON_NAME, true);
 		ComponentInitializer.initializeButton(deleteSelectedButton, DELETE_SELECTED_NAME, false);
 	}
@@ -70,7 +74,8 @@ public class SnakeHistoryPanel extends JPanel implements SnakeWindowPanel {
 	private void createComponents() {
 		settingsButtonH = new JButton(SETTINGS_BUTTON_TEXT_H);
 		matchButtonH = new JButton(MATCH_BUTTON_TEXT_H);
-		historyList = new JList<>(new DefaultListModel<>());
+		listModel = new DefaultListModel<>();
+		historyList = new JList<>(listModel);
 		highScoreLabel = new JLabel(HIGH_SCORE_LABEL_TEXT + "0");
 		deleteAllButton = new JButton(DELETE_ALL_BUTTON_TEXT);
 		deleteSelectedButton = new JButton(DELETE_SELECTED_TEXT);
@@ -94,6 +99,22 @@ public class SnakeHistoryPanel extends JPanel implements SnakeWindowPanel {
 	private void initializeListeners() {
 		settingsButtonH.addMouseListener(new PanelSwitchButtonListener(parentCards, SnakeWindowView.SETTINGS_PANEL));
 		matchButtonH.addMouseListener(new PanelSwitchButtonListener(parentCards, SnakeWindowView.MATCH_PANEL));
+		historyList.addListSelectionListener(new PanelListSelectionButtonListener(deleteSelectedButton));
+		deleteAllButton.addMouseListener(new DeleteAllRecordButtonListener(parentview));
+		deleteSelectedButton.addMouseListener(new DeleteRecordButtonListener(historyList, parentview));
+	}
+
+	public void refresh(Collection<GameRecord> newRecordList) {
+		listModel.clear();
+		listModel.addAll(newRecordList);
+		highScoreLabel.setText(HIGH_SCORE_LABEL_TEXT
+				+ Integer.toString(newRecordList.stream().map(GameRecord::getScore).max((x, y) -> x - y).orElse(0)));
+	}
+
+	// for testing
+	@Generated
+	public DefaultListModel<GameRecord> getListModel() {
+		return listModel;
 	}
 
 }

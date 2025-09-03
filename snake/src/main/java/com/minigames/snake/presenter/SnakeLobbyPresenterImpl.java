@@ -27,7 +27,7 @@ public class SnakeLobbyPresenterImpl implements SnakeLobbyPresenter {
 	}
 
 	@Override
-	public void saveConfiguration(int height, int width, int obstacleN, String name, SnakeView view) {
+	public void saveConfiguration(int width, int height, int obstacleN, String name, SnakeView view) {
 		if (name == null) {
 			throw new IllegalArgumentException("name cannot be null");
 		}

@@ -3,14 +3,12 @@ package com.minigames.snake.view;
 import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class SnakeWelcomePanel extends JPanel implements SnakeWindowPanel {
+public class SnakeWelcomePanel extends JPanel {
 
 	public static final String WELCOME_LABEL_TEXT = "Turn-based Snake";
 	public static final String WELCOME_LABEL_NAME = "welcomeLabel";
@@ -37,7 +35,6 @@ public class SnakeWelcomePanel extends JPanel implements SnakeWindowPanel {
 		this.setLayout(new GridBagLayout());
 	}
 
-	@Override
 	public void initializeComponents() {
 		createComponents();
 		configureComponents();
@@ -48,7 +45,7 @@ public class SnakeWelcomePanel extends JPanel implements SnakeWindowPanel {
 
 	private void configureComponents() {
 		ComponentInitializer.initializeLabel(welcomeLabel, WELCOME_LABEL_NAME,
-				new Font("New times roman", Font.PLAIN, 28));
+				new Font("New times roman", Font.PLAIN, 28), null);
 		ComponentInitializer.initializeButton(historyButtonW, HISTORY_BUTTON_NAME_W, true);
 		ComponentInitializer.initializeButton(settingsButtonW, SETTINGS_BUTTON_NAME_W, true);
 		ComponentInitializer.initializeButton(matchButtonW, MATCH_BUTTON_NAME_W, true);

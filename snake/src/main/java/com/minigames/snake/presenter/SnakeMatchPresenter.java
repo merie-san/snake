@@ -10,7 +10,7 @@ public interface SnakeMatchPresenter {
 
 	void startMatch(GameSetting configuration);
 
-	void endMatch(SnakeView view);
+	void endMatch(SnakeView globalView);
 
 	int currentScore();
 
@@ -24,14 +24,14 @@ public interface SnakeMatchPresenter {
 
 	Point getApple();
 
-	void goUp(SnakeView view);
+	void goUp(SnakeView globalView, SnakeView matchView);
 
-	void goDown(SnakeView view);
+	void goDown(SnakeView globalView, SnakeView matchView);
 
-	void goRight(SnakeView view);
+	void goRight(SnakeView globalView, SnakeView matchView);
 
-	void goLeft(SnakeView view);
-	
-	boolean isGameOver();
+	void goLeft(SnakeView globalView, SnakeView matchView);
+
+	boolean isPlaying();
 
 }
