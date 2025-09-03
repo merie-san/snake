@@ -24,6 +24,7 @@
 			${project.build.directory}/surefire-reports,
 			${project.build.directory}/failsafe-reports
 		</sonar.junit.reportPaths>
+		<argLine>--add-opens java.base/java.util=ALL-UNNAMED</argLine>
 	</properties>
 
 	<dependencyManagement>
@@ -144,9 +145,6 @@
 				<plugin>
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>3.3.0</version>
-					<configuration>
-						<argLine>--add-opens java.base/java.util=ALL-UNNAMED</argLine>
-					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -290,7 +288,6 @@
 									<goal>check</goal>
 								</goals>
 								<configuration>
-									<haltOnFailure>false</haltOnFailure>
 									<rules>
 										<rule>
 											<element>PACKAGE</element>
