@@ -18,6 +18,7 @@
 			**/GameRecord.*,
 			**/GameSetting.*,
 			**/TellerCatalog.*,
+			**/GridBagConstraintsBuilder.*,
 		</sonar.coverage.exclusions>
 		<sonar.junit.reportPaths>
 			${project.build.directory}/surefire-reports,
