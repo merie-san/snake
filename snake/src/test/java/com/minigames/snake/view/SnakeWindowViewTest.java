@@ -36,17 +36,17 @@ import com.minigames.snake.presenter.SnakeMatchPresenter;
 public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 
 	private FrameFixture window;
-	private SnakeLobbyPresenter presenterLobby;
-	private SnakeMatchPresenter presenterMatch;
+	private SnakeLobbyPresenter lobbyPresenter;
+	private SnakeMatchPresenter matchPresenter;
 	private SnakeWindowView snakeView;
 	private SnakeCanvas canvas;
 
 	@Override
 	protected void onSetUp() {
-		presenterLobby = mock(SnakeLobbyPresenter.class);
-		presenterMatch = mock(SnakeMatchPresenter.class);
+		lobbyPresenter = mock(SnakeLobbyPresenter.class);
+		matchPresenter = mock(SnakeMatchPresenter.class);
 		snakeView = GuiActionRunner.execute(() -> {
-			return new SnakeWindowView(presenterLobby, presenterMatch);
+			return new SnakeWindowView(lobbyPresenter, matchPresenter);
 		});
 		canvas = snakeView.getMatchPanel().getCanvas();
 		window = new FrameFixture(robot(), snakeView);
@@ -246,13 +246,13 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 		GuiActionRunner.execute(() -> {
 			snakeView.show("History panel");
 		});
-		when(presenterLobby.loadHistory()).thenReturn(new ArrayList<>());
+		when(lobbyPresenter.loadHistory()).thenReturn(new ArrayList<>());
 		GuiActionRunner.execute(() -> {
 			snakeView.update();
 		});
 		assertThat(window.list("historyList").contents()).isEmpty();
 		assertThat(window.label("highScoreLabel").text()).isEqualTo("All time high score: 0");
-		verify(presenterLobby).loadHistory();
+		verify(lobbyPresenter).loadHistory();
 	}
 
 	@Test
@@ -266,14 +266,14 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 		GameRecord record2 = new GameRecord("3", 30, LocalDate.now(), setting);
 		history.add(record1);
 		history.add(record2);
-		when(presenterLobby.loadHistory()).thenReturn(history);
+		when(lobbyPresenter.loadHistory()).thenReturn(history);
 		GuiActionRunner.execute(() -> {
 			snakeView.update();
 		});
 		assertThat(window.list("historyList").contents()).containsExactlyInAnyOrder(record1.toString(),
 				record2.toString());
 		assertThat(window.label("highScoreLabel").text()).isEqualTo("All time high score: 30");
-		verify(presenterLobby).loadHistory();
+		verify(lobbyPresenter).loadHistory();
 	}
 
 	@Test
@@ -281,12 +281,12 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 		GuiActionRunner.execute(() -> {
 			snakeView.show("Settings panel");
 		});
-		when(presenterLobby.loadConfigurations()).thenReturn(new ArrayList<>());
+		when(lobbyPresenter.loadConfigurations()).thenReturn(new ArrayList<>());
 		GuiActionRunner.execute(() -> {
 			snakeView.update();
 		});
 		assertThat(window.list("settingsList").contents()).isEmpty();
-		verify(presenterLobby).loadConfigurations();
+		verify(lobbyPresenter).loadConfigurations();
 	}
 
 	@Test
@@ -299,13 +299,13 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 		GameSetting setting2 = new GameSetting("2", 15, 10, 10);
 		settings.add(setting1);
 		settings.add(setting2);
-		when(presenterLobby.loadConfigurations()).thenReturn(settings);
+		when(lobbyPresenter.loadConfigurations()).thenReturn(settings);
 		GuiActionRunner.execute(() -> {
 			snakeView.update();
 		});
 		assertThat(window.list("settingsList").contents()).containsExactlyInAnyOrder(setting1.toString(),
 				setting2.toString());
-		verify(presenterLobby).loadConfigurations();
+		verify(lobbyPresenter).loadConfigurations();
 	}
 
 	@Test
@@ -353,8 +353,8 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 			snakeView.getHistoryPanel().getListModel().addAll(history);
 		});
 		window.button("deleteAllButton").click();
-		verify(presenterLobby).clearGameHistory(snakeView);
-		verifyNoMoreInteractions(presenterLobby);
+		verify(lobbyPresenter).clearGameHistory(snakeView);
+		verifyNoMoreInteractions(lobbyPresenter);
 	}
 
 	@Test
@@ -374,8 +374,8 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 		});
 		window.list("historyList").clickItem(0);
 		window.button("deleteSelectedButton").click();
-		verify(presenterLobby).removeRecord(listModel.getElementAt(0), snakeView);
-		verifyNoMoreInteractions(presenterLobby);
+		verify(lobbyPresenter).removeRecord(listModel.getElementAt(0), snakeView);
+		verifyNoMoreInteractions(lobbyPresenter);
 	}
 
 	@Test
@@ -447,7 +447,7 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 		});
 		window.list("settingsList").selectItem(0);
 		window.button("useSettingButton").click();
-		assertThat(snakeView.getMatchPanel().getCurrentSetting()).isEqualTo(setting);
+		verify(matchPresenter).changeSetting(setting, snakeView);
 	}
 
 	@Test
@@ -463,8 +463,8 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 		});
 		window.list("settingsList").selectItem(0);
 		window.button("deleteSettingButton").click();
-		verify(presenterLobby).removeConfiguration(setting, snakeView);
-		verifyNoMoreInteractions(presenterLobby);
+		verify(lobbyPresenter).removeConfiguration(setting, snakeView);
+		verifyNoMoreInteractions(lobbyPresenter);
 	}
 
 	@Test
@@ -481,8 +481,8 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 		window.list("settingsList").selectItem(0);
 		window.textBox("newNameTextBox").deleteText().enterText("Random name");
 		window.button("renameButton").click();
-		verify(presenterLobby).renameConfiguration(setting, "Random name", snakeView);
-		verifyNoMoreInteractions(presenterLobby);
+		verify(lobbyPresenter).renameConfiguration(setting, "Random name", snakeView);
+		verifyNoMoreInteractions(lobbyPresenter);
 	}
 
 	@Test
@@ -546,7 +546,7 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 			snakeView.show("Settings panel");
 		});
 		window.button("submitButton").click();
-		verify(presenterLobby).saveConfiguration(5, 5, 5, "New setting", snakeView);
+		verify(lobbyPresenter).saveConfiguration(5, 5, 5, "New setting", snakeView);
 	}
 
 	@Test
@@ -555,10 +555,18 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 			snakeView.show("Match panel");
 		});
 		window.button("startButton").requireDisabled();
+		when(matchPresenter.getMapHeight()).thenReturn(5);
+		when(matchPresenter.getMapWidth()).thenReturn(5);
 		GuiActionRunner.execute(() -> {
-			snakeView.getMatchPanel().refresh(new GameSetting("1", 10, 10, 10));
+			snakeView.getMatchPanel().refresh();
 		});
 		window.button("startButton").requireEnabled();
+		window.button("historyButton").requireEnabled();
+		window.button("settingsButton").requireEnabled();
+		window.button("startButton").requireEnabled();
+		window.button("quitButton").requireDisabled();
+		assertThat(canvas.getCellSize()).isEqualTo(60);
+		assertThat(canvas.getPreferredSize()).isEqualTo(new Dimension(300, 300));
 	}
 
 	@Test
@@ -594,40 +602,47 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
-	public void testUpdateMatchPanelStartButtonDelegation() {
+	public void testUpdateMatchPanelStartButton() {
 		GuiActionRunner.execute(() -> {
 			snakeView.show("Match panel");
-		});
-		GameSetting setting = new GameSetting("1", 10, 10, 10);
-		canvas.setSetting(setting);
-		GuiActionRunner.execute(() -> {
 			window.button("startButton").target().setEnabled(true);
 		});
 		window.button("startButton").click();
-		verify(presenterMatch).startMatch(setting);
+		window.button("historyButton").requireDisabled();
+		window.button("settingsButton").requireDisabled();
+		window.button("startButton").requireDisabled();
+		window.button("quitButton").requireEnabled();
+		assertThat(canvas.getKeyListeners()).hasSize(1)
+				.allSatisfy(listener -> assertThat(listener).isInstanceOf(SnakeCanvasKeyListener.class));
 	}
 
 	@Test
-	public void testUpdateMatchPanelQuitButtonDelegation() {
+	public void testUpdateMatchPanelQuitButton() {
 		GuiActionRunner.execute(() -> {
 			snakeView.show("Match panel");
-		});
-		canvas.setSetting(new GameSetting("1", 10, 10, 10));
-		GuiActionRunner.execute(() -> {
 			window.button("quitButton").target().setEnabled(true);
+			canvas.addKeyListener(
+					new SnakeCanvasKeyListener(matchPresenter, canvas, snakeView.getMatchPanel(), snakeView));
 		});
 		window.button("quitButton").click();
-		verify(presenterMatch).endMatch(snakeView);
+		window.button("historyButton").requireEnabled();
+		window.button("settingsButton").requireEnabled();
+		window.button("startButton").requireEnabled();
+		window.button("quitButton").requireDisabled();
+		assertThat(canvas.getKeyListeners()).isEmpty();
 	}
 
 	@Test
 	public void testMatchCardCanvasInitializationNotPlaying() {
+		when(matchPresenter.getMapHeight()).thenReturn(2);
+		when(matchPresenter.getMapWidth()).thenReturn(2);
+		when(matchPresenter.hasSetting()).thenReturn(true);
+		when(matchPresenter.isPlaying()).thenReturn(false);
 		GuiActionRunner.execute(() -> {
 			snakeView.show("Match panel");
 		});
-		canvas.setSetting(new GameSetting("1", 2, 2, 0));
 		canvas.setCellSize(150);
-		canvas.repaint();
+		canvas.update();
 		BufferedImage image = new ScreenshotTaker().takeScreenshotOf(canvas);
 		IntStream.range(0, 300).forEach(x -> IntStream.range(0, 300)
 				.forEach(y -> assertThat(image.getRGB(x, y)).isEqualTo(Color.LIGHT_GRAY.getRGB())));
@@ -636,25 +651,25 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 
 	@Test
 	public void testMatchCardCanvasInitializationPlaying() {
-		GuiActionRunner.execute(() -> {
-			snakeView.show("Match panel");
-		});
-		when(presenterMatch.getMapHeight()).thenReturn(5);
-		when(presenterMatch.getMapWidth()).thenReturn(5);
-		when(presenterMatch.getApple()).thenReturn(new Point(2, 3));
-		when(presenterMatch.isPlaying()).thenReturn(true);
 		Collection<Point> obstacles = new ArrayList<Point>();
+		Collection<Point> snake = new ArrayList<Point>();
 		obstacles.add(new Point(0, 0));
 		obstacles.add(new Point(2, 1));
-		when(presenterMatch.getObstacles()).thenReturn(obstacles);
-		Collection<Point> snake = new ArrayList<Point>();
 		snake.add(new Point(4, 2));
 		snake.add(new Point(4, 1));
 		snake.add(new Point(4, 0));
-		when(presenterMatch.snakeCollection()).thenReturn(snake);
-		canvas.setSetting(new GameSetting("1", 5, 5, 2));
-		canvas.setCellSize(60);
-		canvas.repaint();
+		when(matchPresenter.getMapHeight()).thenReturn(5);
+		when(matchPresenter.getMapWidth()).thenReturn(5);
+		when(matchPresenter.getApple()).thenReturn(new Point(2, 3));
+		when(matchPresenter.hasSetting()).thenReturn(true);
+		when(matchPresenter.isPlaying()).thenReturn(true);
+		when(matchPresenter.getObstacles()).thenReturn(obstacles);
+		when(matchPresenter.snakeCollection()).thenReturn(snake);
+		GuiActionRunner.execute(() -> {
+			snakeView.show("Match panel");
+			canvas.setCellSize(60);
+			canvas.update();
+		});
 		BufferedImage image = new ScreenshotTaker().takeScreenshotOf(canvas);
 		IntStream.range(0, 300).forEach(x -> IntStream.range(0, 300).forEach(y -> {
 			if (y < 120 && y >= 60 && x < 180 && x >= 120) {
@@ -675,28 +690,54 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 		GuiActionRunner.execute(() -> {
 			snakeView.show("Match panel");
 		});
-		when(presenterMatch.isPlaying()).thenReturn(true);
+		when(matchPresenter.getMapHeight()).thenReturn(5);
+		when(matchPresenter.getMapWidth()).thenReturn(5);
+		when(matchPresenter.getApple()).thenReturn(new Point(2, 3));
+		when(matchPresenter.hasSetting()).thenReturn(true);
+		when(matchPresenter.isPlaying()).thenReturn(true);
+		GuiActionRunner.execute(() -> {
+			canvas.addKeyListener(
+					new SnakeCanvasKeyListener(matchPresenter, canvas, snakeView.getMatchPanel(), snakeView));
+		});
 		window.panel("matchCanvas").click();
 		window.panel("matchCanvas").pressAndReleaseKeys(KeyEvent.VK_LEFT);
-		verify(presenterMatch).goLeft(snakeView, canvas);
 		window.panel("matchCanvas").pressAndReleaseKeys(KeyEvent.VK_RIGHT);
-		verify(presenterMatch).goRight(snakeView, canvas);
 		window.panel("matchCanvas").pressAndReleaseKeys(KeyEvent.VK_UP);
-		verify(presenterMatch).goUp(snakeView, canvas);
 		window.panel("matchCanvas").pressAndReleaseKeys(KeyEvent.VK_DOWN);
-		verify(presenterMatch).goDown(snakeView, canvas);
 		window.panel("matchCanvas").pressAndReleaseKeys(KeyEvent.VK_ESCAPE);
-		verify(presenterMatch).endMatch(snakeView);
+		verify(matchPresenter).goRight(snakeView, snakeView.getMatchPanel(), canvas);
+		verify(matchPresenter).goUp(snakeView, snakeView.getMatchPanel(), canvas);
+		verify(matchPresenter).goDown(snakeView, snakeView.getMatchPanel(), canvas);
+		verify(matchPresenter).goLeft(snakeView, snakeView.getMatchPanel(), canvas);
+		verify(matchPresenter).endMatch(snakeView);
 	}
 
 	@Test
-	public void testMatchCardSetScore() {
+	public void testMatchCardUpdatePlaying() {
 		GuiActionRunner.execute(() -> {
 			snakeView.show("Match panel");
-			snakeView.getMatchPanel().updateMatchMessage(30, "New message");
+		});
+		when(matchPresenter.currentScore()).thenReturn(30);
+		when(matchPresenter.isPlaying()).thenReturn(true);
+		GuiActionRunner.execute(() -> {
+			snakeView.getMatchPanel().update();
 		});
 		window.label("scoreLabel").requireText("Current score: 30");
-		window.label("messageLabel").requireText("New message");
+		window.label("messageLabel").requireText("In game");
+	}
+
+	@Test
+	public void testMatchCardUpdateNotPlaying() {
+		GuiActionRunner.execute(() -> {
+			snakeView.show("Match panel");
+		});
+		when(matchPresenter.currentScore()).thenReturn(30);
+		when(matchPresenter.isPlaying()).thenReturn(false);
+		GuiActionRunner.execute(() -> {
+			snakeView.getMatchPanel().update();
+		});
+		window.label("scoreLabel").requireText("Current score: 30");
+		window.label("messageLabel").requireText("No game");
 	}
 
 }

@@ -8,7 +8,11 @@ import com.minigames.snake.view.SnakeView;
 
 public interface SnakeMatchPresenter {
 
-	void startMatch(GameSetting configuration);
+	void startMatch();
+
+	void changeSetting(GameSetting setting, SnakeView globalView);
+
+	boolean hasSetting();
 
 	void endMatch(SnakeView globalView);
 
@@ -24,13 +28,13 @@ public interface SnakeMatchPresenter {
 
 	Point getApple();
 
-	void goUp(SnakeView globalView, SnakeView matchView);
+	void goUp(SnakeView globalView, SnakeView panelView, SnakeView matchView);
 
-	void goDown(SnakeView globalView, SnakeView matchView);
+	void goDown(SnakeView globalView, SnakeView panelView, SnakeView matchView);
 
-	void goRight(SnakeView globalView, SnakeView matchView);
+	void goRight(SnakeView globalView, SnakeView panelView, SnakeView matchView);
 
-	void goLeft(SnakeView globalView, SnakeView matchView);
+	void goLeft(SnakeView globalView, SnakeView panelView, SnakeView matchView);
 
 	boolean isPlaying();
 

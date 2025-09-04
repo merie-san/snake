@@ -17,21 +17,9 @@ import javax.swing.ListSelectionModel;
 
 import com.minigames.snake.model.GameRecord;
 import com.minigames.snake.model.Generated;
+import com.minigames.snake.presenter.SnakeLobbyPresenter;
 
 public class SnakeHistoryPanel extends JPanel {
-
-	public static final String SETTINGS_BUTTON_TEXT_H = "Settings";
-	public static final String SETTINGS_BUTTON_NAME_H = "settingsButton";
-	public static final String MATCH_BUTTON_TEXT_H = "Play";
-	public static final String MATCH_BUTTON_NAME_H = "matchButton";
-
-	public static final String HISTORY_LIST_NAME = "historyList";
-	public static final String HIGH_SCORE_LABEL_TEXT = "All time high score: ";
-	public static final String HIGH_SCORE_LABEL_NAME = "highScoreLabel";
-	public static final String DELETE_ALL_BUTTON_TEXT = "Clear history";
-	public static final String DELETE_ALL_BUTTON_NAME = "deleteAllButton";
-	public static final String DELETE_SELECTED_TEXT = "Delete selected";
-	public static final String DELETE_SELECTED_NAME = "deleteSelectedButton";
 
 	private static final long serialVersionUID = 1L;
 	private JPanel parentCards;
@@ -43,13 +31,15 @@ public class SnakeHistoryPanel extends JPanel {
 	private JLabel highScoreLabel;
 	private JButton deleteSelectedButton;
 	private DefaultListModel<GameRecord> listModel;
-	private SnakeWindowView parentview;
+	private transient SnakeView lobbyView;
+	private transient SnakeLobbyPresenter presenter;
 
-	public SnakeHistoryPanel(SnakeWindowView parentview, JPanel parentCards, String cardName) {
-		this.parentview = parentview;
+	public SnakeHistoryPanel(SnakeView lobbyView, SnakeLobbyPresenter presenter, JPanel parentCards) {
+		this.lobbyView = lobbyView;
+		this.presenter = presenter;
 		this.parentCards = parentCards;
-		parentCards.add(this, cardName);
-		this.setName(cardName);
+		parentCards.add(this, ViewComponentNames.HISTORY_PANEL);
+		this.setName(ViewComponentNames.HISTORY_PANEL);
 		this.setLayout(new GridBagLayout());
 	}
 
@@ -61,24 +51,24 @@ public class SnakeHistoryPanel extends JPanel {
 	}
 
 	private void configureComponents() {
-		ComponentInitializer.initializeButton(settingsButtonH, SETTINGS_BUTTON_NAME_H, true);
-		ComponentInitializer.initializeButton(matchButtonH, MATCH_BUTTON_NAME_H, true);
-		scroller = ComponentInitializer.initializeList(historyList, HISTORY_LIST_NAME,
+		ComponentInitializer.initializeButton(settingsButtonH, ViewComponentNames.SETTINGS_BUTTON_NAME_H, true);
+		ComponentInitializer.initializeButton(matchButtonH, ViewComponentNames.MATCH_BUTTON_NAME_H, true);
+		scroller = ComponentInitializer.initializeList(historyList, ViewComponentNames.HISTORY_LIST_NAME,
 				ListSelectionModel.SINGLE_SELECTION, 12, new Dimension(400, 200));
-		ComponentInitializer.initializeLabel(highScoreLabel, HIGH_SCORE_LABEL_NAME,
+		ComponentInitializer.initializeLabel(highScoreLabel, ViewComponentNames.HIGH_SCORE_LABEL_NAME,
 				new Font("New times roman", Font.PLAIN, 12), null);
-		ComponentInitializer.initializeButton(deleteAllButton, DELETE_ALL_BUTTON_NAME, true);
-		ComponentInitializer.initializeButton(deleteSelectedButton, DELETE_SELECTED_NAME, false);
+		ComponentInitializer.initializeButton(deleteAllButton, ViewComponentNames.DELETE_ALL_BUTTON_NAME, true);
+		ComponentInitializer.initializeButton(deleteSelectedButton, ViewComponentNames.DELETE_SELECTED_NAME, false);
 	}
 
 	private void createComponents() {
-		settingsButtonH = new JButton(SETTINGS_BUTTON_TEXT_H);
-		matchButtonH = new JButton(MATCH_BUTTON_TEXT_H);
+		settingsButtonH = new JButton(ViewComponentNames.SETTINGS_BUTTON_TEXT_H);
+		matchButtonH = new JButton(ViewComponentNames.MATCH_BUTTON_TEXT_H);
 		listModel = new DefaultListModel<>();
 		historyList = new JList<>(listModel);
-		highScoreLabel = new JLabel(HIGH_SCORE_LABEL_TEXT + "0");
-		deleteAllButton = new JButton(DELETE_ALL_BUTTON_TEXT);
-		deleteSelectedButton = new JButton(DELETE_SELECTED_TEXT);
+		highScoreLabel = new JLabel(ViewComponentNames.HIGH_SCORE_LABEL_TEXT + "0");
+		deleteAllButton = new JButton(ViewComponentNames.DELETE_ALL_BUTTON_TEXT);
+		deleteSelectedButton = new JButton(ViewComponentNames.DELETE_SELECTED_TEXT);
 	}
 
 	private void positionComponents() {
@@ -97,17 +87,17 @@ public class SnakeHistoryPanel extends JPanel {
 	}
 
 	private void initializeListeners() {
-		settingsButtonH.addMouseListener(new PanelSwitchButtonListener(parentCards, SnakeWindowView.SETTINGS_PANEL));
-		matchButtonH.addMouseListener(new PanelSwitchButtonListener(parentCards, SnakeWindowView.MATCH_PANEL));
+		settingsButtonH.addMouseListener(new PanelSwitchButtonListener(parentCards, ViewComponentNames.SETTINGS_PANEL));
+		matchButtonH.addMouseListener(new PanelSwitchButtonListener(parentCards, ViewComponentNames.MATCH_PANEL));
 		historyList.addListSelectionListener(new PanelListSelectionButtonListener(deleteSelectedButton));
-		deleteAllButton.addMouseListener(new DeleteAllRecordButtonListener(parentview));
-		deleteSelectedButton.addMouseListener(new DeleteRecordButtonListener(historyList, parentview));
+		deleteAllButton.addMouseListener(new DeleteAllRecordButtonListener(lobbyView, presenter));
+		deleteSelectedButton.addMouseListener(new DeleteRecordButtonListener(historyList, lobbyView, presenter));
 	}
 
 	public void refresh(Collection<GameRecord> newRecordList) {
 		listModel.clear();
 		listModel.addAll(newRecordList);
-		highScoreLabel.setText(HIGH_SCORE_LABEL_TEXT
+		highScoreLabel.setText(ViewComponentNames.HIGH_SCORE_LABEL_TEXT
 				+ Integer.toString(newRecordList.stream().map(GameRecord::getScore).max((x, y) -> x - y).orElse(0)));
 	}
 

@@ -6,22 +6,26 @@ import javax.swing.JList;
 import javax.swing.JTextField;
 
 import com.minigames.snake.model.GameSetting;
+import com.minigames.snake.presenter.SnakeLobbyPresenter;
 
 public class RenameSettingButtonListener extends HighLightableButtonListener {
-	
-	private SnakeWindowView parentView;
+
+	private SnakeView lobbyView;
 	private JTextField linkedTextBox;
 	private JList<GameSetting> linkedList;
+	private SnakeLobbyPresenter presenter;
 
-	public RenameSettingButtonListener(SnakeWindowView parentView, JTextField linkedTextBox, JList<GameSetting> linkedList) {
-		this.parentView = parentView;
+	public RenameSettingButtonListener(SnakeView lobbyView, SnakeLobbyPresenter presenter, JTextField linkedTextBox,
+			JList<GameSetting> linkedList) {
+		this.lobbyView = lobbyView;
+		this.presenter = presenter;
 		this.linkedTextBox = linkedTextBox;
 		this.linkedList = linkedList;
 	}
-	
+
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		parentView.renameSetting(linkedList.getSelectedValue(), linkedTextBox.getText());
+		presenter.renameConfiguration(linkedList.getSelectedValue(), linkedTextBox.getText(), lobbyView);
 	}
 
 }

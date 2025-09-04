@@ -10,16 +10,6 @@ import javax.swing.JPanel;
 
 public class SnakeWelcomePanel extends JPanel {
 
-	public static final String WELCOME_LABEL_TEXT = "Turn-based Snake";
-	public static final String WELCOME_LABEL_NAME = "welcomeLabel";
-
-	public static final String HISTORY_BUTTON_TEXT_W = "History";
-	public static final String HISTORY_BUTTON_NAME_W = "historyButton";
-	public static final String SETTINGS_BUTTON_TEXT_W = "Settings";
-	public static final String SETTINGS_BUTTON_NAME_W = "settingsButton";
-	public static final String MATCH_BUTTON_TEXT_W = "Play";
-	public static final String MATCH_BUTTON_NAME_W = "matchButton";
-
 	private static final long serialVersionUID = 1L;
 	private JPanel parentCards;
 
@@ -28,10 +18,10 @@ public class SnakeWelcomePanel extends JPanel {
 	private JButton settingsButtonW;
 	private JButton matchButtonW;
 
-	public SnakeWelcomePanel(JPanel parentCards, String cardName) {
+	public SnakeWelcomePanel(JPanel parentCards) {
 		this.parentCards = parentCards;
-		parentCards.add(this, cardName);
-		this.setName(cardName);
+		parentCards.add(this, ViewComponentNames.WELCOME_PANEL);
+		this.setName(ViewComponentNames.WELCOME_PANEL);
 		this.setLayout(new GridBagLayout());
 	}
 
@@ -44,18 +34,18 @@ public class SnakeWelcomePanel extends JPanel {
 	}
 
 	private void configureComponents() {
-		ComponentInitializer.initializeLabel(welcomeLabel, WELCOME_LABEL_NAME,
+		ComponentInitializer.initializeLabel(welcomeLabel, ViewComponentNames.WELCOME_LABEL_NAME,
 				new Font("New times roman", Font.PLAIN, 28), null);
-		ComponentInitializer.initializeButton(historyButtonW, HISTORY_BUTTON_NAME_W, true);
-		ComponentInitializer.initializeButton(settingsButtonW, SETTINGS_BUTTON_NAME_W, true);
-		ComponentInitializer.initializeButton(matchButtonW, MATCH_BUTTON_NAME_W, true);
+		ComponentInitializer.initializeButton(historyButtonW, ViewComponentNames.HISTORY_BUTTON_NAME_W, true);
+		ComponentInitializer.initializeButton(settingsButtonW, ViewComponentNames.SETTINGS_BUTTON_NAME_W, true);
+		ComponentInitializer.initializeButton(matchButtonW, ViewComponentNames.MATCH_BUTTON_NAME_W, true);
 	}
 
 	private void createComponents() {
-		welcomeLabel = new JLabel(WELCOME_LABEL_TEXT);
-		historyButtonW = new JButton(HISTORY_BUTTON_TEXT_W);
-		settingsButtonW = new JButton(SETTINGS_BUTTON_TEXT_W);
-		matchButtonW = new JButton(MATCH_BUTTON_TEXT_W);
+		welcomeLabel = new JLabel(ViewComponentNames.WELCOME_LABEL_TEXT);
+		historyButtonW = new JButton(ViewComponentNames.HISTORY_BUTTON_TEXT_W);
+		settingsButtonW = new JButton(ViewComponentNames.SETTINGS_BUTTON_TEXT_W);
+		matchButtonW = new JButton(ViewComponentNames.MATCH_BUTTON_TEXT_W);
 	}
 
 	private void positionComponents() {
@@ -70,9 +60,9 @@ public class SnakeWelcomePanel extends JPanel {
 	}
 
 	private void initializeListeners() {
-		historyButtonW.addMouseListener(new PanelSwitchButtonListener(parentCards, SnakeWindowView.HISTORY_PANEL));
-		settingsButtonW.addMouseListener(new PanelSwitchButtonListener(parentCards, SnakeWindowView.SETTINGS_PANEL));
-		matchButtonW.addMouseListener(new PanelSwitchButtonListener(parentCards, SnakeWindowView.MATCH_PANEL));
+		historyButtonW.addMouseListener(new PanelSwitchButtonListener(parentCards, ViewComponentNames.HISTORY_PANEL));
+		settingsButtonW.addMouseListener(new PanelSwitchButtonListener(parentCards, ViewComponentNames.SETTINGS_PANEL));
+		matchButtonW.addMouseListener(new PanelSwitchButtonListener(parentCards, ViewComponentNames.MATCH_PANEL));
 
 	}
 

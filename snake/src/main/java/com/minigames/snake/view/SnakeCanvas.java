@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 import javax.swing.JPanel;
 
-import com.minigames.snake.model.GameSetting;
 import com.minigames.snake.model.Generated;
 import com.minigames.snake.presenter.SnakeMatchPresenter;
 
@@ -17,62 +16,30 @@ public class SnakeCanvas extends JPanel implements SnakeView {
 
 	private static final long serialVersionUID = 1L;
 	private int cellSize;
-	private transient GameSetting setting;
 	private transient SnakeMatchPresenter presenter;
-	private SnakeMatchPanel parentPanel;
-	private transient SnakeView rootPanel;
 
-	public SnakeCanvas(SnakeView rootPanel, SnakeMatchPresenter presenter, SnakeMatchPanel parentPanel) {
+	public SnakeCanvas( SnakeMatchPresenter presenter) {
 		this.presenter = presenter;
-		this.parentPanel = parentPanel;
-		this.rootPanel = rootPanel;
 		setPreferredSize(new Dimension(300, 300));
 		setBackground(Color.WHITE);
-		this.addKeyListener(new SnakeCanvasKeyListener(this));
 	}
 
-	public void newSetting(GameSetting setting) {
-		this.setting = setting;
-		cellSize = (int) Math.round(300.0 / (Math.max(setting.getHeight(), setting.getWidth())));
-		setPreferredSize(new Dimension(cellSize * setting.getWidth(), cellSize * setting.getHeight()));
-	}
-
-	public void startGame() {
-		presenter.startMatch(setting);
-	}
-
-	public void quitGame() {
-		presenter.endMatch(rootPanel);
-	}
-
-	public void moveUp() {
-		presenter.goUp(rootPanel, this);
-	}
-
-	public void moveDown() {
-		presenter.goDown(rootPanel, this);
-	}
-
-	public void moveLeft() {
-		presenter.goLeft(rootPanel, this);
-	}
-
-	public void moveRight() {
-		presenter.goRight(rootPanel, this);
+	public void refresh() {
+		cellSize = (int) Math.round(300.0 / (Math.max(presenter.getMapHeight(), presenter.getMapWidth())));
+		setPreferredSize(new Dimension(cellSize * presenter.getMapWidth(), cellSize * presenter.getMapHeight()));
 	}
 
 	@Override
 	public void update() {
 		repaint();
-		parentPanel.updateMatchMessage(presenter.currentScore(), presenter.isPlaying() ? "In game" : "No game");
 	}
 
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		if (setting != null) {
+		if (presenter.hasSetting()) {
 			g.setColor(Color.LIGHT_GRAY);
-			g.fillRect(0, 0, cellSize * setting.getWidth(), cellSize * setting.getHeight());
+			g.fillRect(0, 0, cellSize * presenter.getMapWidth(), cellSize * presenter.getMapHeight());
 			if (presenter.isPlaying()) {
 				Point apple = new Point(presenter.getApple().x, presenter.getMapHeight() - 1 - presenter.getApple().y);
 				Collection<Point> obstacles = presenter.getObstacles().stream()
@@ -91,12 +58,6 @@ public class SnakeCanvas extends JPanel implements SnakeView {
 				});
 			}
 		}
-	}
-
-	// for testing
-	@Generated
-	void setSetting(GameSetting setting) {
-		this.setting = setting;
 	}
 
 	// for testing

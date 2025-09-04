@@ -4,19 +4,27 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import com.minigames.snake.presenter.SnakeLobbyPresenter;
 
 public class SubmitSettingButtonListener extends HighLightableButtonListener {
 
-	private SnakeWindowView parentView;
+	private SnakeView lobbyView;
 	private JTextField nameBox;
 	private JFormattedTextField widthBox;
 	private JFormattedTextField heightBox;
 	private JFormattedTextField obstaclesBox;
+	private SnakeLobbyPresenter presenter;
+	private JPanel parentPanel;
 
-	public SubmitSettingButtonListener(SnakeWindowView parentView, JTextField nameBox, JFormattedTextField widthBox,
-			JFormattedTextField heightBox, JFormattedTextField obstaclesBox) {
-		this.parentView = parentView;
+	public SubmitSettingButtonListener(SnakeView lobbyView, JPanel parentPanel, SnakeLobbyPresenter presenter,
+			JTextField nameBox, JFormattedTextField widthBox, JFormattedTextField heightBox,
+			JFormattedTextField obstaclesBox) {
+		this.lobbyView = lobbyView;
+		this.parentPanel = parentPanel;
+		this.presenter = presenter;
 		this.nameBox = nameBox;
 		this.widthBox = widthBox;
 		this.heightBox = heightBox;
@@ -30,19 +38,19 @@ public class SubmitSettingButtonListener extends HighLightableButtonListener {
 		int obstacles = (Integer) obstaclesBox.getValue();
 		String name = nameBox.getText();
 		if (width < 5 || width > 30 || height < 5 || height > 30) {
-			JOptionPane.showMessageDialog(parentView, "the width and height of the map must be contained in [5, 30]");
+			JOptionPane.showMessageDialog(parentPanel, "the width and height of the map must be contained in [5, 30]");
 			return;
 		}
 		if (obstacles < 0 || obstacles > (width * height / 2)) {
-			JOptionPane.showMessageDialog(parentView,
+			JOptionPane.showMessageDialog(parentPanel,
 					"the number of obstacles on the map must be contained in [0, width*height/2]");
 			return;
 		}
 		if (name.length() > 20) {
-			JOptionPane.showMessageDialog(parentView, "the lenght of the setting's name must be contained in [0, 20]");
+			JOptionPane.showMessageDialog(parentPanel, "the lenght of the setting's name must be contained in [0, 20]");
 			return;
 		}
-		parentView.createSetting(width, height, obstacles, name);
+		presenter.saveConfiguration(width, height, obstacles, name, lobbyView);
 	}
 
 }

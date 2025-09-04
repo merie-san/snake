@@ -5,20 +5,24 @@ import java.awt.event.MouseEvent;
 import javax.swing.JList;
 
 import com.minigames.snake.model.GameSetting;
+import com.minigames.snake.presenter.SnakeMatchPresenter;
 
 public class UseSettingButtonListener extends HighLightableButtonListener {
 
-	private SnakeWindowView parentView;
+	private SnakeView lobbyView;
 	private JList<GameSetting> monitoredList;
+	private SnakeMatchPresenter presenter;
 
-	public UseSettingButtonListener(SnakeWindowView parentView, JList<GameSetting> monitoredList) {
-		this.parentView = parentView;
+	public UseSettingButtonListener(SnakeView lobbyView, SnakeMatchPresenter presenter,
+			JList<GameSetting> monitoredList) {
+		this.lobbyView = lobbyView;
+		this.presenter = presenter;
 		this.monitoredList = monitoredList;
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		parentView.updateSetting(monitoredList.getSelectedValue());
+		presenter.changeSetting(monitoredList.getSelectedValue(), lobbyView);
 	}
 
 }

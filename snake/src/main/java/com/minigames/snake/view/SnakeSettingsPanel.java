@@ -18,42 +18,10 @@ import javax.swing.ListSelectionModel;
 
 import com.minigames.snake.model.GameSetting;
 import com.minigames.snake.model.Generated;
+import com.minigames.snake.presenter.SnakeLobbyPresenter;
+import com.minigames.snake.presenter.SnakeMatchPresenter;
 
 public class SnakeSettingsPanel extends JPanel {
-
-	public static final String HISTORY_BUTTON_TEXT_S = "History";
-	public static final String HISTORY_BUTTON_NAME_S = "historyButton";
-	public static final String MATCH_BUTTON_TEXT_S = "Play";
-	public static final String MATCH_BUTTON_NAME_S = "matchButton";
-	public static final String SETTINGS_LIST_NAME = "settingsList";
-	public static final String USE_SETTING_BUTTON_TEXT = "Use setting";
-	public static final String USE_SETTING_BUTTON_NAME = "useSettingButton";
-	public static final String DELETE_SETTING_BUTTON_TEXT = "Delete setting";
-	public static final String DELETE_SETTING_BUTTON_NAME = "deleteSettingButton";
-	public static final String NEW_NAME_TEXTBOX_TEXT = "New name";
-	public static final String NEW_NAME_TEXTBOX_NAME = "newNameTextBox";
-	public static final String RENAME_BUTTON_TEXT = "Rename";
-	public static final String RENAME_BUTTON_NAME = "renameButton";
-	public static final String CREATE_SETTING_LABEL_TEXT = "Setting form";
-	public static final String CREATE_SETTING_LABEL_NAME = "createSettingLabel";
-	public static final String NAME_LABEL_TEXT = "Name";
-	public static final String WIDTH_LABEL_TEXT = "Width";
-	public static final String HEIGHT_LABEL_TEXT = "Height";
-	public static final String OBSTACLES_LABEL_TEXT = "N. obstacles";
-	public static final String NAME_LABEL_NAME = "nameLabel";
-	public static final String WIDTH_LABEL_NAME = "widthLabel";
-	public static final String HEIGHT_LABEL_NAME = "heightLabel";
-	public static final String OBSTACLES_LABEL_NAME = "obstaclesLabel";
-	public static final String NAME_TEXTBOX_TEXT = "New setting";
-	public static final String NAME_TEXTBOX_NAME = "nameTextBox";
-	public static final int WIDTH_TEXTBOX_VALUE = 5;
-	public static final String WIDTH_TEXTBOX_NAME = "widthTextBox";
-	public static final int HEIGHT_TEXTBOX_VALUE = 5;
-	public static final String HEIGHT_TEXTBOX_NAME = "heightTextBox";
-	public static final int OBSTACLES_TEXTBOX_VALUE = 5;
-	public static final String OBSTACLES_TEXTBOX_NAME = "obstaclesTextBox";
-	public static final String SUBMIT_BUTTON_TEXT = "Submit";
-	public static final String SUBMIT_BUTTON_NAME = "submitButton";
 
 	private static final long serialVersionUID = 1L;
 	private JScrollPane scroller;
@@ -76,13 +44,18 @@ public class SnakeSettingsPanel extends JPanel {
 	private JFormattedTextField obstaclesTextBox;
 	private JButton submitButton;
 	private DefaultListModel<GameSetting> listModel;
-	private SnakeWindowView parentView;
+	private transient SnakeView lobbyView;
+	private transient SnakeLobbyPresenter lobbyPresenter;
+	private transient SnakeMatchPresenter matchPresenter;
 
-	public SnakeSettingsPanel(SnakeWindowView parentView, JPanel parentCards, String cardName) {
-		this.parentView = parentView;
+	public SnakeSettingsPanel(SnakeView lobbyView, SnakeLobbyPresenter lobbyPresenter,
+			SnakeMatchPresenter matchPresenter, JPanel parentCards) {
+		this.lobbyView = lobbyView;
+		this.lobbyPresenter = lobbyPresenter;
+		this.matchPresenter = matchPresenter;
 		this.parentCards = parentCards;
-		parentCards.add(this, cardName);
-		this.setName(cardName);
+		parentCards.add(this, ViewComponentNames.SETTINGS_PANEL);
+		this.setName(ViewComponentNames.SETTINGS_PANEL);
 		this.setLayout(new GridBagLayout());
 	}
 
@@ -94,48 +67,52 @@ public class SnakeSettingsPanel extends JPanel {
 	}
 
 	private void configureComponents() {
-		ComponentInitializer.initializeButton(historyButtonS, HISTORY_BUTTON_NAME_S, true);
-		ComponentInitializer.initializeButton(matchButtonS, MATCH_BUTTON_NAME_S, true);
-		scroller = ComponentInitializer.initializeList(settingsList, SETTINGS_LIST_NAME,
+		ComponentInitializer.initializeButton(historyButtonS, ViewComponentNames.HISTORY_BUTTON_NAME_S, true);
+		ComponentInitializer.initializeButton(matchButtonS, ViewComponentNames.MATCH_BUTTON_NAME_S, true);
+		scroller = ComponentInitializer.initializeList(settingsList, ViewComponentNames.SETTINGS_LIST_NAME,
 				ListSelectionModel.SINGLE_SELECTION, 6, new Dimension(400, 100));
-		ComponentInitializer.initializeButton(useSettingButton, USE_SETTING_BUTTON_NAME, false);
-		ComponentInitializer.initializeButton(deleteSettingButton, DELETE_SETTING_BUTTON_NAME, false);
-		ComponentInitializer.initializeTextField(newNameTextBox, NEW_NAME_TEXTBOX_NAME, true, false, 10);
-		ComponentInitializer.initializeButton(renameButton, RENAME_BUTTON_NAME, false);
-		ComponentInitializer.initializeLabel(createSettingLabel, CREATE_SETTING_LABEL_NAME, null, null);
-		ComponentInitializer.initializeLabel(nameLabel, NAME_LABEL_NAME, null, nameTextBox);
-		ComponentInitializer.initializeLabel(widthLabel, WIDTH_LABEL_NAME, null, widthTextBox);
-		ComponentInitializer.initializeLabel(heightLabel, HEIGHT_LABEL_NAME, null, heightTextBox);
-		ComponentInitializer.initializeLabel(obstaclesLabel, OBSTACLES_LABEL_NAME, null, obstaclesTextBox);
-		ComponentInitializer.initializeTextField(nameTextBox, NAME_TEXTBOX_NAME, true, true, 10);
-		ComponentInitializer.initializeFormattedTextField(obstaclesTextBox, OBSTACLES_TEXTBOX_NAME,
-				OBSTACLES_TEXTBOX_VALUE, true, 5, ComponentInitializer.createIntFormatter());
-		ComponentInitializer.initializeFormattedTextField(widthTextBox, WIDTH_TEXTBOX_NAME, WIDTH_TEXTBOX_VALUE, true,
-				5, ComponentInitializer.createIntFormatter());
-		ComponentInitializer.initializeFormattedTextField(heightTextBox, HEIGHT_TEXTBOX_NAME, HEIGHT_TEXTBOX_VALUE,
-				true, 5, ComponentInitializer.createIntFormatter());
-		ComponentInitializer.initializeButton(submitButton, SUBMIT_BUTTON_NAME, true);
+		ComponentInitializer.initializeButton(useSettingButton, ViewComponentNames.USE_SETTING_BUTTON_NAME, false);
+		ComponentInitializer.initializeButton(deleteSettingButton, ViewComponentNames.DELETE_SETTING_BUTTON_NAME,
+				false);
+		ComponentInitializer.initializeTextField(newNameTextBox, ViewComponentNames.NEW_NAME_TEXTBOX_NAME, true, false,
+				10);
+		ComponentInitializer.initializeButton(renameButton, ViewComponentNames.RENAME_BUTTON_NAME, false);
+		ComponentInitializer.initializeLabel(createSettingLabel, ViewComponentNames.CREATE_SETTING_LABEL_NAME, null,
+				null);
+		ComponentInitializer.initializeLabel(nameLabel, ViewComponentNames.NAME_LABEL_NAME, null, nameTextBox);
+		ComponentInitializer.initializeLabel(widthLabel, ViewComponentNames.WIDTH_LABEL_NAME, null, widthTextBox);
+		ComponentInitializer.initializeLabel(heightLabel, ViewComponentNames.HEIGHT_LABEL_NAME, null, heightTextBox);
+		ComponentInitializer.initializeLabel(obstaclesLabel, ViewComponentNames.OBSTACLES_LABEL_NAME, null,
+				obstaclesTextBox);
+		ComponentInitializer.initializeTextField(nameTextBox, ViewComponentNames.NAME_TEXTBOX_NAME, true, true, 10);
+		ComponentInitializer.initializeFormattedTextField(obstaclesTextBox, ViewComponentNames.OBSTACLES_TEXTBOX_NAME,
+				ViewComponentNames.OBSTACLES_TEXTBOX_VALUE, true, 5, ComponentInitializer.createIntFormatter());
+		ComponentInitializer.initializeFormattedTextField(widthTextBox, ViewComponentNames.WIDTH_TEXTBOX_NAME,
+				ViewComponentNames.WIDTH_TEXTBOX_VALUE, true, 5, ComponentInitializer.createIntFormatter());
+		ComponentInitializer.initializeFormattedTextField(heightTextBox, ViewComponentNames.HEIGHT_TEXTBOX_NAME,
+				ViewComponentNames.HEIGHT_TEXTBOX_VALUE, true, 5, ComponentInitializer.createIntFormatter());
+		ComponentInitializer.initializeButton(submitButton, ViewComponentNames.SUBMIT_BUTTON_NAME, true);
 	}
 
 	private void createComponents() {
-		historyButtonS = new JButton(HISTORY_BUTTON_TEXT_S);
-		matchButtonS = new JButton(MATCH_BUTTON_TEXT_S);
+		historyButtonS = new JButton(ViewComponentNames.HISTORY_BUTTON_TEXT_S);
+		matchButtonS = new JButton(ViewComponentNames.MATCH_BUTTON_TEXT_S);
 		listModel = new DefaultListModel<>();
 		settingsList = new JList<>(listModel);
-		useSettingButton = new JButton(USE_SETTING_BUTTON_TEXT);
-		deleteSettingButton = new JButton(DELETE_SETTING_BUTTON_TEXT);
-		newNameTextBox = new JTextField(NEW_NAME_TEXTBOX_TEXT);
-		renameButton = new JButton(RENAME_BUTTON_TEXT);
-		createSettingLabel = new JLabel(CREATE_SETTING_LABEL_TEXT);
-		nameLabel = new JLabel(NAME_LABEL_TEXT);
-		widthLabel = new JLabel(WIDTH_LABEL_TEXT);
-		heightLabel = new JLabel(HEIGHT_LABEL_TEXT);
-		obstaclesLabel = new JLabel(OBSTACLES_LABEL_TEXT);
-		nameTextBox = new JTextField(NAME_TEXTBOX_TEXT);
+		useSettingButton = new JButton(ViewComponentNames.USE_SETTING_BUTTON_TEXT);
+		deleteSettingButton = new JButton(ViewComponentNames.DELETE_SETTING_BUTTON_TEXT);
+		newNameTextBox = new JTextField(ViewComponentNames.NEW_NAME_TEXTBOX_TEXT);
+		renameButton = new JButton(ViewComponentNames.RENAME_BUTTON_TEXT);
+		createSettingLabel = new JLabel(ViewComponentNames.CREATE_SETTING_LABEL_TEXT);
+		nameLabel = new JLabel(ViewComponentNames.NAME_LABEL_TEXT);
+		widthLabel = new JLabel(ViewComponentNames.WIDTH_LABEL_TEXT);
+		heightLabel = new JLabel(ViewComponentNames.HEIGHT_LABEL_TEXT);
+		obstaclesLabel = new JLabel(ViewComponentNames.OBSTACLES_LABEL_TEXT);
+		nameTextBox = new JTextField(ViewComponentNames.NAME_TEXTBOX_TEXT);
 		widthTextBox = new JFormattedTextField();
 		heightTextBox = new JFormattedTextField();
 		obstaclesTextBox = new JFormattedTextField();
-		submitButton = new JButton(SUBMIT_BUTTON_TEXT);
+		submitButton = new JButton(ViewComponentNames.SUBMIT_BUTTON_TEXT);
 	}
 
 	private void positionComponents() {
@@ -176,16 +153,17 @@ public class SnakeSettingsPanel extends JPanel {
 	}
 
 	private void initializeListeners() {
-		historyButtonS.addMouseListener(new PanelSwitchButtonListener(parentCards, SnakeWindowView.HISTORY_PANEL));
-		matchButtonS.addMouseListener(new PanelSwitchButtonListener(parentCards, SnakeWindowView.MATCH_PANEL));
+		historyButtonS.addMouseListener(new PanelSwitchButtonListener(parentCards, ViewComponentNames.HISTORY_PANEL));
+		matchButtonS.addMouseListener(new PanelSwitchButtonListener(parentCards, ViewComponentNames.MATCH_PANEL));
 		settingsList.addListSelectionListener(
 				new PanelListSelectionButtonListener(renameButton, useSettingButton, deleteSettingButton));
 		settingsList.addListSelectionListener(new PanelListSelectionTextBoxListener(newNameTextBox, settingsList));
-		useSettingButton.addMouseListener(new UseSettingButtonListener(parentView, settingsList));
-		deleteSettingButton.addMouseListener(new DeleteSettingButtonListener(settingsList, parentView));
-		renameButton.addMouseListener(new RenameSettingButtonListener(parentView, newNameTextBox, settingsList));
-		submitButton.addMouseListener(new SubmitSettingButtonListener(parentView, nameTextBox, widthTextBox,
-				heightTextBox, obstaclesTextBox));
+		useSettingButton.addMouseListener(new UseSettingButtonListener(lobbyView, matchPresenter, settingsList));
+		deleteSettingButton.addMouseListener(new DeleteSettingButtonListener(settingsList, lobbyView, lobbyPresenter));
+		renameButton.addMouseListener(
+				new RenameSettingButtonListener(lobbyView, lobbyPresenter, newNameTextBox, settingsList));
+		submitButton.addMouseListener(new SubmitSettingButtonListener(lobbyView, this, lobbyPresenter, nameTextBox,
+				widthTextBox, heightTextBox, obstaclesTextBox));
 	}
 
 	public void refresh(Collection<GameSetting> newSettingList) {
