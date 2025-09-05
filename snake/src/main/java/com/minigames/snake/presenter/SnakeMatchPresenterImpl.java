@@ -17,7 +17,7 @@ public class SnakeMatchPresenterImpl implements SnakeMatchPresenter {
 	private ObstaclesSupplier obstaclesSupplier;
 	private PositionSupplier positionSupplier;
 	private int rawScore;
-	private boolean gameOver;
+	private boolean playing = false;
 	private boolean snakeBigger;
 	private GameSetting configuration;
 	private SnakeRepository repository;
@@ -30,57 +30,77 @@ public class SnakeMatchPresenterImpl implements SnakeMatchPresenter {
 	}
 
 	@Override
-	public void startMatch(GameSetting configuration) {
-		this.configuration = configuration;
+	public void startMatch() {
+		if (configuration == null) {
+			throw new IllegalArgumentException("Cannot start new game with null configuration");
+		}
 		map = SnakeMap.of(configuration.getWidth(), configuration.getHeight(),
 				obstaclesSupplier.generateObstacles(configuration));
 		map.setSnakeHead(positionSupplier.generateSnakeHeadPosition(map));
 		map.setApple(positionSupplier.generateApplePosition(map));
 		snakeBigger = false;
+		playing = true;
 		rawScore = 0;
 	}
 
 	@Override
-	public void endMatch(SnakeView view) {
+	public void changeSetting(GameSetting newConfiguration, SnakeView globalView) {
+		if (newConfiguration == null) {
+			throw new IllegalArgumentException("Cannot change to null configuration");
+		}
+		configuration = newConfiguration;
+		globalView.update();
+	}
+
+	@Override
+	public void endMatch(SnakeView globalView) {
 		repository.createRecord(ModelFactory.gameRecord(currentScore(), LocalDate.now(), configuration));
-		view.update();
+		playing = false;
+		globalView.update();
 	}
 
 	@Override
-	public void goUp(SnakeView view) {
-		goDirection(view, TellerCatalog.UP);
+	public void goUp(SnakeView globalView, SnakeView panelView, SnakeView matchView) {
+		goDirection(globalView, panelView, matchView, TellerCatalog.UP);
 	}
 
 	@Override
-	public void goDown(SnakeView view) {
-		goDirection(view, TellerCatalog.DOWN);
+	public void goDown(SnakeView globalView, SnakeView panelView, SnakeView matchView) {
+		goDirection(globalView, panelView, matchView, TellerCatalog.DOWN);
 	}
 
 	@Override
-	public void goRight(SnakeView view) {
-		goDirection(view, TellerCatalog.RIGHT);
+	public void goRight(SnakeView globalView, SnakeView panelView, SnakeView matchView) {
+		goDirection(globalView, panelView, matchView, TellerCatalog.RIGHT);
 	}
 
 	@Override
-	public void goLeft(SnakeView view) {
-		goDirection(view, TellerCatalog.LEFT);
+	public void goLeft(SnakeView globalView, SnakeView panelView, SnakeView matchView) {
+		goDirection(globalView, panelView, matchView, TellerCatalog.LEFT);
 	}
 
-	private void goDirection(SnakeView view, PositionTeller teller) {
-		if (map.checkFree(teller)) {
+	private void goDirection(SnakeView globalView, SnakeView panelView, SnakeView matchView, PositionTeller teller) {
+		if (map.checkFree(teller, snakeBigger)) {
 			if (map.moveSnake(teller, snakeBigger)) {
 				snakeBigger = true;
 				rawScore++;
-				if (map.getMapHeight() * map.getMapWidth() - configuration.getObstacleNumber() == rawScore) {
-					gameOver = true;
+				if (map.getMapHeight() * map.getMapWidth() - configuration.getObstacleNumber() - 1 == rawScore) {
+					matchEnded(globalView);
 				}
 			} else {
 				snakeBigger = false;
 			}
 		} else {
-			gameOver = true;
+			matchEnded(globalView);
 		}
-		view.update();
+		matchView.update();
+		panelView.update();
+	}
+
+	private void matchEnded(SnakeView globalView) {
+		playing = false;
+		repository.createRecord(ModelFactory.gameRecord(currentScore(), LocalDate.now(), configuration));
+		globalView.update();
 	}
 
 	@Override
@@ -121,8 +141,18 @@ public class SnakeMatchPresenterImpl implements SnakeMatchPresenter {
 
 	@Override
 	@Generated
-	public boolean isGameOver() {
-		return gameOver;
+	public boolean isPlaying() {
+		return playing;
+	}
+
+	@Override
+	public boolean hasSetting() {
+		return configuration != null;
+	}
+
+	@Generated
+	void setPlaying(boolean isPlaying) {
+		this.playing = isPlaying;
 	}
 
 	// for testing

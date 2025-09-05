@@ -429,7 +429,7 @@ public class SnakeMapTest {
 		ArrayList<Point> obstacles = new ArrayList<>();
 		SnakeMap map = SnakeMap.of(10, 10, obstacles);
 		map.setSnakeHead(new Point(0, 10));
-		assertThatThrownBy(() -> map.checkFree(null)).isInstanceOf(IllegalArgumentException.class)
+		assertThatThrownBy(() -> map.checkFree(null, false)).isInstanceOf(IllegalArgumentException.class)
 				.hasMessage("the teller cannot be null");
 	}
 
@@ -438,7 +438,7 @@ public class SnakeMapTest {
 		ArrayList<Point> obstacles = new ArrayList<>();
 		SnakeMap map = SnakeMap.of(10, 10, obstacles);
 		map.setSnakeHead(new Point(0, 9));
-		assertThat(map.checkFree(new UpTeller())).isFalse();
+		assertThat(map.checkFree(new UpTeller(), false)).isFalse();
 	}
 
 	@Test
@@ -446,7 +446,7 @@ public class SnakeMapTest {
 		ArrayList<Point> obstacles = new ArrayList<>();
 		SnakeMap map = SnakeMap.of(10, 10, obstacles);
 		map.setSnakeHead(new Point(0, 0));
-		assertThat(map.checkFree(new DownTeller())).isFalse();
+		assertThat(map.checkFree(new DownTeller(), false)).isFalse();
 	}
 
 	@Test
@@ -454,7 +454,7 @@ public class SnakeMapTest {
 		ArrayList<Point> obstacles = new ArrayList<>();
 		SnakeMap map = SnakeMap.of(10, 10, obstacles);
 		map.setSnakeHead(new Point(0, 0));
-		assertThat(map.checkFree(new LeftTeller())).isFalse();
+		assertThat(map.checkFree(new LeftTeller(), false)).isFalse();
 	}
 
 	@Test
@@ -462,39 +462,39 @@ public class SnakeMapTest {
 		ArrayList<Point> obstacles = new ArrayList<>();
 		SnakeMap map = SnakeMap.of(10, 10, obstacles);
 		map.setSnakeHead(new Point(9, 9));
-		assertThat(map.checkFree(new RightTeller())).isFalse();
+		assertThat(map.checkFree(new RightTeller(), false)).isFalse();
 	}
-	
+
 	@Test
 	public void testCheckFreeAtMapBoundaryXMax() {
 		ArrayList<Point> obstacles = new ArrayList<>();
 		SnakeMap map = SnakeMap.of(10, 10, obstacles);
 		map.setSnakeHead(new Point(5, 8));
-		assertThat(map.checkFree(new UpTeller())).isTrue();
+		assertThat(map.checkFree(new UpTeller(), false)).isTrue();
 	}
-	
+
 	@Test
 	public void testCheckFreeAtMapBoundaryXZero() {
 		ArrayList<Point> obstacles = new ArrayList<>();
 		SnakeMap map = SnakeMap.of(10, 10, obstacles);
 		map.setSnakeHead(new Point(5, 1));
-		assertThat(map.checkFree(new DownTeller())).isTrue();
+		assertThat(map.checkFree(new DownTeller(), false)).isTrue();
 	}
-	
+
 	@Test
 	public void testCheckFreeAtMapBoundaryYMax() {
 		ArrayList<Point> obstacles = new ArrayList<>();
 		SnakeMap map = SnakeMap.of(10, 10, obstacles);
 		map.setSnakeHead(new Point(8, 5));
-		assertThat(map.checkFree(new RightTeller())).isTrue();
+		assertThat(map.checkFree(new RightTeller(), false)).isTrue();
 	}
-	
+
 	@Test
 	public void testCheckFreeAtMapBoundaryYZero() {
 		ArrayList<Point> obstacles = new ArrayList<>();
 		SnakeMap map = SnakeMap.of(10, 10, obstacles);
 		map.setSnakeHead(new Point(1, 5));
-		assertThat(map.checkFree(new LeftTeller())).isTrue();
+		assertThat(map.checkFree(new LeftTeller(), false)).isTrue();
 	}
 
 	@Test
@@ -503,7 +503,7 @@ public class SnakeMapTest {
 		obstacles.add(new Point(0, 1));
 		SnakeMap map = SnakeMap.of(10, 10, obstacles);
 		map.setSnakeHead(new Point(0, 0));
-		assertThat(map.checkFree(new UpTeller())).isFalse();
+		assertThat(map.checkFree(new UpTeller(), false)).isFalse();
 	}
 
 	@Test
@@ -512,7 +512,7 @@ public class SnakeMapTest {
 		obstacles.add(new Point(0, 0));
 		SnakeMap map = SnakeMap.of(10, 10, obstacles);
 		map.setSnakeHead(new Point(0, 1));
-		assertThat(map.checkFree(new DownTeller())).isFalse();
+		assertThat(map.checkFree(new DownTeller(), false)).isFalse();
 	}
 
 	@Test
@@ -521,7 +521,7 @@ public class SnakeMapTest {
 		obstacles.add(new Point(0, 0));
 		SnakeMap map = SnakeMap.of(10, 10, obstacles);
 		map.setSnakeHead(new Point(1, 0));
-		assertThat(map.checkFree(new LeftTeller())).isFalse();
+		assertThat(map.checkFree(new LeftTeller(), false)).isFalse();
 	}
 
 	@Test
@@ -530,91 +530,187 @@ public class SnakeMapTest {
 		obstacles.add(new Point(1, 0));
 		SnakeMap map = SnakeMap.of(10, 10, obstacles);
 		map.setSnakeHead(new Point(0, 0));
-		assertThat(map.checkFree(new RightTeller())).isFalse();
+		assertThat(map.checkFree(new RightTeller(), false)).isFalse();
 	}
 
 	@Test
-	public void testCheckFreeUpHitBodySingle() {
+	public void testCheckFreeUpHitNeckSingle() {
 		ArrayList<Point> obstacles = new ArrayList<>();
 		SnakeMap map = SnakeMap.of(10, 10, obstacles);
 		map.setSnakeHead(new Point(0, 0));
 		Deque<Point> snakeBody = map.getSnakeBody();
 		snakeBody.add(new Point(0, 1));
-		assertThat(map.checkFree(new UpTeller())).isFalse();
+		assertThat(map.checkFree(new UpTeller(), false)).isFalse();
 	}
 
 	@Test
-	public void testCheckFreeDownHitBodySingle() {
+	public void testCheckFreeDownHitNeckSingle() {
 		ArrayList<Point> obstacles = new ArrayList<>();
 		SnakeMap map = SnakeMap.of(10, 10, obstacles);
 		map.setSnakeHead(new Point(0, 1));
 		Deque<Point> snakeBody = map.getSnakeBody();
 		snakeBody.add(new Point(0, 0));
-		assertThat(map.checkFree(new DownTeller())).isFalse();
+		assertThat(map.checkFree(new DownTeller(), false)).isFalse();
 	}
 
 	@Test
-	public void testCheckFreeLeftHitBodySingle() {
+	public void testCheckFreeLeftHitNeckSingle() {
 		ArrayList<Point> obstacles = new ArrayList<>();
 		SnakeMap map = SnakeMap.of(10, 10, obstacles);
 		map.setSnakeHead(new Point(1, 0));
 		Deque<Point> snakeBody = map.getSnakeBody();
 		snakeBody.add(new Point(0, 0));
-		assertThat(map.checkFree(new LeftTeller())).isFalse();
+		assertThat(map.checkFree(new LeftTeller(), false)).isFalse();
 	}
 
 	@Test
-	public void testCheckFreeRightHitBodySingle() {
+	public void testCheckFreeRightHitNeckSingle() {
 		ArrayList<Point> obstacles = new ArrayList<>();
 		SnakeMap map = SnakeMap.of(10, 10, obstacles);
 		map.setSnakeHead(new Point(0, 0));
 		Deque<Point> snakeBody = map.getSnakeBody();
 		snakeBody.add(new Point(1, 0));
-		assertThat(map.checkFree(new RightTeller())).isFalse();
+		assertThat(map.checkFree(new RightTeller(), false)).isFalse();
 	}
 
 	@Test
-	public void testCheckFreeUpHitBodyMultiple() {
+	public void testCheckFreeUpHitNeckMultiple() {
 		ArrayList<Point> obstacles = new ArrayList<>();
 		SnakeMap map = SnakeMap.of(10, 10, obstacles);
 		map.setSnakeHead(new Point(0, 0));
 		Deque<Point> snakeBody = map.getSnakeBody();
 		snakeBody.add(new Point(0, 2));
 		snakeBody.add(new Point(0, 1));
-		assertThat(map.checkFree(new UpTeller())).isFalse();
+		assertThat(map.checkFree(new UpTeller(), false)).isFalse();
 	}
 
 	@Test
-	public void testCheckFreeDownHitBodyMultiple() {
+	public void testCheckFreeDownHitNeckMultiple() {
 		ArrayList<Point> obstacles = new ArrayList<>();
 		SnakeMap map = SnakeMap.of(10, 10, obstacles);
 		map.setSnakeHead(new Point(0, 2));
 		Deque<Point> snakeBody = map.getSnakeBody();
 		snakeBody.add(new Point(0, 0));
 		snakeBody.add(new Point(0, 1));
-		assertThat(map.checkFree(new DownTeller())).isFalse();
+		assertThat(map.checkFree(new DownTeller(), false)).isFalse();
 	}
 
 	@Test
-	public void testCheckFreeLeftHitBodyMultiple() {
+	public void testCheckFreeLeftHitNeckMultiple() {
 		ArrayList<Point> obstacles = new ArrayList<>();
 		SnakeMap map = SnakeMap.of(10, 10, obstacles);
 		map.setSnakeHead(new Point(2, 0));
 		Deque<Point> snakeBody = map.getSnakeBody();
 		snakeBody.add(new Point(0, 0));
 		snakeBody.add(new Point(1, 0));
-		assertThat(map.checkFree(new LeftTeller())).isFalse();
+		assertThat(map.checkFree(new LeftTeller(), false)).isFalse();
 	}
 
 	@Test
-	public void testCheckFreeRightHitBodyMultiple() {
+	public void testCheckFreeRightHitNeckMultiple() {
 		ArrayList<Point> obstacles = new ArrayList<>();
 		SnakeMap map = SnakeMap.of(10, 10, obstacles);
 		map.setSnakeHead(new Point(0, 0));
 		Deque<Point> snakeBody = map.getSnakeBody();
 		snakeBody.add(new Point(2, 0));
 		snakeBody.add(new Point(1, 0));
-		assertThat(map.checkFree(new RightTeller())).isFalse();
+		assertThat(map.checkFree(new RightTeller(), false)).isFalse();
+	}
+
+	@Test
+	public void testCheckFreeUpHitBodyNoGrowth() {
+		ArrayList<Point> obstacles = new ArrayList<>();
+		SnakeMap map = SnakeMap.of(10, 10, obstacles);
+		map.setSnakeHead(new Point(1, 0));
+		Deque<Point> snakeBody = map.getSnakeBody();
+		snakeBody.add(new Point(1, 1));
+		snakeBody.add(new Point(0, 1));
+		snakeBody.add(new Point(0, 0));
+		assertThat(map.checkFree(new UpTeller(), false)).isTrue();
+	}
+
+	@Test
+	public void testCheckFreeDownHitBodyNoGrowth() {
+		ArrayList<Point> obstacles = new ArrayList<>();
+		SnakeMap map = SnakeMap.of(10, 10, obstacles);
+		map.setSnakeHead(new Point(1, 1));
+		Deque<Point> snakeBody = map.getSnakeBody();
+		snakeBody.add(new Point(1, 0));
+		snakeBody.add(new Point(0, 0));
+		snakeBody.add(new Point(0, 1));
+		assertThat(map.checkFree(new DownTeller(), false)).isTrue();
+	}
+
+	@Test
+	public void testCheckFreeLeftHitBodyNoGrowth() {
+		ArrayList<Point> obstacles = new ArrayList<>();
+		SnakeMap map = SnakeMap.of(10, 10, obstacles);
+		map.setSnakeHead(new Point(1, 0));
+		Deque<Point> snakeBody = map.getSnakeBody();
+		snakeBody.add(new Point(0, 0));
+		snakeBody.add(new Point(0, 1));
+		snakeBody.add(new Point(1, 1));
+		assertThat(map.checkFree(new LeftTeller(), false)).isTrue();
+	}
+
+	@Test
+	public void testCheckFreeRightHitBodyNoGrowth() {
+		ArrayList<Point> obstacles = new ArrayList<>();
+		SnakeMap map = SnakeMap.of(10, 10, obstacles);
+		map.setSnakeHead(new Point(0, 0));
+		Deque<Point> snakeBody = map.getSnakeBody();
+		snakeBody.add(new Point(1, 0));
+		snakeBody.add(new Point(1, 1));
+		snakeBody.add(new Point(0, 1));
+		assertThat(map.checkFree(new RightTeller(), false)).isTrue();
+	}
+
+	@Test
+	public void testCheckFreeUpHitBodyGrowth() {
+		ArrayList<Point> obstacles = new ArrayList<>();
+		SnakeMap map = SnakeMap.of(10, 10, obstacles);
+		map.setSnakeHead(new Point(1, 0));
+		Deque<Point> snakeBody = map.getSnakeBody();
+		snakeBody.add(new Point(1, 1));
+		snakeBody.add(new Point(0, 1));
+		snakeBody.add(new Point(0, 0));
+		assertThat(map.checkFree(new UpTeller(), true)).isFalse();
+	}
+
+	@Test
+	public void testCheckFreeDownHitBodyGrowth() {
+		ArrayList<Point> obstacles = new ArrayList<>();
+		SnakeMap map = SnakeMap.of(10, 10, obstacles);
+		map.setSnakeHead(new Point(1, 1));
+		Deque<Point> snakeBody = map.getSnakeBody();
+		snakeBody.add(new Point(1, 0));
+		snakeBody.add(new Point(0, 0));
+		snakeBody.add(new Point(0, 1));
+		assertThat(map.checkFree(new DownTeller(), true)).isFalse();
+	}
+
+	@Test
+	public void testCheckFreeLeftHitBodyGrowth() {
+		ArrayList<Point> obstacles = new ArrayList<>();
+		SnakeMap map = SnakeMap.of(10, 10, obstacles);
+		map.setSnakeHead(new Point(1, 0));
+		Deque<Point> snakeBody = map.getSnakeBody();
+		snakeBody.add(new Point(0, 0));
+		snakeBody.add(new Point(0, 1));
+		snakeBody.add(new Point(1, 1));
+		assertThat(map.checkFree(new LeftTeller(), true)).isFalse();
+	}
+
+	@Test
+	public void testCheckFreeRightHitBodyGrowth() {
+		ArrayList<Point> obstacles = new ArrayList<>();
+		SnakeMap map = SnakeMap.of(10, 10, obstacles);
+		map.setSnakeHead(new Point(0, 0));
+		Deque<Point> snakeBody = map.getSnakeBody();
+		snakeBody.add(new Point(1, 0));
+		snakeBody.add(new Point(1, 1));
+		snakeBody.add(new Point(0, 1));
+		assertThat(map.checkFree(new RightTeller(), true)).isFalse();
 	}
 
 	@Test
@@ -622,7 +718,7 @@ public class SnakeMapTest {
 		ArrayList<Point> obstacles = new ArrayList<>();
 		SnakeMap map = SnakeMap.of(10, 10, obstacles);
 		map.setSnakeHead(new Point(5, 5));
-		assertThat(map.checkFree(new UpTeller())).isTrue();
+		assertThat(map.checkFree(new UpTeller(), false)).isTrue();
 	}
 
 	@Test
@@ -630,7 +726,7 @@ public class SnakeMapTest {
 		ArrayList<Point> obstacles = new ArrayList<>();
 		SnakeMap map = SnakeMap.of(10, 10, obstacles);
 		map.setSnakeHead(new Point(5, 5));
-		assertThat(map.checkFree(new DownTeller())).isTrue();
+		assertThat(map.checkFree(new DownTeller(), false)).isTrue();
 	}
 
 	@Test
@@ -638,7 +734,7 @@ public class SnakeMapTest {
 		ArrayList<Point> obstacles = new ArrayList<>();
 		SnakeMap map = SnakeMap.of(10, 10, obstacles);
 		map.setSnakeHead(new Point(5, 5));
-		assertThat(map.checkFree(new LeftTeller())).isTrue();
+		assertThat(map.checkFree(new LeftTeller(), false)).isTrue();
 	}
 
 	@Test
@@ -646,7 +742,7 @@ public class SnakeMapTest {
 		ArrayList<Point> obstacles = new ArrayList<>();
 		SnakeMap map = SnakeMap.of(10, 10, obstacles);
 		map.setSnakeHead(new Point(5, 5));
-		assertThat(map.checkFree(new RightTeller())).isTrue();
+		assertThat(map.checkFree(new RightTeller(), false)).isTrue();
 	}
 
 	@Test
@@ -657,7 +753,7 @@ public class SnakeMapTest {
 		map.setSnakeHead(new Point(5, 5));
 		Deque<Point> snakeBody = map.getSnakeBody();
 		snakeBody.add(new Point(5, 4));
-		assertThat(map.checkFree(new UpTeller())).isTrue();
+		assertThat(map.checkFree(new UpTeller(), false)).isTrue();
 	}
 
 	@Test
@@ -668,7 +764,7 @@ public class SnakeMapTest {
 		map.setSnakeHead(new Point(5, 5));
 		Deque<Point> snakeBody = map.getSnakeBody();
 		snakeBody.add(new Point(5, 6));
-		assertThat(map.checkFree(new DownTeller())).isTrue();
+		assertThat(map.checkFree(new DownTeller(), false)).isTrue();
 	}
 
 	@Test
@@ -679,7 +775,7 @@ public class SnakeMapTest {
 		map.setSnakeHead(new Point(5, 5));
 		Deque<Point> snakeBody = map.getSnakeBody();
 		snakeBody.add(new Point(6, 5));
-		assertThat(map.checkFree(new LeftTeller())).isTrue();
+		assertThat(map.checkFree(new LeftTeller(), false)).isTrue();
 	}
 
 	@Test
@@ -690,7 +786,7 @@ public class SnakeMapTest {
 		map.setSnakeHead(new Point(5, 5));
 		Deque<Point> snakeBody = map.getSnakeBody();
 		snakeBody.add(new Point(4, 5));
-		assertThat(map.checkFree(new RightTeller())).isTrue();
+		assertThat(map.checkFree(new RightTeller(), false)).isTrue();
 	}
 
 	@Test
@@ -703,7 +799,7 @@ public class SnakeMapTest {
 		Deque<Point> snakeBody = map.getSnakeBody();
 		snakeBody.add(new Point(5, 4));
 		snakeBody.add(new Point(5, 3));
-		assertThat(map.checkFree(new UpTeller())).isTrue();
+		assertThat(map.checkFree(new UpTeller(), false)).isTrue();
 	}
 
 	@Test
@@ -716,7 +812,7 @@ public class SnakeMapTest {
 		Deque<Point> snakeBody = map.getSnakeBody();
 		snakeBody.add(new Point(5, 6));
 		snakeBody.add(new Point(5, 7));
-		assertThat(map.checkFree(new DownTeller())).isTrue();
+		assertThat(map.checkFree(new DownTeller(), false)).isTrue();
 	}
 
 	@Test
@@ -729,7 +825,7 @@ public class SnakeMapTest {
 		Deque<Point> snakeBody = map.getSnakeBody();
 		snakeBody.add(new Point(6, 5));
 		snakeBody.add(new Point(7, 5));
-		assertThat(map.checkFree(new LeftTeller())).isTrue();
+		assertThat(map.checkFree(new LeftTeller(), false)).isTrue();
 	}
 
 	@Test
@@ -742,7 +838,7 @@ public class SnakeMapTest {
 		Deque<Point> snakeBody = map.getSnakeBody();
 		snakeBody.add(new Point(4, 5));
 		snakeBody.add(new Point(3, 5));
-		assertThat(map.checkFree(new RightTeller())).isTrue();
+		assertThat(map.checkFree(new RightTeller(), false)).isTrue();
 	}
 
 	@Test
@@ -1097,4 +1193,5 @@ public class SnakeMapTest {
 			assertThat(map.getSnakeBody()).containsExactly(new Point(5, 5));
 		}).doesNotThrowAnyException();
 	}
+
 }

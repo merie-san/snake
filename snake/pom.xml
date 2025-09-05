@@ -14,15 +14,17 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.release>17</maven.compiler.release>
 		<sonar.coverage.exclusions>
-		**/App.*, 
-		**/GameRecord.*, 
-		**/GameSetting.*,
-		**/TellerCatalog.*,
+			**/App.*,
+			**/GameRecord.*,
+			**/GameSetting.*,
+			**/TellerCatalog.*,
+			**/GridBagConstraintsBuilder.*,
 		</sonar.coverage.exclusions>
 		<sonar.junit.reportPaths>
 			${project.build.directory}/surefire-reports,
 			${project.build.directory}/failsafe-reports
 		</sonar.junit.reportPaths>
+		<argLine>--add-opens java.base/java.util=ALL-UNNAMED</argLine>
 	</properties>
 
 	<dependencyManagement>
@@ -174,6 +176,7 @@
 							<exclude>**/GameRecord.*</exclude>
 							<exclude>**/GameSetting.*</exclude>
 							<exclude>**/TellerCatalog.*</exclude>
+							<exclude>**/GridBagConstraintsBuilder.*</exclude>
 						</excludes>
 					</configuration>
 				</plugin>
@@ -335,6 +338,7 @@
 										<param>com.minigames.snake.model.Game*</param>
 										<param>com.minigames.snake.model.BaseEntity</param>
 										<param>com.minigames.snake.model.*Factory</param>
+										<param>com.minigames.snake.view.*</param>
 									</excludedClasses>
 									<excludedMethods>
 										<param>get*</param>
@@ -344,6 +348,9 @@
 									<targetTests>
 										<param>com.minigames.snake.*</param>
 									</targetTests>
+									<excludedTestClasses>
+										<param>com.minigames.snake.view.*</param>
+									</excludedTestClasses>
 								</configuration>
 							</execution>
 						</executions>

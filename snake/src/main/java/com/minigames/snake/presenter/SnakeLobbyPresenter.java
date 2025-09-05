@@ -12,7 +12,7 @@ public interface SnakeLobbyPresenter {
 
 	Collection<GameSetting> loadConfigurations();
 
-	void saveConfiguration(int height, int width, int obstacleN, String name, SnakeView view);
+	void saveConfiguration(int width, int height, int obstacleN, String name, SnakeView view);
 
 	void renameConfiguration(GameSetting configuration, String newName, SnakeView view);
 

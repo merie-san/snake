@@ -8,9 +8,13 @@ import com.minigames.snake.view.SnakeView;
 
 public interface SnakeMatchPresenter {
 
-	void startMatch(GameSetting configuration);
+	void startMatch();
 
-	void endMatch(SnakeView view);
+	void changeSetting(GameSetting setting, SnakeView globalView);
+
+	boolean hasSetting();
+
+	void endMatch(SnakeView globalView);
 
 	int currentScore();
 
@@ -24,14 +28,14 @@ public interface SnakeMatchPresenter {
 
 	Point getApple();
 
-	void goUp(SnakeView view);
+	void goUp(SnakeView globalView, SnakeView panelView, SnakeView matchView);
 
-	void goDown(SnakeView view);
+	void goDown(SnakeView globalView, SnakeView panelView, SnakeView matchView);
 
-	void goRight(SnakeView view);
+	void goRight(SnakeView globalView, SnakeView panelView, SnakeView matchView);
 
-	void goLeft(SnakeView view);
-	
-	boolean isGameOver();
+	void goLeft(SnakeView globalView, SnakeView panelView, SnakeView matchView);
+
+	boolean isPlaying();
 
 }

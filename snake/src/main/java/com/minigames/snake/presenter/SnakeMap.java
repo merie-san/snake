@@ -6,6 +6,7 @@ import java.util.Deque;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.stream.IntStream;
 
 import com.minigames.snake.model.Generated;
 
@@ -85,18 +86,27 @@ public class SnakeMap {
 		return apple;
 	}
 
-	public boolean checkFree(PositionTeller teller) {
+	public boolean checkFree(PositionTeller teller, boolean snakeGrew) {
 		if (teller == null) {
 			throw new IllegalArgumentException("the teller cannot be null");
 		}
+		Queue<Point> bodyPoints = snakeBodyCopy();
 		Point nextPosition = teller.tellNextPosition(snakeHead);
 		return !(nextPosition.x < 0 || nextPosition.x >= mapWidth || nextPosition.y < 0 || nextPosition.y >= mapHeight
 				|| obstacles.stream().anyMatch(obstacle -> obstacle.equals(nextPosition))
-				|| !snakeBody.isEmpty() && snakeBody.peekLast().equals(nextPosition));
+				|| !snakeBody.isEmpty() && snakeBody.peekLast().equals(nextPosition)
+				|| IntStream.range(0, snakeBody.size()).anyMatch(i -> {
+					Point bodyPoint = bodyPoints.remove();
+					if (snakeGrew || i > 0) {
+						return bodyPoint.equals(nextPosition);
+					} else
+						return false;
+				}));
+
 	}
 
 	public boolean moveSnake(PositionTeller teller, boolean snakeGrew) {
-		if (!checkFree(teller)) {
+		if (!checkFree(teller, snakeGrew)) {
 			throw new IllegalArgumentException("illegal direction");
 		}
 		Point nextPosition = teller.tellNextPosition(snakeHead);

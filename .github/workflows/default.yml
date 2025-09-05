@@ -35,8 +35,12 @@ jobs:
             restore-keys: ${{matrix.os}}-m2&sonar-
       -  name: Build with Maven and SonarCloud
          if: ${{always()}}
-         run: mvn verify -Pcode-coverage -Pmutation-testing coveralls:report sonar:sonar ${{matrix.additional-maven-properties}}
-         working-directory: snake
+         run: xvfb-run mvn verify -Pcode-coverage -Pmutation-testing 
+         working-directory: ./snake
+      -  name: Upload coverage to coveralls and scan for issues with sonarQube
+         if: ${{always()}}
+         run: mvn coveralls:report sonar:sonar ${{matrix.additional-maven-properties}}
+         working-directory: ./snake
          env:
             SONAR_TOKEN: ${{secrets.SONAR_TOKEN}}
             COVERALLS_REPO_TOKEN: ${{secrets.COVERALLS_REPO_TOKEN}}
@@ -44,7 +48,7 @@ jobs:
          if: ${{always()}}
          uses: actions/upload-artifact@v4
          with:
-            name: reports-os-${{matrix.os}}
+            name: report
             path: |-
                **/target/site
                **/target/pit-reports

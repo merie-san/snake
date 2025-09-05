@@ -7,7 +7,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
-@Generated
 @Entity
 //we suppress warnings on equals overriding since equality between entities is always implemented with UUID,
 //so there is no need to override the base method. 
@@ -23,10 +22,12 @@ public class GameRecord extends BaseEntity {
 	private GameSetting setting;
 
 	// for JPA
+	@Generated
 	protected GameRecord() {
 		super();
 	}
 
+	@Generated
 	public GameRecord(String uuid, int score, LocalDate date, GameSetting setting) {
 		super(uuid);
 		this.score = score;
@@ -34,16 +35,24 @@ public class GameRecord extends BaseEntity {
 		this.setting = setting;
 	}
 
+	@Generated
 	public int getScore() {
 		return score;
 	}
 
+	@Generated
 	public LocalDate getDate() {
 		return date;
 	}
 
+	@Generated
 	public GameSetting getSetting() {
 		return setting;
+	}
+
+	@Override
+	public String toString() {
+		return "game: date " + date.toString() + " - score " + score + " - " + setting.getName();
 	}
 
 }
