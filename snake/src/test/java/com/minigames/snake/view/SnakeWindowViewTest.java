@@ -687,15 +687,13 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 
 	@Test
 	public void testMatchPanelKeyboardControls() {
-		GuiActionRunner.execute(() -> {
-			snakeView.show("Match panel");
-		});
 		when(matchPresenter.getMapHeight()).thenReturn(5);
 		when(matchPresenter.getMapWidth()).thenReturn(5);
 		when(matchPresenter.getApple()).thenReturn(new Point(2, 3));
 		when(matchPresenter.hasSetting()).thenReturn(true);
 		when(matchPresenter.isPlaying()).thenReturn(true);
 		GuiActionRunner.execute(() -> {
+			snakeView.show("Match panel");
 			canvas.addKeyListener(
 					new SnakeCanvasKeyListener(matchPresenter, canvas, snakeView.getMatchPanel(), snakeView));
 		});
@@ -714,12 +712,10 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 
 	@Test
 	public void testMatchCardUpdatePlaying() {
-		GuiActionRunner.execute(() -> {
-			snakeView.show("Match panel");
-		});
 		when(matchPresenter.currentScore()).thenReturn(30);
 		when(matchPresenter.isPlaying()).thenReturn(true);
 		GuiActionRunner.execute(() -> {
+			snakeView.show("Match panel");
 			snakeView.getMatchPanel().update();
 		});
 		window.label("scoreLabel").requireText("Current score: 30");
