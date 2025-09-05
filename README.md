@@ -1,2 +1,2 @@
-# snake [![Coverage Status](https://coveralls.io/repos/github/merie-san/snake/badge.svg?branch=main)](https://coveralls.io/github/merie-san/snake?branch=main) 
+# snake [![Coverage Status](https://coveralls.io/repos/github/merie-san/snake/badge.svg?branch=main)](https://coveralls.io/github/merie-san/snake?branch=main) [![default workflow with maven](https://github.com/merie-san/snake/actions/workflows/default.yml/badge.svg?branch=main)](https://github.com/merie-san/snake/actions/workflows/default.yml) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=merie-san_snake&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=merie-san_snake) 
 Maven project for the final exam of AST (Automated Software Testing), year 2024-2025.
