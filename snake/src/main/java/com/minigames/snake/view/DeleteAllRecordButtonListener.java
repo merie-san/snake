@@ -6,17 +6,17 @@ import com.minigames.snake.presenter.SnakeLobbyPresenter;
 
 public class DeleteAllRecordButtonListener extends HighLightableButtonListener {
 
-	private SnakeView lobbyView;
+	private SnakeView snakeView;
 	private SnakeLobbyPresenter presenter;
 
-	public DeleteAllRecordButtonListener(SnakeView lobbyView, SnakeLobbyPresenter presenter) {
-		this.lobbyView = lobbyView;
+	public DeleteAllRecordButtonListener(SnakeView snakeView, SnakeLobbyPresenter presenter) {
+		this.snakeView = snakeView;
 		this.presenter = presenter;
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		presenter.clearGameHistory(lobbyView);
+		presenter.clearGameHistory(snakeView);
 	}
 
 }

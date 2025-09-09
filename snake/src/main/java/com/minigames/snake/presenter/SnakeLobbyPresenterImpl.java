@@ -34,7 +34,7 @@ public class SnakeLobbyPresenterImpl implements SnakeLobbyPresenter {
 		GameSetting newSetting = ModelFactory.gameSetting(width, height, obstacleN);
 		newSetting.setName(name);
 		repository.createSetting(newSetting);
-		view.update();
+		view.updateLobby();
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class SnakeLobbyPresenterImpl implements SnakeLobbyPresenter {
 			throw new IllegalArgumentException("configuration cannot be null");
 		}
 		repository.renameSetting(configuration, newName);
-		view.update();
+		view.updateLobby();
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class SnakeLobbyPresenterImpl implements SnakeLobbyPresenter {
 			throw new IllegalArgumentException("configuration cannot be null");
 		}
 		repository.deleteSetting(configuration);
-		view.update();
+		view.updateLobby();
 	}
 
 	@Override
@@ -75,13 +75,13 @@ public class SnakeLobbyPresenterImpl implements SnakeLobbyPresenter {
 			throw new IllegalArgumentException("record cannot be null");
 		}
 		repository.deleteRecord(gameRecord);
-		view.update();
+		view.updateLobby();
 	}
 
 	@Override
 	public void clearGameHistory(SnakeView view) {
 		repository.clearHistory();
-		view.update();
+		view.updateLobby();
 	}
 
 }

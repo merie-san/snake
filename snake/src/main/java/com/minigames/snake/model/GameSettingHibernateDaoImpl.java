@@ -11,7 +11,7 @@ public class GameSettingHibernateDaoImpl implements GameSettingHibernateDao {
 	@Override
 	public Collection<GameSetting> findAll() {
 		return emf.callInTransaction(em -> {
-			TypedQuery<GameSetting> query = em.createQuery("SELECT g from GameSetting g", GameSetting.class);
+			TypedQuery<GameSetting> query = em.createQuery("SELECT g FROM GameSetting g", GameSetting.class);
 			return query.getResultList();
 		});
 	}

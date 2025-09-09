@@ -195,6 +195,11 @@
 					<artifactId>sonar-maven-plugin</artifactId>
 					<version>5.1.0.4751</version>
 				</plugin>
+				<plugin>
+					<groupId>io.fabric8</groupId>
+					<artifactId>docker-maven-plugin</artifactId>
+					<version>0.46.0</version>
+				</plugin>
 				<!-- site lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#site_Lifecycle -->
 				<plugin>
 					<artifactId>maven-site-plugin</artifactId>
@@ -258,6 +263,42 @@
 						<phase>verify</phase>
 						<goals>
 							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>io.fabric8</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<configuration>
+					<images>
+						<image>
+							<name>mysql:8.0.33</name>
+							<run>
+								<env>
+									<MYSQL_ROOT_PASSWORD>root</MYSQL_ROOT_PASSWORD>
+									<MYSQL_DATABASE>snakedb</MYSQL_DATABASE>
+								</env>
+								<ports>
+									<port>3306:3306</port>
+								</ports>
+							</run>
+						</image>
+					</images>
+				</configuration>
+				<executions>
+					<execution>
+						<id>docker-start</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>start</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>docker-stop</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>stop</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -346,11 +387,9 @@
 										<param>is*</param>
 									</excludedMethods>
 									<targetTests>
-										<param>com.minigames.snake.*</param>
+										<param>com.minigames.snake.model.*Test</param>
+										<param>com.minigames.snake.presenter.*Test</param>
 									</targetTests>
-									<excludedTestClasses>
-										<param>com.minigames.snake.view.*</param>
-									</excludedTestClasses>
 								</configuration>
 							</execution>
 						</executions>

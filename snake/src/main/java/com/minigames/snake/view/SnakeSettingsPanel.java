@@ -44,16 +44,18 @@ public class SnakeSettingsPanel extends JPanel {
 	private JFormattedTextField obstaclesTextBox;
 	private JButton submitButton;
 	private DefaultListModel<GameSetting> listModel;
-	private transient SnakeView lobbyView;
+	private transient SnakeView snakeView;
 	private transient SnakeLobbyPresenter lobbyPresenter;
 	private transient SnakeMatchPresenter matchPresenter;
+	private SnakeMatchPanel matchPanel;
 
-	public SnakeSettingsPanel(SnakeView lobbyView, SnakeLobbyPresenter lobbyPresenter,
-			SnakeMatchPresenter matchPresenter, JPanel parentCards) {
-		this.lobbyView = lobbyView;
+	public SnakeSettingsPanel(SnakeView snakeView, SnakeLobbyPresenter lobbyPresenter,
+			SnakeMatchPresenter matchPresenter, JPanel parentCards, SnakeMatchPanel matchPanel) {
+		this.snakeView = snakeView;
 		this.lobbyPresenter = lobbyPresenter;
 		this.matchPresenter = matchPresenter;
 		this.parentCards = parentCards;
+		this.matchPanel = matchPanel;
 		parentCards.add(this, ViewComponentNames.SETTINGS_PANEL);
 		this.setName(ViewComponentNames.SETTINGS_PANEL);
 		this.setLayout(new GridBagLayout());
@@ -158,11 +160,12 @@ public class SnakeSettingsPanel extends JPanel {
 		settingsList.addListSelectionListener(
 				new PanelListSelectionButtonListener(renameButton, useSettingButton, deleteSettingButton));
 		settingsList.addListSelectionListener(new PanelListSelectionTextBoxListener(newNameTextBox, settingsList));
-		useSettingButton.addMouseListener(new UseSettingButtonListener(lobbyView, matchPresenter, settingsList));
-		deleteSettingButton.addMouseListener(new DeleteSettingButtonListener(settingsList, lobbyView, lobbyPresenter));
+		useSettingButton
+				.addMouseListener(new UseSettingButtonListener(snakeView, matchPresenter, settingsList, matchPanel));
+		deleteSettingButton.addMouseListener(new DeleteSettingButtonListener(settingsList, snakeView, lobbyPresenter));
 		renameButton.addMouseListener(
-				new RenameSettingButtonListener(lobbyView, lobbyPresenter, newNameTextBox, settingsList));
-		submitButton.addMouseListener(new SubmitSettingButtonListener(lobbyView, this, lobbyPresenter, nameTextBox,
+				new RenameSettingButtonListener(snakeView, lobbyPresenter, newNameTextBox, settingsList));
+		submitButton.addMouseListener(new SubmitSettingButtonListener(snakeView, this, lobbyPresenter, nameTextBox,
 				widthTextBox, heightTextBox, obstaclesTextBox));
 	}
 
@@ -176,6 +179,12 @@ public class SnakeSettingsPanel extends JPanel {
 	@Generated
 	DefaultListModel<GameSetting> getListModel() {
 		return listModel;
+	}
+
+	// for tests
+	@Generated
+	JList<GameSetting> getList() {
+		return settingsList;
 	}
 
 }

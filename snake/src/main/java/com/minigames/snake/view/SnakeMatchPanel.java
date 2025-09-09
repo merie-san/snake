@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 import com.minigames.snake.model.Generated;
 import com.minigames.snake.presenter.SnakeMatchPresenter;
 
-public class SnakeMatchPanel extends JPanel implements SnakeView {
+public class SnakeMatchPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel parentCards;
@@ -26,16 +26,17 @@ public class SnakeMatchPanel extends JPanel implements SnakeView {
 	private JButton startButton;
 	private JButton quitButton;
 	private transient SnakeMatchPresenter presenter;
-	private transient SnakeView lobbyView;
+	private transient SnakeView snakeView;
 
-	public SnakeMatchPanel(SnakeView lobbyView, JPanel parentCards, SnakeMatchPresenter presenter) {
-		this.lobbyView = lobbyView;
+	public SnakeMatchPanel(SnakeView snakeView, JPanel parentCards, SnakeMatchPresenter presenter) {
+		this.snakeView = snakeView;
 		this.parentCards = parentCards;
 		this.presenter = presenter;
 		parentCards.add(this, ViewComponentNames.MATCH_PANEL);
 		this.setName(ViewComponentNames.MATCH_PANEL);
 		this.setLayout(new GridBagLayout());
 		matchCanvas = new SnakeCanvas(presenter);
+		matchCanvas.setFocusable(true);
 	}
 
 	public void initializeComponents() {
@@ -93,27 +94,32 @@ public class SnakeMatchPanel extends JPanel implements SnakeView {
 				settingsButtonM.setEnabled(false);
 				startButton.setEnabled(false);
 				quitButton.setEnabled(true);
-				presenter.startMatch();
-				matchCanvas.addKeyListener(
-						new SnakeCanvasKeyListener(presenter, lobbyView, SnakeMatchPanel.this, matchCanvas));
+				presenter.startMatch(snakeView);
+				matchCanvas.addKeyListener(new SnakeCanvasKeyListener(presenter, snakeView));
+				matchCanvas.requestFocusInWindow();
 			}
 		});
 		quitButton.addMouseListener(new EndGameButtonListener(historyButtonM, settingsButtonM, startButton, quitButton,
-				presenter, lobbyView, matchCanvas));
+				presenter, snakeView, matchCanvas));
 	}
 
-	public void refresh() {
-		matchCanvas.refresh();
+	public void enableButtons() {
 		historyButtonM.setEnabled(true);
 		settingsButtonM.setEnabled(true);
 		startButton.setEnabled(true);
 		quitButton.setEnabled(false);
 	}
 
-	@Override
-	public void update() {
+	public void refresh() {
+		if (presenter.hasSetting() && !presenter.isPlaying()) {
+			enableButtons();
+		}
+		if (!presenter.hasSetting()&&presenter.isPlaying()) {
+			throw new IllegalStateException("Player cannot be in game while having no setting");
+		}
 		scoreLabel.setText(ViewComponentNames.SCORE_LABEL_TEXT + presenter.currentScore());
 		messageLabel.setText(presenter.isPlaying() ? "In game" : "No game");
+		matchCanvas.refresh();
 	}
 
 	// for testing

@@ -11,7 +11,7 @@ import com.minigames.snake.presenter.SnakeLobbyPresenter;
 
 public class SubmitSettingButtonListener extends HighLightableButtonListener {
 
-	private SnakeView lobbyView;
+	private SnakeView snakeView;
 	private JTextField nameBox;
 	private JFormattedTextField widthBox;
 	private JFormattedTextField heightBox;
@@ -19,10 +19,10 @@ public class SubmitSettingButtonListener extends HighLightableButtonListener {
 	private SnakeLobbyPresenter presenter;
 	private JPanel parentPanel;
 
-	public SubmitSettingButtonListener(SnakeView lobbyView, JPanel parentPanel, SnakeLobbyPresenter presenter,
+	public SubmitSettingButtonListener(SnakeView snakeView, JPanel parentPanel, SnakeLobbyPresenter presenter,
 			JTextField nameBox, JFormattedTextField widthBox, JFormattedTextField heightBox,
 			JFormattedTextField obstaclesBox) {
-		this.lobbyView = lobbyView;
+		this.snakeView = snakeView;
 		this.parentPanel = parentPanel;
 		this.presenter = presenter;
 		this.nameBox = nameBox;
@@ -50,7 +50,7 @@ public class SubmitSettingButtonListener extends HighLightableButtonListener {
 			JOptionPane.showMessageDialog(parentPanel, "the lenght of the setting's name must be contained in [0, 20]");
 			return;
 		}
-		presenter.saveConfiguration(width, height, obstacles, name, lobbyView);
+		presenter.saveConfiguration(width, height, obstacles, name, snakeView);
 	}
 
 }

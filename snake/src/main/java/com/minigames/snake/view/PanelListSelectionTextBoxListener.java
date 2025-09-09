@@ -20,8 +20,14 @@ public class PanelListSelectionTextBoxListener implements ListSelectionListener 
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
 		if (!e.getValueIsAdjusting()) {
-			linkedTextBox.setEnabled(true);
-			linkedTextBox.setText(monitoredList.getSelectedValue().getName());
+			GameSetting selectedSetting = monitoredList.getSelectedValue();
+			if (selectedSetting != null) {
+				linkedTextBox.setEnabled(true);
+				linkedTextBox.setText(selectedSetting.getName());
+			} else {
+				linkedTextBox.setEnabled(false);
+				linkedTextBox.setText("");
+			}
 		}
 	}
 

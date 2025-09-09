@@ -2,6 +2,8 @@ package com.minigames.snake.view;
 
 public interface SnakeView {
 	
-	void update();
+	void updateLobby();
+	
+	void updateMatch();
 
 }

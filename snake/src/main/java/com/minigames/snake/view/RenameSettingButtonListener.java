@@ -10,14 +10,14 @@ import com.minigames.snake.presenter.SnakeLobbyPresenter;
 
 public class RenameSettingButtonListener extends HighLightableButtonListener {
 
-	private SnakeView lobbyView;
+	private SnakeView snakeView;
 	private JTextField linkedTextBox;
 	private JList<GameSetting> linkedList;
 	private SnakeLobbyPresenter presenter;
 
-	public RenameSettingButtonListener(SnakeView lobbyView, SnakeLobbyPresenter presenter, JTextField linkedTextBox,
+	public RenameSettingButtonListener(SnakeView snakeView, SnakeLobbyPresenter presenter, JTextField linkedTextBox,
 			JList<GameSetting> linkedList) {
-		this.lobbyView = lobbyView;
+		this.snakeView = snakeView;
 		this.presenter = presenter;
 		this.linkedTextBox = linkedTextBox;
 		this.linkedList = linkedList;
@@ -25,7 +25,7 @@ public class RenameSettingButtonListener extends HighLightableButtonListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		presenter.renameConfiguration(linkedList.getSelectedValue(), linkedTextBox.getText(), lobbyView);
+		presenter.renameConfiguration(linkedList.getSelectedValue(), linkedTextBox.getText(), snakeView);
 	}
 
 }
