@@ -9,20 +9,24 @@ import com.minigames.snake.presenter.SnakeMatchPresenter;
 
 public class UseSettingButtonListener extends HighLightableButtonListener {
 
-	private SnakeView lobbyView;
+	private SnakeView snakeView;
 	private JList<GameSetting> monitoredList;
 	private SnakeMatchPresenter presenter;
+	private SnakeMatchPanel matchPanel;
 
-	public UseSettingButtonListener(SnakeView lobbyView, SnakeMatchPresenter presenter,
-			JList<GameSetting> monitoredList) {
-		this.lobbyView = lobbyView;
+
+	public UseSettingButtonListener(SnakeView snakeView, SnakeMatchPresenter presenter,
+			JList<GameSetting> monitoredList, SnakeMatchPanel matchPanel) {
+		this.snakeView = snakeView;
 		this.presenter = presenter;
 		this.monitoredList = monitoredList;
+		this.matchPanel = matchPanel;
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		presenter.changeSetting(monitoredList.getSelectedValue(), lobbyView);
+		presenter.changeSetting(monitoredList.getSelectedValue(), snakeView);
+		matchPanel.enableButtons();
 	}
 
 }

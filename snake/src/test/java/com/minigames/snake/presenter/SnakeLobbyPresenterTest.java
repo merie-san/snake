@@ -91,7 +91,7 @@ public class SnakeLobbyPresenterTest {
 		ArgumentCaptor<GameSetting> settingCaptor = ArgumentCaptor.forClass(GameSetting.class);
 		presenter.saveConfiguration(10, 10, 10, "new setting", view);
 		verify(repository).createSetting(settingCaptor.capture());
-		verify(view).update();
+		verify(view).updateLobby();
 		verifyNoMoreInteractions(repository);
 		GameSetting newConfiguration = settingCaptor.getValue();
 		assertThat(newConfiguration.getHeight()).isEqualTo(10);
@@ -112,7 +112,7 @@ public class SnakeLobbyPresenterTest {
 		String newName = "new name";
 		presenter.renameConfiguration(setting, newName, view);
 		verify(repository).renameSetting(setting, newName);
-		verify(view).update();
+		verify(view).updateLobby();
 		verifyNoMoreInteractions(repository);
 	}
 
@@ -134,7 +134,7 @@ public class SnakeLobbyPresenterTest {
 		GameSetting setting = new GameSetting("1", 10, 10, 10);
 		presenter.removeConfiguration(setting, view);
 		verify(repository).deleteSetting(setting);
-		verify(view).update();
+		verify(view).updateLobby();
 		verifyNoMoreInteractions(repository);
 	}
 
@@ -217,7 +217,7 @@ public class SnakeLobbyPresenterTest {
 		GameRecord gameRecord = new GameRecord("1", 0, null, null);
 		presenter.removeRecord(gameRecord, view);
 		verify(repository).deleteRecord(gameRecord);
-		verify(view).update();
+		verify(view).updateLobby();
 		verifyNoMoreInteractions(repository);
 	}
 
@@ -225,7 +225,7 @@ public class SnakeLobbyPresenterTest {
 	public void testClearGameHistory() {
 		presenter.clearGameHistory(view);
 		verify(repository).clearHistory();
-		verify(view).update();
+		verify(view).updateLobby();
 		verifyNoMoreInteractions(repository);
 	}
 }

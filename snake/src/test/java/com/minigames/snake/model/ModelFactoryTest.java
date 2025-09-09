@@ -41,21 +41,25 @@ public class ModelFactoryTest {
 	@Test
 	public void testGameSettingNegativeObstacles() {
 		assertThatThrownBy(() -> {
-			ModelFactory.gameSetting(1, 1, 0);
-		}).isInstanceOf(IllegalArgumentException.class).hasMessage("number of obstacles cannot be zero o negative");
+			ModelFactory.gameSetting(1, 1, -1);
+		}).isInstanceOf(IllegalArgumentException.class).hasMessage("number of obstacles cannot be negative");
 	}
 
 	@Test
 	public void testGameSettingZeroObstacles() {
-		assertThatThrownBy(() -> {
-			ModelFactory.gameSetting(1, 1, 0);
-		}).isInstanceOf(IllegalArgumentException.class).hasMessage("number of obstacles cannot be zero o negative");
+		assertThatCode(() -> {
+			GameSetting setting = ModelFactory.gameSetting(1, 1, 0);
+			assertThat(setting.getHeight()).isEqualTo(1);
+			assertThat(setting.getWidth()).isEqualTo(1);
+			assertThat(setting.getObstacleNumber()).isZero();
+		}).doesNotThrowAnyException();
 	}
-	
+
 	@Test
-	public void testGameSettingToomanyObstacles(){
-		assertThatThrownBy(()-> ModelFactory.gameSetting(2, 1, 2)).isInstanceOf(IllegalArgumentException.class).hasMessage("number of obstacles must be less than the surface of the map");
-		
+	public void testGameSettingToomanyObstacles() {
+		assertThatThrownBy(() -> ModelFactory.gameSetting(2, 1, 2)).isInstanceOf(IllegalArgumentException.class)
+				.hasMessage("number of obstacles must be less than the surface of the map");
+
 	}
 
 	@Test

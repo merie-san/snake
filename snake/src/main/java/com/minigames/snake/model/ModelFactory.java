@@ -16,8 +16,8 @@ public class ModelFactory {
 		if (width <= 0) {
 			throw new IllegalArgumentException("width cannot be zero o negative");
 		}
-		if (obstacleNumber <= 0) {
-			throw new IllegalArgumentException("number of obstacles cannot be zero o negative");
+		if (obstacleNumber < 0) {
+			throw new IllegalArgumentException("number of obstacles cannot be negative");
 		}
 		if (obstacleNumber>=width*height) {
 			throw new IllegalArgumentException("number of obstacles must be less than the surface of the map");

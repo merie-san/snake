@@ -9,19 +9,19 @@ import com.minigames.snake.presenter.SnakeLobbyPresenter;
 
 public class DeleteSettingButtonListener extends HighLightableButtonListener {
 	private JList<GameSetting> linkedList;
-	private SnakeView lobbyView;
+	private SnakeView snakeView;
 	private SnakeLobbyPresenter presenter;
 
-	public DeleteSettingButtonListener(JList<GameSetting> linkedList, SnakeView lobbyView,
+	public DeleteSettingButtonListener(JList<GameSetting> linkedList, SnakeView snakeView,
 			SnakeLobbyPresenter presenter) {
 		this.linkedList = linkedList;
-		this.lobbyView = lobbyView;
+		this.snakeView = snakeView;
 		this.presenter = presenter;
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		presenter.removeConfiguration(linkedList.getSelectedValue(), lobbyView);
+		presenter.removeConfiguration(linkedList.getSelectedValue(), snakeView);
 	}
 
 }

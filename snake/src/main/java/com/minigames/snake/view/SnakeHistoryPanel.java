@@ -31,11 +31,11 @@ public class SnakeHistoryPanel extends JPanel {
 	private JLabel highScoreLabel;
 	private JButton deleteSelectedButton;
 	private DefaultListModel<GameRecord> listModel;
-	private transient SnakeView lobbyView;
+	private transient SnakeView snakeView;
 	private transient SnakeLobbyPresenter presenter;
 
-	public SnakeHistoryPanel(SnakeView lobbyView, SnakeLobbyPresenter presenter, JPanel parentCards) {
-		this.lobbyView = lobbyView;
+	public SnakeHistoryPanel(SnakeView snakeView, SnakeLobbyPresenter presenter, JPanel parentCards) {
+		this.snakeView = snakeView;
 		this.presenter = presenter;
 		this.parentCards = parentCards;
 		parentCards.add(this, ViewComponentNames.HISTORY_PANEL);
@@ -90,8 +90,8 @@ public class SnakeHistoryPanel extends JPanel {
 		settingsButtonH.addMouseListener(new PanelSwitchButtonListener(parentCards, ViewComponentNames.SETTINGS_PANEL));
 		matchButtonH.addMouseListener(new PanelSwitchButtonListener(parentCards, ViewComponentNames.MATCH_PANEL));
 		historyList.addListSelectionListener(new PanelListSelectionButtonListener(deleteSelectedButton));
-		deleteAllButton.addMouseListener(new DeleteAllRecordButtonListener(lobbyView, presenter));
-		deleteSelectedButton.addMouseListener(new DeleteRecordButtonListener(historyList, lobbyView, presenter));
+		deleteAllButton.addMouseListener(new DeleteAllRecordButtonListener(snakeView, presenter));
+		deleteSelectedButton.addMouseListener(new DeleteRecordButtonListener(historyList, snakeView, presenter));
 	}
 
 	public void refresh(Collection<GameRecord> newRecordList) {

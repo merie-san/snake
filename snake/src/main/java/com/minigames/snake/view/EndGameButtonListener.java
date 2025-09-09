@@ -13,17 +13,17 @@ public class EndGameButtonListener extends HighLightableButtonListener {
 	private JButton playButton;
 	private JButton quitButton;
 	private SnakeMatchPresenter presenter;
-	private SnakeView lobbyView;
+	private SnakeView snakeView;
 	private SnakeCanvas canvas;
 
 	public EndGameButtonListener(JButton historyButton, JButton settingsButton, JButton playButton, JButton quitButton,
-			SnakeMatchPresenter presenter, SnakeView lobbyView, SnakeCanvas canvas) {
+			SnakeMatchPresenter presenter, SnakeView snakeView, SnakeCanvas canvas) {
 		this.historyButton = historyButton;
 		this.settingsButton = settingsButton;
 		this.playButton = playButton;
 		this.quitButton = quitButton;
 		this.presenter = presenter;
-		this.lobbyView = lobbyView;
+		this.snakeView = snakeView;
 		this.canvas = canvas;
 
 	}
@@ -34,7 +34,7 @@ public class EndGameButtonListener extends HighLightableButtonListener {
 		settingsButton.setEnabled(true);
 		playButton.setEnabled(true);
 		quitButton.setEnabled(false);
-		presenter.endMatch(lobbyView);
+		presenter.endMatch(snakeView);
 		canvas.removeKeyListener(canvas.getKeyListeners().length!=0?canvas.getKeyListeners()[0]:null);
 	}
 }

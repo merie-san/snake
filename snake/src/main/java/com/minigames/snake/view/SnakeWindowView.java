@@ -34,8 +34,8 @@ public class SnakeWindowView extends JFrame implements SnakeView {
 		cards.setLayout(new CardLayout(0, 0));
 		welcomeCard = new SnakeWelcomePanel(cards);
 		historyCard = new SnakeHistoryPanel(this, lobbyPresenter, cards);
-		settingsCard = new SnakeSettingsPanel(this, lobbyPresenter, matchPresenter, cards);
 		matchCard = new SnakeMatchPanel(this, cards, matchPresenter);
+		settingsCard = new SnakeSettingsPanel(this, lobbyPresenter, matchPresenter, cards, matchCard);
 		welcomeCard.initializeComponents();
 		historyCard.initializeComponents();
 		settingsCard.initializeComponents();
@@ -43,9 +43,13 @@ public class SnakeWindowView extends JFrame implements SnakeView {
 	}
 
 	@Override
-	public void update() {
+	public void updateLobby() {
 		historyCard.refresh(presenter.loadHistory());
 		settingsCard.refresh(presenter.loadConfigurations());
+	}
+
+	@Override
+	public void updateMatch() {
 		matchCard.refresh();
 	}
 

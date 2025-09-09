@@ -12,7 +12,7 @@ public class GameRecordHibernateDaoImpl implements GameRecordHibernateDao {
 	@Override
 	public Collection<GameRecord> findAll() {
 		return emf.callInTransaction(em -> {
-			TypedQuery<GameRecord> query = em.createQuery("SELECT g from GameRecord g", GameRecord.class);
+			TypedQuery<GameRecord> query = em.createQuery("SELECT g FROM GameRecord g", GameRecord.class);
 			return query.getResultList();
 		});
 	}

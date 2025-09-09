@@ -10,19 +10,19 @@ import com.minigames.snake.presenter.SnakeLobbyPresenter;
 public class DeleteRecordButtonListener extends HighLightableButtonListener {
 
 	private JList<GameRecord> linkedList;
-	private SnakeView lobbyView;
+	private SnakeView snakeView;
 	private SnakeLobbyPresenter presenter;
 
-	public DeleteRecordButtonListener(JList<GameRecord> linkedList, SnakeView lobbyView,
+	public DeleteRecordButtonListener(JList<GameRecord> linkedList, SnakeView snakeView,
 			SnakeLobbyPresenter presenter) {
 		this.linkedList = linkedList;
-		this.lobbyView = lobbyView;
+		this.snakeView = snakeView;
 		this.presenter = presenter;
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		presenter.removeRecord(linkedList.getSelectedValue(), lobbyView);
+		presenter.removeRecord(linkedList.getSelectedValue(), snakeView);
 	}
 
 }

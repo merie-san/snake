@@ -8,34 +8,29 @@ import com.minigames.snake.presenter.SnakeMatchPresenter;
 public class SnakeCanvasKeyListener extends KeyAdapter {
 
 	private SnakeMatchPresenter presenter;
-	private SnakeView matchView;
-	private SnakeView panelView;
-	private SnakeView lobbyView;
+	private SnakeView snakeView;
 
-	public SnakeCanvasKeyListener(SnakeMatchPresenter presenter, SnakeView matchView, SnakeView panelView,
-			SnakeView lobbyView) {
+	public SnakeCanvasKeyListener(SnakeMatchPresenter presenter, SnakeView snakeView) {
 		this.presenter = presenter;
-		this.matchView = matchView;
-		this.panelView = panelView;
-		this.lobbyView = lobbyView;
+		this.snakeView = snakeView;
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_UP) {
-			presenter.goUp(lobbyView, panelView, matchView);
+			presenter.goUp( snakeView);
 		}
 		if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-			presenter.goDown(lobbyView, panelView, matchView);
+			presenter.goDown(snakeView);
 		}
 		if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-			presenter.goLeft(lobbyView, panelView, matchView);
+			presenter.goLeft( snakeView);
 		}
 		if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-			presenter.goRight(lobbyView, panelView, matchView);
+			presenter.goRight(snakeView);
 		}
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-			presenter.endMatch(lobbyView);
+			presenter.endMatch(snakeView);
 		}
 	}
 
