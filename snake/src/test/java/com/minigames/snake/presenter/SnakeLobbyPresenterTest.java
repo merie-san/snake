@@ -38,7 +38,7 @@ public class SnakeLobbyPresenterTest {
 	@Before
 	public void setup() {
 		closeable = MockitoAnnotations.openMocks(this);
-		view=mock(SnakeView.class);
+		view = mock(SnakeView.class);
 	}
 
 	@After
