@@ -21,16 +21,20 @@ public class SnakeCanvas extends JPanel {
 	public SnakeCanvas(SnakeMatchPresenter presenter) {
 		this.presenter = presenter;
 		setPreferredSize(new Dimension(300, 300));
+		setBackground(Color.WHITE);
 	}
 
 	public void refresh() {
-		if (presenter.isPlaying()) {
+		if (presenter.hasSetting()) {
+			int newCellSize = (int) Math.round(300.0 / (Math.max(presenter.getMapHeight(), presenter.getMapWidth())));
+			if (cellSize != newCellSize) {
+				cellSize = newCellSize;
+				setPreferredSize(
+						new Dimension(cellSize * presenter.getMapWidth(), cellSize * presenter.getMapHeight()));
+			}
+		}
+		if (isShowing()) {
 			repaint();
-		} else if (presenter.hasSetting()) {
-			cellSize = (int) Math.round(300.0 / (Math.max(presenter.getMapHeight(), presenter.getMapWidth())));
-			setPreferredSize(new Dimension(cellSize * presenter.getMapWidth(), cellSize * presenter.getMapHeight()));
-		} else {
-			setBackground(Color.WHITE);
 		}
 	}
 
@@ -52,14 +56,10 @@ public class SnakeCanvas extends JPanel {
 				if (apple != null) {
 					g.fillRect(apple.x * cellSize, apple.y * cellSize, cellSize, cellSize);
 				}
-				obstacles.stream().forEach(p -> {
-					g.setColor(Color.DARK_GRAY);
-					g.fillRect(p.x * cellSize, p.y * cellSize, cellSize, cellSize);
-				});
-				snake.stream().forEach(p -> {
-					g.setColor(Color.GREEN);
-					g.fillRect(p.x * cellSize, p.y * cellSize, cellSize, cellSize);
-				});
+				g.setColor(Color.DARK_GRAY);
+				obstacles.stream().forEach(p -> g.fillRect(p.x * cellSize, p.y * cellSize, cellSize, cellSize));
+				g.setColor(Color.GREEN);
+				snake.stream().forEach(p -> g.fillRect(p.x * cellSize, p.y * cellSize, cellSize, cellSize));
 			}
 		}
 	}

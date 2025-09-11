@@ -1,6 +1,7 @@
 package com.minigames.snake.view;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -581,7 +582,6 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 		window.button("startButton").requireEnabled();
 		window.button("quitButton").requireDisabled();
 	}
-	
 
 	@Test
 	public void testMatchPanelStartButtonDisablesPanelButtons() {
@@ -600,25 +600,6 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 		window.button("settingsButton").requireDisabled();
 		window.button("startButton").requireDisabled();
 		window.button("quitButton").requireEnabled();
-	}
-
-	@Test
-	public void testMatchPanelQuitButtonEnablesPanelButtons() {
-		when(matchPresenter.getMapHeight()).thenReturn(5);
-		when(matchPresenter.getMapWidth()).thenReturn(5);
-		when(matchPresenter.getApple()).thenReturn(new Point(2, 3));
-		GuiActionRunner.execute(() -> {
-			snakeView.show("Match panel");
-			window.button("historyButton").target().setEnabled(false);
-			window.button("settingsButton").target().setEnabled(false);
-			window.button("startButton").target().setEnabled(false);
-			window.button("quitButton").target().setEnabled(true);
-		});
-		window.button("quitButton").click();
-		window.button("historyButton").requireEnabled();
-		window.button("settingsButton").requireEnabled();
-		window.button("startButton").requireEnabled();
-		window.button("quitButton").requireDisabled();
 	}
 
 	@Test
@@ -650,10 +631,21 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 			canvas.addKeyListener(new SnakeCanvasKeyListener(matchPresenter, snakeView));
 		});
 		window.button("quitButton").click();
-		window.button("historyButton").requireEnabled();
-		window.button("settingsButton").requireEnabled();
-		window.button("startButton").requireEnabled();
-		window.button("quitButton").requireDisabled();
+		verify(matchPresenter).endMatch(snakeView);
+		assertThat(canvas.getKeyListeners()).isEmpty();
+	}
+	
+	@Test
+	public void testMatchPanelQuitButtonNoKeyListeners() {
+		when(matchPresenter.getMapHeight()).thenReturn(5);
+		when(matchPresenter.getMapWidth()).thenReturn(5);
+		when(matchPresenter.getApple()).thenReturn(new Point(2, 3));
+		GuiActionRunner.execute(() -> {
+			snakeView.show("Match panel");
+			window.button("quitButton").target().setEnabled(true);
+		});
+		window.button("quitButton").click();
+		verify(matchPresenter).endMatch(snakeView);
 		assertThat(canvas.getKeyListeners()).isEmpty();
 	}
 
@@ -831,6 +823,17 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 		});
 		window.label("scoreLabel").requireText("Current score: 30");
 		window.label("messageLabel").requireText("No game");
+	}
+
+	@Test
+	public void testCloseFrame() {
+		assertThatCode(() -> {
+			snakeView.setCloseAction(() -> {
+			});
+			window.close();
+			verify(lobbyPresenter).close();
+		}).doesNotThrowAnyException();
+
 	}
 
 }

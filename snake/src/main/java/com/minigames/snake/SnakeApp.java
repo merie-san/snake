@@ -2,16 +2,13 @@ package com.minigames.snake;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Timer;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.help.HelpFormatter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,6 +39,7 @@ import jakarta.persistence.SchemaValidationException;
 public class SnakeApp {
 
 	private static final Logger LOGGER = LogManager.getLogger(SnakeApp.class);
+	private static SnakeWindowView frame;
 
 	public static void main(String[] args) {
 		Options options = new Options();
@@ -50,7 +48,7 @@ public class SnakeApp {
 		options.addOption("d", "db-name", true, "database name");
 		options.addOption("U", "username", true, "login username");
 		options.addOption("P", "password", true, "login password");
-		options.addOption("t", "test", false, "test if the app");
+		options.addOption("t", "test", false, "test the app");
 		options.addOption("h", "help", false, "show help");
 
 		String hostAddress = "localhost";
@@ -73,8 +71,8 @@ public class SnakeApp {
 				username = cmd.getOptionValue("U");
 			} else if (cmd.hasOption("P")) {
 				password = cmd.getOptionValue("P");
-			} else {
-				formatter.printHelp("SnakeApp", "Database options: ", options.getOptions(), null, true);
+			} else if (cmd.hasOption("h")) {
+				formatter.printHelp("SnakeApp", "App options: ", options.getOptions(), null, true);
 				return;
 			}
 
@@ -98,7 +96,11 @@ public class SnakeApp {
 					new RandomObstaclesSupplier(), new RandomPositionSupplier());
 
 			EventQueue.invokeLater(() -> {
-				SnakeWindowView frame = new SnakeWindowView(lobbyPresenter, matchPresenter);
+				frame = new SnakeWindowView(lobbyPresenter, matchPresenter);
+				frame.setCloseAction(() -> {
+					frame.dispose();
+					System.exit(0);
+				});
 				frame.pack();
 				frame.setMinimumSize(new Dimension(600, 500));
 				frame.setVisible(true);
@@ -119,6 +121,13 @@ public class SnakeApp {
 			emf.getSchemaManager().drop(true);
 			emf.getSchemaManager().create(true);
 		}
+	}
+
+	// for testing
+	@Generated
+	static void updateUI() {
+		frame.updateLobby();
+		frame.updateMatch();
 	}
 
 }

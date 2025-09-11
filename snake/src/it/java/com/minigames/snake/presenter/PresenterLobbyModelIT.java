@@ -11,9 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.minigames.snake.model.BaseEntity;
@@ -39,8 +37,8 @@ public class PresenterLobbyModelIT {
 	private SnakeRepository repository;
 	private SnakeView view;
 
-	@BeforeClass
-	public static void setupClass() {
+	@Before
+	public void setup() {
 		Map<String, String> map = new HashMap<String, String>();
 		map.put(PersistenceConfiguration.JDBC_DRIVER, "com.mysql.cj.jdbc.Driver");
 		map.put(PersistenceConfiguration.JDBC_URL, "jdbc:mysql://localhost:3306/snakedb");
@@ -48,11 +46,8 @@ public class PresenterLobbyModelIT {
 		map.put(PersistenceConfiguration.JDBC_PASSWORD, "root");
 		emf = new PersistenceConfiguration("SnakePU").properties(map).managedClass(BaseEntity.class)
 				.managedClass(GameRecord.class).managedClass(GameSetting.class).createEntityManagerFactory();
+		emf.getSchemaManager().drop(true);
 		emf.getSchemaManager().create(true);
-	}
-
-	@Before
-	public void setup() {
 		settingDao = new GameSettingHibernateDaoImpl();
 		settingDao.setEmf(emf);
 		recordDao = new GameRecordHibernateDaoImpl();
@@ -65,10 +60,6 @@ public class PresenterLobbyModelIT {
 	@After
 	public void tearDown() {
 		emf.getSchemaManager().truncate();
-	}
-
-	@AfterClass
-	public static void tearDownClass() {
 		emf.close();
 	}
 

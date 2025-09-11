@@ -3,11 +3,9 @@ package com.minigames.snake.view;
 import java.awt.CardLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 
 import com.minigames.snake.model.Generated;
@@ -24,6 +22,7 @@ public class SnakeWindowView extends JFrame implements SnakeView {
 	private SnakeMatchPanel matchCard;
 
 	private transient SnakeLobbyPresenter presenter;
+	private transient Runnable closeAction;
 
 	public SnakeWindowView(SnakeLobbyPresenter lobbyPresenter, SnakeMatchPresenter matchPresenter) {
 		this.presenter = lobbyPresenter;
@@ -52,8 +51,7 @@ public class SnakeWindowView extends JFrame implements SnakeView {
 
 	public void close() {
 		presenter.close();
-		SnakeWindowView.this.dispose();
-		System.exit(0);
+		closeAction.run();
 	}
 
 	@Override
@@ -65,6 +63,11 @@ public class SnakeWindowView extends JFrame implements SnakeView {
 	@Override
 	public void updateMatch() {
 		matchCard.refresh();
+	}
+
+	@Generated
+	public void setCloseAction(Runnable closeAction) {
+		this.closeAction = closeAction;
 	}
 
 	// for testing
