@@ -40,6 +40,11 @@ public class SnakeApp {
 
 	private static final Logger LOGGER = LogManager.getLogger(SnakeApp.class);
 	private static SnakeWindowView frame;
+	private static final String DEFAULT_USERNAME = "root";
+	private static final String DEFAULT_PASSWORD = "root";
+	private static final String DF_HOST_ADDRESS = "localhost";
+	private static final String DF_HOST_PORT = "3306";
+	private static final String DF_DATABASE_NAME = "snakedb";
 
 	public static void main(String[] args) {
 		Options options = new Options();
@@ -51,27 +56,11 @@ public class SnakeApp {
 		options.addOption("t", "test", false, "test the app");
 		options.addOption("h", "help", false, "show help");
 
-		String hostAddress = "localhost";
-		String hostPort = "3306";
-		String databaseName = "snakedb";
-		String username = "root";
-		String password = "root";
-
 		HelpFormatter formatter = HelpFormatter.builder().get();
 		CommandLineParser parser = new DefaultParser();
 		try {
 			CommandLine cmd = parser.parse(options, args);
-			if (cmd.hasOption("H")) {
-				hostAddress = cmd.getOptionValue("H");
-			} else if (cmd.hasOption("p")) {
-				hostPort = cmd.getOptionValue("p");
-			} else if (cmd.hasOption("d")) {
-				databaseName = cmd.getOptionValue("d");
-			} else if (cmd.hasOption("U")) {
-				username = cmd.getOptionValue("U");
-			} else if (cmd.hasOption("P")) {
-				password = cmd.getOptionValue("P");
-			} else if (cmd.hasOption("h")) {
+			if (cmd.hasOption("h")) {
 				formatter.printHelp("SnakeApp", "App options: ", options.getOptions(), null, true);
 				return;
 			}
@@ -79,9 +68,14 @@ public class SnakeApp {
 			Map<String, String> map = new HashMap<>();
 			map.put(PersistenceConfiguration.JDBC_DRIVER, "com.mysql.cj.jdbc.Driver");
 			map.put(PersistenceConfiguration.JDBC_URL,
-					String.format("jdbc:mysql://%s:%s/%s", hostAddress, hostPort, databaseName));
-			map.put(PersistenceConfiguration.JDBC_USER, username);
-			map.put(PersistenceConfiguration.JDBC_PASSWORD, password);
+					String.format("jdbc:mysql://%s:%s/%s", 
+							cmd.hasOption("H") ? cmd.getOptionValue("H") : DF_HOST_ADDRESS,
+							cmd.hasOption("p") ? cmd.getOptionValue("p") : DF_HOST_PORT,
+							cmd.hasOption("n") ? cmd.getOptionValue("d") : DF_DATABASE_NAME));
+			map.put(PersistenceConfiguration.JDBC_USER,
+					cmd.hasOption("U") ? cmd.getOptionValue("U") : DEFAULT_USERNAME);
+			map.put(PersistenceConfiguration.JDBC_PASSWORD,
+					cmd.hasOption("P") ? cmd.getOptionValue("P") : DEFAULT_PASSWORD);
 
 			EntityManagerFactory emf = new PersistenceConfiguration("SnakePU").properties(map)
 					.managedClass(BaseEntity.class).managedClass(GameRecord.class).managedClass(GameSetting.class)
