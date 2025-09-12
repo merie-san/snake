@@ -105,15 +105,15 @@ public class RandomPositionSupplierTest {
 	}
 
 	@Test
-	public void testGenerateApplePositionMapFull(){
+	public void testGenerateApplePositionMapFull() {
 		ArrayList<Point> obstacles = new ArrayList<>();
 		obstacles.add(new Point(2, 0));
 		obstacles.add(new Point(3, 0));
-		SnakeMap map=SnakeMap.of(5, 1, obstacles);
-		map.setSnakeHead(new Point(0,0));
+		SnakeMap map = SnakeMap.of(5, 1, obstacles);
+		map.setSnakeHead(new Point(0, 0));
 		Deque<Point> snakeBody = map.getSnakeBody();
-		snakeBody.add(new Point(1,1));
-		snakeBody.add(new Point(1,0));
-		assertThatThrownBy(()->supplier.generateApplePosition(map)).isInstanceOf(IllegalStateException.class).hasMessage("the map is full of objects");
+		snakeBody.add(new Point(1, 1));
+		snakeBody.add(new Point(1, 0));
+		assertThat(supplier.generateApplePosition(map)).isNull();
 	}
 }

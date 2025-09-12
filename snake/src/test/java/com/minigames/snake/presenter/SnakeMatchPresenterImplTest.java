@@ -213,6 +213,7 @@ public class SnakeMatchPresenterImplTest {
 		presenter.endMatch(snakeView);
 		ArgumentCaptor<GameRecord> recordCaptor = ArgumentCaptor.forClass(GameRecord.class);
 		verify(snakeView).updateLobby();
+		verify(snakeView).updateMatch();
 		verifyNoMoreInteractions(snakeView);
 		verify(repository).createRecord(recordCaptor.capture());
 		verifyNoMoreInteractions(repository);
@@ -221,6 +222,11 @@ public class SnakeMatchPresenterImplTest {
 		assertThat(presenter.isPlaying()).isFalse();
 		assertThat(newRecord.getSetting()).isEqualTo(setting);
 		assertThat(newRecord.getScore()).isEqualTo(10);
+	}
+
+	@Test
+	public void testCurrentScoreNullConfiguration() {
+		assertThat(presenter.currentScore()).isZero();
 	}
 
 	@Test

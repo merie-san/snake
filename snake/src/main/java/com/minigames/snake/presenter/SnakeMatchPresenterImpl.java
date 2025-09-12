@@ -58,6 +58,7 @@ public class SnakeMatchPresenterImpl implements SnakeMatchPresenter {
 		repository.createRecord(ModelFactory.gameRecord(currentScore(), LocalDate.now(), configuration));
 		playing = false;
 		snakeView.updateLobby();
+		snakeView.updateMatch();
 	}
 
 	@Override
@@ -88,6 +89,7 @@ public class SnakeMatchPresenterImpl implements SnakeMatchPresenter {
 				rawScore++;
 				if (map.getMapHeight() * map.getMapWidth() - configuration.getObstacleNumber() - 1 == rawScore) {
 					endMatch(snakeView);
+					return;
 				} else {
 					map.setApple(positionSupplier.generateApplePosition(map));
 				}
@@ -96,13 +98,16 @@ public class SnakeMatchPresenterImpl implements SnakeMatchPresenter {
 			}
 		} else {
 			endMatch(snakeView);
+			return;
 		}
 		snakeView.updateMatch();
 	}
 
 	@Override
 	public int currentScore() {
-		return (int) Math.round(rawScore * Math.pow(1.1, configuration.getObstacleNumber()/100.0));
+		return configuration != null
+				? (int) Math.round(rawScore * Math.pow(1.1, configuration.getObstacleNumber() / 100.0))
+				: 0;
 	}
 
 	@Override
@@ -110,6 +115,16 @@ public class SnakeMatchPresenterImpl implements SnakeMatchPresenter {
 		Queue<Point> snakePoints = map.snakeBodyCopy();
 		snakePoints.add(map.getSnakeHead());
 		return snakePoints;
+	}
+
+	@Generated
+	public void setSupplierStrategy(PositionSupplier supplier) {
+		positionSupplier = supplier;
+	}
+
+	@Generated
+	public void setSupplierStrategy(ObstaclesSupplier supplier) {
+		obstaclesSupplier = supplier;
 	}
 
 	@Override

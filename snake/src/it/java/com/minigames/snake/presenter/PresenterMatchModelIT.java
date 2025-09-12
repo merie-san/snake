@@ -1,6 +1,6 @@
 package com.minigames.snake.presenter;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -10,9 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.minigames.snake.model.BaseEntity;
@@ -28,6 +26,7 @@ import com.minigames.snake.view.SnakeView;
 
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceConfiguration;
+import jakarta.persistence.SchemaValidationException;
 import jakarta.persistence.TypedQuery;
 
 public class PresenterMatchModelIT {
@@ -39,8 +38,8 @@ public class PresenterMatchModelIT {
 	private SnakeRepository repository;
 	private SnakeView view;
 
-	@BeforeClass
-	public static void setupClass() {
+	@Before
+	public void setup() {
 		Map<String, String> map = new HashMap<String, String>();
 		map.put(PersistenceConfiguration.JDBC_DRIVER, "com.mysql.cj.jdbc.Driver");
 		map.put(PersistenceConfiguration.JDBC_URL, "jdbc:mysql://localhost:3306/snakedb");
@@ -48,11 +47,12 @@ public class PresenterMatchModelIT {
 		map.put(PersistenceConfiguration.JDBC_PASSWORD, "root");
 		emf = new PersistenceConfiguration("SnakePU").properties(map).managedClass(BaseEntity.class)
 				.managedClass(GameRecord.class).managedClass(GameSetting.class).createEntityManagerFactory();
-		emf.getSchemaManager().create(true);
-	}
-
-	@Before
-	public void setup() {
+		try {
+			emf.getSchemaManager().validate();
+			emf.getSchemaManager().truncate();
+		} catch (SchemaValidationException e) {
+			emf.getSchemaManager().create(true);
+		}
 		settingDao = new GameSettingHibernateDaoImpl();
 		settingDao.setEmf(emf);
 		recordDao = new GameRecordHibernateDaoImpl();
@@ -64,11 +64,7 @@ public class PresenterMatchModelIT {
 
 	@After
 	public void tearDown() {
-		emf.getSchemaManager().truncate();
-	}
-
-	@AfterClass
-	public static void tearDownClass() {
+		emf.getSchemaManager().drop(true);
 		emf.close();
 	}
 
@@ -81,6 +77,7 @@ public class PresenterMatchModelIT {
 		emf.runInTransaction(em -> em.persist(setting));
 		presenter.endMatch(view);
 		verify(view).updateLobby();
+		verify(view).updateMatch();
 		verifyNoMoreInteractions(view);
 		Collection<GameRecord> gameRecords = emf.callInTransaction(em -> {
 			TypedQuery<GameRecord> query = em.createQuery("SELECT r FROM GameRecord r", GameRecord.class);

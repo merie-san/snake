@@ -32,7 +32,7 @@ public class RandomPositionSupplier implements PositionSupplier {
 		occupied.add(map.getSnakeHead());
 		occupied.addAll(map.getSnakeBody());
 		if (occupied.size() == map.getMapHeight() * map.getMapWidth()) {
-			throw new IllegalStateException("the map is full of objects");
+			return null;
 		}
 		Point newApple;
 		do {

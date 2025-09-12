@@ -22,6 +22,7 @@ import org.assertj.swing.fixture.FrameFixture;
 import org.assertj.swing.image.ScreenshotTaker;
 import org.assertj.swing.junit.runner.GUITestRunner;
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
+import org.assertj.swing.timing.Pause;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -29,9 +30,12 @@ import org.mockito.ArgumentCaptor;
 import com.minigames.snake.model.GameRecord;
 import com.minigames.snake.model.GameSetting;
 import com.minigames.snake.model.SnakeRepository;
+import com.minigames.snake.presenter.ObstaclesSupplier;
+import com.minigames.snake.presenter.PositionSupplier;
 import com.minigames.snake.presenter.RandomObstaclesSupplier;
 import com.minigames.snake.presenter.RandomPositionSupplier;
 import com.minigames.snake.presenter.SnakeLobbyPresenter;
+import com.minigames.snake.presenter.SnakeMap;
 import com.minigames.snake.presenter.SnakeMatchPresenterImpl;
 
 @RunWith(GUITestRunner.class)
@@ -71,6 +75,7 @@ public class ViewPresenterMatchIT extends AssertJSwingJUnitTestCase {
 		ArgumentCaptor<GameRecord> recordCaptor = ArgumentCaptor.forClass(GameRecord.class);
 		verify(repository).createRecord(recordCaptor.capture());
 		GameRecord capturedRecord = recordCaptor.getValue();
+		assertThat(matchPresenter.isPlaying()).isFalse();
 		assertThat(capturedRecord.getDate()).isToday();
 		assertThat(capturedRecord.getScore()).isZero();
 		assertThat(capturedRecord.getSetting()).isEqualTo(setting);
@@ -103,51 +108,102 @@ public class ViewPresenterMatchIT extends AssertJSwingJUnitTestCase {
 			matchPresenter.changeSetting(setting, snakeView);
 		});
 		window.button("startButton").click();
+		assertThat(matchPresenter.isPlaying()).isTrue();
 		BufferedImage canvas = new ScreenshotTaker().takeScreenshotOf(snakeView.getMatchPanel().getCanvas());
 
 		Collection<Point> rectList = IntStream.range(0, 5)
 				.mapToObj(i -> IntStream.range(0, 5).mapToObj(j -> new Point(i, j))).flatMap(Function.identity())
 				.collect(Collectors.toList());
-		assertThat(rectList).filteredOn(p -> checkRectColor(canvas, p.x * 60, p.y * 60, 60, 60, Color.LIGHT_GRAY))
+		assertThat(rectList)
+				.filteredOn(p -> checkRectInImgIsOfColor(canvas, p.x * 60, p.y * 60, 60, 60, Color.LIGHT_GRAY))
 				.hasSize(22);
-		assertThat(rectList).filteredOn(p -> checkRectColor(canvas, p.x * 60, p.y * 60, 60, 60, Color.RED)).hasSize(1);
-		assertThat(rectList).filteredOn(p -> checkRectColor(canvas, p.x * 60, p.y * 60, 60, 60, Color.DARK_GRAY))
+		assertThat(rectList).filteredOn(p -> checkRectInImgIsOfColor(canvas, p.x * 60, p.y * 60, 60, 60, Color.RED))
 				.hasSize(1);
-		assertThat(rectList).filteredOn(p -> checkRectColor(canvas, p.x * 60, p.y * 60, 60, 60, Color.GREEN))
+		assertThat(rectList)
+				.filteredOn(p -> checkRectInImgIsOfColor(canvas, p.x * 60, p.y * 60, 60, 60, Color.DARK_GRAY))
+				.hasSize(1);
+		assertThat(rectList).filteredOn(p -> checkRectInImgIsOfColor(canvas, p.x * 60, p.y * 60, 60, 60, Color.GREEN))
 				.hasSize(1);
 	}
 
-	private boolean checkRectColor(BufferedImage image, int posX, int posY, int width, int height, Color checkColor) {
+	private boolean checkRectInImgIsOfColor(BufferedImage image, int posX, int posY, int width, int height,
+			Color checkColor) {
 		return IntStream.range(posX, posX + width).allMatch(
 				x -> IntStream.range(posY, posY + height).allMatch(y -> image.getRGB(x, y) == checkColor.getRGB()));
 	}
 
-	private boolean checkRectSameColor(BufferedImage image1, BufferedImage image2, int posX, int posY, int width,
+	private boolean checkRectInImgsSameColor(BufferedImage image1, BufferedImage image2, int posX, int posY, int width,
 			int height) {
 		return IntStream.range(posX, posX + width).allMatch(
 				x -> IntStream.range(posY, posY + height).allMatch(y -> image1.getRGB(x, y) == image2.getRGB(x, y)));
 	}
 
 	@Test
-	public void testMatchPanelKeyboardControls() {
+	public void testMatchPanelKeyboardControlsGameCountinues() {
 		GuiActionRunner.execute(() -> {
 			snakeView.show("Match panel");
 			snakeView.updateLobby();
 			GameSetting setting = new GameSetting("1", 5, 5, 1);
 			matchPresenter.changeSetting(setting, snakeView);
 		});
+		((SnakeMatchPresenterImpl) matchPresenter).setSupplierStrategy(new PositionSupplier() {
+
+			@Override
+			public Point generateSnakeHeadPosition(SnakeMap map) {
+				return new Point(2, 2);
+			}
+
+			@Override
+			public Point generateApplePosition(SnakeMap map) {
+				return new Point(0, 0);
+			}
+		});
+		((SnakeMatchPresenterImpl) matchPresenter).setSupplierStrategy(new ObstaclesSupplier() {
+
+			@Override
+			public Collection<Point> generateObstacles(GameSetting configuration) {
+				ArrayList<Point> obstacles = new ArrayList<>();
+				obstacles.add(new Point(4, 4));
+				return obstacles;
+			}
+		});
+
 		window.button("startButton").click();
 		BufferedImage canvas1 = new ScreenshotTaker().takeScreenshotOf(snakeView.getMatchPanel().getCanvas());
 		window.panel("matchCanvas").pressAndReleaseKeys(KeyEvent.VK_DOWN);
 		BufferedImage canvas2 = new ScreenshotTaker().takeScreenshotOf(snakeView.getMatchPanel().getCanvas());
 		List<Point> rectList = IntStream.range(0, 5).mapToObj(i -> IntStream.range(0, 5).mapToObj(j -> new Point(i, j)))
 				.flatMap(Function.identity())
-				.filter(p -> !checkRectSameColor(canvas1, canvas2, p.x * 60, p.y * 60, 60, 60))
+				.filter(p -> !checkRectInImgsSameColor(canvas1, canvas2, p.x * 60, p.y * 60, 60, 60))
 				.collect(Collectors.toList());
-		assertThat(!matchPresenter.isPlaying() || (!matchPresenter.isPlaying() ^ rectList.size() != 0)).isTrue();
-		assertThat(!matchPresenter.isPlaying() || rectList.size() == 2).isTrue();
-		assertThat(!matchPresenter.isPlaying() || Math.abs(rectList.get(0).x - rectList.get(1).x)
-				+ Math.abs(rectList.get(0).y - rectList.get(1).y) == 1).isTrue();
+		assertThat(rectList).hasSize(2).containsExactlyInAnyOrder(new Point(2, 2), new Point(2, 3));
+		assertThat(matchPresenter.isPlaying()).isTrue();
+	}
+
+	@Test
+	public void testMatchPanelKeyboardControlsGameEnds() {
+		GameSetting setting = new GameSetting("1", 5, 5, 24);
+		GuiActionRunner.execute(() -> {
+			snakeView.show("Match panel");
+			snakeView.updateLobby();
+			matchPresenter.changeSetting(setting, snakeView);
+		});
+
+		window.button("startButton").click();
+		window.panel("matchCanvas").pressAndReleaseKeys(KeyEvent.VK_DOWN);
+		Pause.pause(100);
+		BufferedImage canvas = new ScreenshotTaker().takeScreenshotOf(snakeView.getMatchPanel().getCanvas());
+
+		IntStream.range(0, 300)
+				.allMatch(x -> IntStream.range(0, 300).allMatch(y -> canvas.getRGB(x, y) == Color.LIGHT_GRAY.getRGB()));
+
+		ArgumentCaptor<GameRecord> recordCaptor = ArgumentCaptor.forClass(GameRecord.class);
+		verify(repository).createRecord(recordCaptor.capture());
+		GameRecord capturedRecord = recordCaptor.getValue();
+		assertThat(matchPresenter.isPlaying()).isFalse();
+		assertThat(capturedRecord.getDate()).isToday();
+		assertThat(capturedRecord.getScore()).isZero();
+		assertThat(capturedRecord.getSetting()).isEqualTo(setting);
 	}
 
 }

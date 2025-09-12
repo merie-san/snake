@@ -99,8 +99,7 @@ public class SnakeMatchPanel extends JPanel {
 				matchCanvas.requestFocusInWindow();
 			}
 		});
-		quitButton.addMouseListener(new EndGameButtonListener(historyButtonM, settingsButtonM, startButton, quitButton,
-				presenter, snakeView, matchCanvas));
+		quitButton.addMouseListener(new EndGameButtonListener(presenter, snakeView, matchCanvas));
 	}
 
 	public void enableButtons() {
@@ -114,7 +113,7 @@ public class SnakeMatchPanel extends JPanel {
 		if (presenter.hasSetting() && !presenter.isPlaying()) {
 			enableButtons();
 		}
-		if (!presenter.hasSetting()&&presenter.isPlaying()) {
+		if (!presenter.hasSetting() && presenter.isPlaying()) {
 			throw new IllegalStateException("Player cannot be in game while having no setting");
 		}
 		scoreLabel.setText(ViewComponentNames.SCORE_LABEL_TEXT + presenter.currentScore());
