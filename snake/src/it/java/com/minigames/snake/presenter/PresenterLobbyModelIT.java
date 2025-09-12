@@ -27,6 +27,7 @@ import com.minigames.snake.view.SnakeView;
 
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceConfiguration;
+import jakarta.persistence.SchemaValidationException;
 import jakarta.persistence.TypedQuery;
 
 public class PresenterLobbyModelIT {
@@ -46,8 +47,12 @@ public class PresenterLobbyModelIT {
 		map.put(PersistenceConfiguration.JDBC_PASSWORD, "root");
 		emf = new PersistenceConfiguration("SnakePU").properties(map).managedClass(BaseEntity.class)
 				.managedClass(GameRecord.class).managedClass(GameSetting.class).createEntityManagerFactory();
-		emf.getSchemaManager().drop(true);
-		emf.getSchemaManager().create(true);
+		try {
+			emf.getSchemaManager().validate();
+			emf.getSchemaManager().truncate();
+		} catch (SchemaValidationException e) {
+			emf.getSchemaManager().create(true);
+		}
 		settingDao = new GameSettingHibernateDaoImpl();
 		settingDao.setEmf(emf);
 		recordDao = new GameRecordHibernateDaoImpl();
@@ -59,7 +64,7 @@ public class PresenterLobbyModelIT {
 
 	@After
 	public void tearDown() {
-		emf.getSchemaManager().truncate();
+		emf.getSchemaManager().drop(true);
 		emf.close();
 	}
 

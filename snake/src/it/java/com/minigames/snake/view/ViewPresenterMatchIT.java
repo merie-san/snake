@@ -114,16 +114,20 @@ public class ViewPresenterMatchIT extends AssertJSwingJUnitTestCase {
 		Collection<Point> rectList = IntStream.range(0, 5)
 				.mapToObj(i -> IntStream.range(0, 5).mapToObj(j -> new Point(i, j))).flatMap(Function.identity())
 				.collect(Collectors.toList());
-		assertThat(rectList).filteredOn(p -> checkRectInImgIsOfColor(canvas, p.x * 60, p.y * 60, 60, 60, Color.LIGHT_GRAY))
+		assertThat(rectList)
+				.filteredOn(p -> checkRectInImgIsOfColor(canvas, p.x * 60, p.y * 60, 60, 60, Color.LIGHT_GRAY))
 				.hasSize(22);
-		assertThat(rectList).filteredOn(p -> checkRectInImgIsOfColor(canvas, p.x * 60, p.y * 60, 60, 60, Color.RED)).hasSize(1);
-		assertThat(rectList).filteredOn(p -> checkRectInImgIsOfColor(canvas, p.x * 60, p.y * 60, 60, 60, Color.DARK_GRAY))
+		assertThat(rectList).filteredOn(p -> checkRectInImgIsOfColor(canvas, p.x * 60, p.y * 60, 60, 60, Color.RED))
+				.hasSize(1);
+		assertThat(rectList)
+				.filteredOn(p -> checkRectInImgIsOfColor(canvas, p.x * 60, p.y * 60, 60, 60, Color.DARK_GRAY))
 				.hasSize(1);
 		assertThat(rectList).filteredOn(p -> checkRectInImgIsOfColor(canvas, p.x * 60, p.y * 60, 60, 60, Color.GREEN))
 				.hasSize(1);
 	}
 
-	private boolean checkRectInImgIsOfColor(BufferedImage image, int posX, int posY, int width, int height, Color checkColor) {
+	private boolean checkRectInImgIsOfColor(BufferedImage image, int posX, int posY, int width, int height,
+			Color checkColor) {
 		return IntStream.range(posX, posX + width).allMatch(
 				x -> IntStream.range(posY, posY + height).allMatch(y -> image.getRGB(x, y) == checkColor.getRGB()));
 	}
@@ -189,10 +193,10 @@ public class ViewPresenterMatchIT extends AssertJSwingJUnitTestCase {
 		window.panel("matchCanvas").pressAndReleaseKeys(KeyEvent.VK_DOWN);
 		Pause.pause(100);
 		BufferedImage canvas = new ScreenshotTaker().takeScreenshotOf(snakeView.getMatchPanel().getCanvas());
-		
-		 IntStream.range(0,300).allMatch(
-					x -> IntStream.range(0,300).allMatch(y -> canvas.getRGB(x, y) == Color.LIGHT_GRAY.getRGB()));
-		
+
+		IntStream.range(0, 300)
+				.allMatch(x -> IntStream.range(0, 300).allMatch(y -> canvas.getRGB(x, y) == Color.LIGHT_GRAY.getRGB()));
+
 		ArgumentCaptor<GameRecord> recordCaptor = ArgumentCaptor.forClass(GameRecord.class);
 		verify(repository).createRecord(recordCaptor.capture());
 		GameRecord capturedRecord = recordCaptor.getValue();

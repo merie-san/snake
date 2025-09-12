@@ -118,7 +118,6 @@ public class SnakeApp {
 		try {
 			emf.getSchemaManager().validate();
 		} catch (SchemaValidationException e) {
-			emf.getSchemaManager().drop(true);
 			emf.getSchemaManager().create(true);
 		}
 	}

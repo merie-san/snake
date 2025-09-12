@@ -169,9 +169,9 @@
 					<version>3.7.1</version>
 				</plugin>
 				<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<version>3.5.1</version>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>exec-maven-plugin</artifactId>
+					<version>3.5.1</version>
 				</plugin>
 				<plugin>
 					<artifactId>maven-install-plugin</artifactId>
@@ -231,26 +231,27 @@
 		</pluginManagement>
 
 		<plugins>
-		<plugin>
-		<groupId>org.codehaus.mojo</groupId>
-		<artifactId>exec-maven-plugin</artifactId>
-		<executions>
-		<execution>
-		<id>run-jar-with-dependencies</id>
-		<phase>verify</phase>
-		<goals>
-		<goal>exec</goal>
-		</goals>
-		<configuration>
-		<executable>java</executable>
-		<arguments>
-		<argument>-jar</argument>
-		<argument>${project.build.directory}/${project.artifactId}-${project.version}-jar-with-dependencies.jar</argument>
-		</arguments>
-		</configuration>
-		</execution>
-		</executions>
-		</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>run-jar-with-dependencies</id>
+						<phase>integration-test</phase>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<executable>java</executable>
+							<arguments>
+								<argument>-jar</argument>
+								<argument>${project.build.directory}/${project.artifactId}-${project.version}-jar-with-dependencies.jar</argument>
+								<argument>-t</argument>
+							</arguments>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
@@ -353,6 +354,9 @@
 								<ports>
 									<port>3306:3306</port>
 								</ports>
+								<wait>
+									<time>15000</time>
+								</wait>
 							</run>
 						</image>
 					</images>
@@ -364,6 +368,8 @@
 						<goals>
 							<goal>start</goal>
 						</goals>
+						<configuration>
+						</configuration>
 					</execution>
 					<execution>
 						<id>docker-stop</id>

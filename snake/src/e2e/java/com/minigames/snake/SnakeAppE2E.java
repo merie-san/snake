@@ -53,8 +53,6 @@ public class SnakeAppE2E extends AssertJSwingJUnitTestCase {
 
 		emf = new PersistenceConfiguration("SnakePU").properties(map).managedClass(BaseEntity.class)
 				.managedClass(GameRecord.class).managedClass(GameSetting.class).createEntityManagerFactory();
-
-		emf.getSchemaManager().drop(true);
 		emf.getSchemaManager().create(true);
 		ApplicationLauncher.application("com.minigames.snake.SnakeApp").start();
 		window = WindowFinder.findFrame(new GenericTypeMatcher<JFrame>(JFrame.class) {
@@ -67,7 +65,7 @@ public class SnakeAppE2E extends AssertJSwingJUnitTestCase {
 
 	@Override
 	protected void onTearDown() throws Exception {
-		emf.getSchemaManager().truncate();
+		emf.getSchemaManager().drop(true);
 		emf.close();
 	}
 
@@ -439,36 +437,47 @@ public class SnakeAppE2E extends AssertJSwingJUnitTestCase {
 	private void moveFromXToYAvoidingZ(Point pointX, Point pointY, Point pointZ) {
 		int distx = pointY.x - pointX.x;
 		int disty = pointY.y - pointX.y;
-		if (pointZ == null || pointZ.x != pointY.x || pointZ.y != pointX.y) {
-			if (distx < 0) {
-				IntStream.range(0, -distx)
-						.forEach(i -> window.panel("matchCanvas").pressAndReleaseKeys(KeyEvent.VK_LEFT));
+
+		if (pointZ != null && pointZ.y == pointX.y && pointZ.x >= Math.min(pointX.x, pointY.x)
+				&& pointZ.x <= Math.max(pointX.x, pointY.x)) {
+			if (pointX.y != 0) {
+				window.panel("matchCanvas").pressAndReleaseKeys(KeyEvent.VK_UP);
+				disty++;
 			} else {
-				IntStream.range(0, distx)
-						.forEach(i -> window.panel("matchCanvas").pressAndReleaseKeys(KeyEvent.VK_RIGHT));
+				window.panel("matchCanvas").pressAndReleaseKeys(KeyEvent.VK_DOWN);
+				disty--;
 			}
-			if (disty < 0) {
-				IntStream.range(0, -disty)
-						.forEach(i -> window.panel("matchCanvas").pressAndReleaseKeys(KeyEvent.VK_UP));
-			} else {
-				IntStream.range(0, disty)
-						.forEach(i -> window.panel("matchCanvas").pressAndReleaseKeys(KeyEvent.VK_DOWN));
-			}
+		}
+
+		if (distx < 0) {
+			IntStream.range(0, -distx).forEach(i -> window.panel("matchCanvas").pressAndReleaseKeys(KeyEvent.VK_LEFT));
 		} else {
-			if (disty < 0) {
-				IntStream.range(0, -disty)
-						.forEach(i -> window.panel("matchCanvas").pressAndReleaseKeys(KeyEvent.VK_UP));
+			IntStream.range(0, distx).forEach(i -> window.panel("matchCanvas").pressAndReleaseKeys(KeyEvent.VK_RIGHT));
+		}
+
+		int finalStep = 0;
+
+		if (pointZ != null && pointZ.x == pointY.x && pointZ.y > Math.min(pointX.y, pointY.y)
+				&& pointZ.y < Math.max(pointX.y, pointY.y)) {
+			if (pointX.x != 0) {
+				window.panel("matchCanvas").pressAndReleaseKeys(KeyEvent.VK_LEFT);
+				finalStep = 1;
 			} else {
-				IntStream.range(0, disty)
-						.forEach(i -> window.panel("matchCanvas").pressAndReleaseKeys(KeyEvent.VK_DOWN));
+				window.panel("matchCanvas").pressAndReleaseKeys(KeyEvent.VK_RIGHT);
+				finalStep = -1;
 			}
-			if (distx < 0) {
-				IntStream.range(0, -distx)
-						.forEach(i -> window.panel("matchCanvas").pressAndReleaseKeys(KeyEvent.VK_LEFT));
-			} else {
-				IntStream.range(0, distx)
-						.forEach(i -> window.panel("matchCanvas").pressAndReleaseKeys(KeyEvent.VK_RIGHT));
-			}
+		}
+
+		if (disty < 0) {
+			IntStream.range(0, -disty).forEach(i -> window.panel("matchCanvas").pressAndReleaseKeys(KeyEvent.VK_UP));
+		} else {
+			IntStream.range(0, disty).forEach(i -> window.panel("matchCanvas").pressAndReleaseKeys(KeyEvent.VK_DOWN));
+		}
+
+		if (finalStep == 1) {
+			window.panel("matchCanvas").pressAndReleaseKeys(KeyEvent.VK_RIGHT);
+		} else if (finalStep == -1) {
+			window.panel("matchCanvas").pressAndReleaseKeys(KeyEvent.VK_LEFT);
 		}
 	}
 
