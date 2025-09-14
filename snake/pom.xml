@@ -14,7 +14,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.release>17</maven.compiler.release>
 		<sonar.coverage.exclusions>
-			**/App.*,
+			**/SnakeApp.*,
 			**/GameRecord.*,
 			**/GameSetting.*,
 			**/TellerCatalog.*,
@@ -146,8 +146,6 @@
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.13.0</version>
 					<configuration>
-						<source>11</source>
-						<target>11</target>
 						<release>11</release>
 					</configuration>
 				</plugin>
@@ -190,7 +188,7 @@
 						<!-- We exclude domain model classes but compute coverage for the non-automatically 
 							generated equals and hashCode methods -->
 						<excludes>
-							<exclude>**/App.*</exclude>
+							<exclude>**/SnakeApp.*</exclude>
 							<exclude>**/GameRecord.*</exclude>
 							<exclude>**/GameSetting.*</exclude>
 							<exclude>**/TellerCatalog.*</exclude>

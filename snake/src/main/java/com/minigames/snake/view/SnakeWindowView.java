@@ -94,5 +94,7 @@ public class SnakeWindowView extends JFrame implements SnakeView {
 	SnakeMatchPanel getMatchPanel() {
 		return matchCard;
 	}
+	
+	
 
 }
