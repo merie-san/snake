@@ -40,7 +40,6 @@ public class HistoryWindowTest extends AssertJSwingJUnitTestCase {
 		window.show();
 	}
 
-
 	@Test
 	public void testDeleteSelectedButtonEnabledAtItemSelection() {
 		GuiActionRunner.execute(() -> {
