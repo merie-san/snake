@@ -634,7 +634,7 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 		verify(matchPresenter).endMatch(snakeView);
 		assertThat(canvas.getKeyListeners()).isEmpty();
 	}
-	
+
 	@Test
 	public void testMatchPanelQuitButtonNoKeyListeners() {
 		when(matchPresenter.getMapHeight()).thenReturn(5);
@@ -676,6 +676,7 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 			snakeView.show("Match panel");
 			snakeView.updateMatch();
 		});
+		robot().waitForIdle();
 		BufferedImage image = new ScreenshotTaker().takeScreenshotOf(canvas);
 		IntStream.range(0, 300).forEach(x -> IntStream.range(0, 300)
 				.forEach(y -> assertThat(image.getRGB(x, y)).isEqualTo(Color.WHITE.getRGB())));
@@ -694,6 +695,7 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 			canvas.setCellSize(150);
 			snakeView.updateMatch();
 		});
+		robot().waitForIdle();
 		BufferedImage image = new ScreenshotTaker().takeScreenshotOf(canvas);
 		IntStream.range(0, 300).forEach(x -> IntStream.range(0, 300)
 				.forEach(y -> assertThat(image.getRGB(x, y)).isEqualTo(Color.LIGHT_GRAY.getRGB())));
@@ -714,6 +716,7 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 			snakeView.show("Match panel");
 			snakeView.updateMatch();
 		});
+		robot().waitForIdle();
 		BufferedImage image = new ScreenshotTaker().takeScreenshotOf(canvas);
 		IntStream.range(0, 300).forEach(x -> IntStream.range(0, 300)
 				.forEach(y -> assertThat(image.getRGB(x, y)).isEqualTo(Color.LIGHT_GRAY.getRGB())));
@@ -753,6 +756,7 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 			canvas.setCellSize(60);
 			snakeView.updateMatch();
 		});
+		robot().waitForIdle();
 		BufferedImage image = new ScreenshotTaker().takeScreenshotOf(canvas);
 		IntStream.range(0, 300).forEach(x -> IntStream.range(0, 300).forEach(y -> {
 			if (y < 120 && y >= 60 && x < 180 && x >= 120) {

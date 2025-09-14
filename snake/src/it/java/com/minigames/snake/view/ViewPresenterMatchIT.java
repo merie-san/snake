@@ -109,8 +109,8 @@ public class ViewPresenterMatchIT extends AssertJSwingJUnitTestCase {
 		});
 		window.button("startButton").click();
 		assertThat(matchPresenter.isPlaying()).isTrue();
+		robot().waitForIdle();
 		BufferedImage canvas = new ScreenshotTaker().takeScreenshotOf(snakeView.getMatchPanel().getCanvas());
-
 		Collection<Point> rectList = IntStream.range(0, 5)
 				.mapToObj(i -> IntStream.range(0, 5).mapToObj(j -> new Point(i, j))).flatMap(Function.identity())
 				.collect(Collectors.toList());
@@ -192,6 +192,7 @@ public class ViewPresenterMatchIT extends AssertJSwingJUnitTestCase {
 		window.button("startButton").click();
 		window.panel("matchCanvas").pressAndReleaseKeys(KeyEvent.VK_DOWN);
 		Pause.pause(100);
+		robot().waitForIdle();
 		BufferedImage canvas = new ScreenshotTaker().takeScreenshotOf(snakeView.getMatchPanel().getCanvas());
 
 		IntStream.range(0, 300)

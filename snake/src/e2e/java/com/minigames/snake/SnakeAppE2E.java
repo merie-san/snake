@@ -138,6 +138,7 @@ public class SnakeAppE2E extends AssertJSwingJUnitTestCase {
 		window.button("useSettingButton").click();
 		window.button("matchButton").click();
 		window.button("startButton").requireEnabled();
+		robot().waitForIdle();
 		BufferedImage img = new ScreenshotTaker().takeScreenshotOf(window.panel("matchCanvas").target());
 		assertThat(img.getHeight()).isEqualTo(300);
 		assertThat(img.getWidth()).isEqualTo(300);
@@ -195,6 +196,7 @@ public class SnakeAppE2E extends AssertJSwingJUnitTestCase {
 		window.button("quitButton").requireEnabled();
 		window.button("historyButton").requireDisabled();
 		window.button("settingsButton").requireDisabled();
+		robot().waitForIdle();
 		BufferedImage img = new ScreenshotTaker().takeScreenshotOf(window.panel("matchCanvas").target());
 
 		Collection<Point> rectList = IntStream.range(0, 5)
