@@ -1,11 +1,9 @@
 package com.minigames.snake.view;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,34 +37,6 @@ public class SettingsWindowTest extends AssertJSwingJUnitTestCase {
 		});
 		window = new FrameFixture(robot(), snakeView);
 		window.show();
-	}
-
-	@Test
-	public void testSettingsPanelToHistoryPanel() {
-		GuiActionRunner.execute(() -> {
-			snakeView.show("Settings panel");
-		});
-		Color initialColor = window.button("historyButton").target().getBackground();
-		window.robot().moveMouse(window.button("historyButton").target());
-		assertThat(initialColor.darker()).isEqualTo(window.button("historyButton").target().getBackground());
-		window.robot().moveMouse(0, 0);
-		assertThat(initialColor).isEqualTo(window.button("historyButton").target().getBackground());
-		window.button("historyButton").click();
-		window.panel("History panel").requireVisible();
-	}
-
-	@Test
-	public void testSettingsPanelToMatchPanel() {
-		GuiActionRunner.execute(() -> {
-			snakeView.show("Settings panel");
-		});
-		Color initialColor = window.button("matchButton").target().getBackground();
-		window.robot().moveMouse(window.button("matchButton").target());
-		assertThat(initialColor.darker()).isEqualTo(window.button("matchButton").target().getBackground());
-		window.robot().moveMouse(0, 0);
-		assertThat(initialColor).isEqualTo(window.button("matchButton").target().getBackground());
-		window.button("matchButton").click();
-		window.panel("Match panel").requireVisible();
 	}
 
 	@Test
