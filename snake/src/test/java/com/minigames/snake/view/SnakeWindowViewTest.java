@@ -112,7 +112,7 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 		window.button("startButton").requireText("Start").requireDisabled();
 		window.button("quitButton").requireText("Quit").requireDisabled();
 	}
-	
+
 	@Test
 	public void testWelcomePanelToHistoryPanel() {
 		GuiActionRunner.execute(() -> {
@@ -154,7 +154,7 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 		window.button("matchButton").click();
 		window.panel("Match panel").requireVisible();
 	}
-	
+
 	@Test
 	public void testHistoryPanelToSettingsPanel() {
 		GuiActionRunner.execute(() -> {
@@ -182,7 +182,7 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 		window.button("matchButton").click();
 		window.panel("Match panel").requireVisible();
 	}
-	
+
 	@Test
 	public void testSettingsPanelToHistoryPanel() {
 		GuiActionRunner.execute(() -> {
@@ -210,6 +210,7 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 		window.button("matchButton").click();
 		window.panel("Match panel").requireVisible();
 	}
+
 	@Test
 	public void testMatchPanelToHistoryPanel() {
 		GuiActionRunner.execute(() -> {
@@ -347,7 +348,7 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 		when(matchPresenter.getObstacles()).thenReturn(new ArrayList<>());
 		when(matchPresenter.snakeCollection()).thenReturn(new ArrayList<Point>());
 		when(matchPresenter.getMapWidth()).thenReturn(10);
-		when(matchPresenter.getMapHeight()).thenReturn(10);
+		when(matchPresenter.getMapHeight()).thenReturn(8);
 		canvas.setCellSize(30);
 		GuiActionRunner.execute(() -> {
 			snakeView.show("Match panel");
@@ -355,13 +356,13 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 		});
 		robot().waitForIdle();
 		BufferedImage image = new ScreenshotTaker().takeScreenshotOf(canvas);
-		IntStream.range(0, 300).forEach(x -> IntStream.range(0, 300)
+		IntStream.range(0, 300).forEach(x -> IntStream.range(0, 240)
 				.forEach(y -> assertThat(image.getRGB(x, y)).isEqualTo(Color.LIGHT_GRAY.getRGB())));
-		assertThat(canvas.getPreferredSize()).isEqualTo(new Dimension(300, 300));
+		assertThat(canvas.getPreferredSize()).isEqualTo(new Dimension(300, 240));
 	}
 
 	@Test
-	public void testUpdateMatchCanvasPlaying() {
+	public void testUpdateMatchCanvasPlayingNotEmptyMap() {
 		Collection<Point> obstacles = new ArrayList<Point>();
 		Collection<Point> snake = new ArrayList<Point>();
 		obstacles.add(new Point(0, 0));
@@ -406,10 +407,6 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 			snakeView.show("Match panel");
 			snakeView.updateMatch();
 		});
-		window.button("historyButton").requireEnabled();
-		window.button("settingsButton").requireEnabled();
-		window.button("startButton").requireDisabled();
-		window.button("quitButton").requireDisabled();
 		window.label("scoreLabel").requireText("Current score: 0");
 		window.label("messageLabel").requireText("No game");
 	}

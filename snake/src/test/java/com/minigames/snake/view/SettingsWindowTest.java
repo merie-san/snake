@@ -213,7 +213,6 @@ public class SettingsWindowTest extends AssertJSwingJUnitTestCase {
 		GuiActionRunner.execute(() -> {
 			snakeView.show("Settings panel");
 		});
-
 		window.textBox("obstaclesTextBox").enterText("10").pressAndReleaseKeys(KeyEvent.VK_TAB);
 		window.textBox("obstaclesTextBox").requireText("10");
 	}
