@@ -30,5 +30,10 @@ If not set, the default values will be used. For example:
 ```
 java -jar path/to/snake-0.0.1-SNAPSHOT-jar-with-dependencies.jar -H localhost -p 3306 -d snakedb -P admin
 ```
+## Starting a docker mySQL server
+run the following command to start a mySQL container to which the app will connect by default:
+```
+docker run -p 3306:3306 --rm --name mysql-container -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=snakedb -d mysql:8.0.33 
+```
 
 
