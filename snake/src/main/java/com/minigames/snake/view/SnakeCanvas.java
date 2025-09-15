@@ -26,12 +26,8 @@ public class SnakeCanvas extends JPanel {
 
 	public void refresh() {
 		if (presenter.hasSetting()) {
-			int newCellSize = (int) Math.round(300.0 / (Math.max(presenter.getMapHeight(), presenter.getMapWidth())));
-			if (cellSize != newCellSize) {
-				cellSize = newCellSize;
-				setPreferredSize(
-						new Dimension(cellSize * presenter.getMapWidth(), cellSize * presenter.getMapHeight()));
-			}
+			cellSize = (int) Math.round(300.0 / (Math.max(presenter.getMapHeight(), presenter.getMapWidth())));
+			setPreferredSize(new Dimension(cellSize * presenter.getMapWidth(), cellSize * presenter.getMapHeight()));
 		}
 		if (isShowing()) {
 			repaint();

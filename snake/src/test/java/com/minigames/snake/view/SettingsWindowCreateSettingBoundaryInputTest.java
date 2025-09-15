@@ -16,7 +16,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
 @SuppressWarnings("java:S2699")
-public class SettingsPanelCreateSettingBoundaryInputTest {
+public class SettingsWindowCreateSettingBoundaryInputTest {
 
 	private FrameFixture window;
 	private SnakeWindowView snakeView;
@@ -24,7 +24,7 @@ public class SettingsPanelCreateSettingBoundaryInputTest {
 	private String enteredValue;
 	private String expectedMessage;
 
-	public SettingsPanelCreateSettingBoundaryInputTest(String componentName, String enteredValue,
+	public SettingsWindowCreateSettingBoundaryInputTest(String componentName, String enteredValue,
 			String expectedMessage) {
 		this.componentName = componentName;
 		this.enteredValue = enteredValue;

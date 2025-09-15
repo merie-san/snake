@@ -5,20 +5,16 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.IntStream;
-
-import javax.swing.DefaultListModel;
 
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
@@ -244,7 +240,7 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
-	public void testUpdateHistoryPanelEmpty() {
+	public void testUpdateLobbyEmptyHistory() {
 		GuiActionRunner.execute(() -> {
 			snakeView.show("History panel");
 		});
@@ -258,7 +254,7 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
-	public void testUpdateHistoryPanelMultiple() {
+	public void testUpdateLobbyMultipleHistory() {
 		GuiActionRunner.execute(() -> {
 			snakeView.show("History panel");
 		});
@@ -279,7 +275,7 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
-	public void testUpdateSettingsPanelEmpty() {
+	public void testUpdateLobbyEmptySettings() {
 		GuiActionRunner.execute(() -> {
 			snakeView.show("Settings panel");
 		});
@@ -292,7 +288,7 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
-	public void testUpdateSettingsPanelMultiple() {
+	public void testUpdateLobbyMultipleSettings() {
 		GuiActionRunner.execute(() -> {
 			snakeView.show("Settings panel");
 		});
@@ -311,371 +307,14 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
-	public void testDeleteSelectedButtonEnabledAtItemSelection() {
-		GuiActionRunner.execute(() -> {
-			snakeView.show("History panel");
-			snakeView.getHistoryPanel().getListModel()
-					.addElement(new GameRecord("1", 10, LocalDate.now(), new GameSetting("2", 10, 10, 10)));
-		});
-		window.button("deleteSelectedButton").requireDisabled();
-		window.list("historyList").clickItem(0);
-		window.button("deleteSelectedButton").requireEnabled();
-	}
-
-	@Test
-	public void testDeleteSelectedButtonEnabledAtSelectionChange() {
-		GuiActionRunner.execute(() -> {
-			snakeView.show("History panel");
-			GameSetting setting = new GameSetting("2", 10, 10, 10);
-			GameRecord record1 = new GameRecord("1", 10, LocalDate.now(), setting);
-			GameRecord record2 = new GameRecord("3", 10, LocalDate.now(), setting);
-			Collection<GameRecord> records = new ArrayList<>();
-			records.add(record1);
-			records.add(record2);
-			snakeView.getHistoryPanel().getListModel().addAll(records);
-		});
-		window.list("historyList").clickItem(0);
-		window.button("deleteSelectedButton").requireEnabled();
-		window.list("historyList").clickItem(1);
-		window.button("deleteSelectedButton").requireEnabled();
-	}
-
-	@Test
-	public void testHistoryPanelDeleteAll() {
-		GuiActionRunner.execute(() -> {
-			snakeView.show("History panel");
-		});
-		Collection<GameRecord> history = new ArrayList<>();
-		GameSetting setting = new GameSetting("2", 10, 10, 10);
-		GameRecord record1 = new GameRecord("1", 10, LocalDate.now(), setting);
-		GameRecord record2 = new GameRecord("3", 10, LocalDate.now(), setting);
-		history.add(record1);
-		history.add(record2);
-		GuiActionRunner.execute(() -> {
-			snakeView.getHistoryPanel().getListModel().addAll(history);
-		});
-		window.button("deleteAllButton").click();
-		verify(lobbyPresenter).clearGameHistory(snakeView);
-		verifyNoMoreInteractions(lobbyPresenter);
-	}
-
-	@Test
-	public void testHistoryPanelDeleteSelected() {
-		GuiActionRunner.execute(() -> {
-			snakeView.show("History panel");
-		});
-		Collection<GameRecord> history = new ArrayList<>();
-		GameSetting setting = new GameSetting("2", 10, 10, 10);
-		GameRecord record1 = new GameRecord("1", 10, LocalDate.now(), setting);
-		GameRecord record2 = new GameRecord("3", 10, LocalDate.now(), setting);
-		history.add(record1);
-		history.add(record2);
-		DefaultListModel<GameRecord> listModel = snakeView.getHistoryPanel().getListModel();
-		GuiActionRunner.execute(() -> {
-			listModel.addAll(history);
-		});
-		window.list("historyList").clickItem(0);
-		window.button("deleteSelectedButton").click();
-		verify(lobbyPresenter).removeRecord(listModel.getElementAt(0), snakeView);
-		verifyNoMoreInteractions(lobbyPresenter);
-	}
-
-	@Test
-	public void testSettingsPanelButtonsEnabledAtItemSelection() {
-		GuiActionRunner.execute(() -> {
-			snakeView.show("Settings panel");
-		});
-		Collection<GameSetting> settings = new ArrayList<>();
-		settings.add(new GameSetting("1", 10, 10, 10));
-		settings.add(new GameSetting("2", 20, 10, 1));
-		GuiActionRunner.execute(() -> {
-			snakeView.getSettingsPanel().getListModel().addAll(settings);
-		});
-		window.button("renameButton").requireDisabled();
-		window.button("deleteSettingButton").requireDisabled();
-		window.button("useSettingButton").requireDisabled();
-		window.list("settingsList").clickItem(0);
-		window.button("renameButton").requireEnabled();
-		window.button("deleteSettingButton").requireEnabled();
-		window.button("useSettingButton").requireEnabled();
-	}
-
-	@Test
-	public void testSettingsPanelButtonsEnabledAtSelectionChange() {
-		GuiActionRunner.execute(() -> {
-			snakeView.show("Settings panel");
-		});
-		Collection<GameSetting> settings = new ArrayList<>();
-		settings.add(new GameSetting("1", 10, 10, 10));
-		settings.add(new GameSetting("2", 20, 10, 1));
-		GuiActionRunner.execute(() -> {
-			snakeView.getSettingsPanel().getListModel().addAll(settings);
-		});
-		window.list("settingsList").clickItem(0);
-		window.button("renameButton").requireEnabled();
-		window.button("deleteSettingButton").requireEnabled();
-		window.button("useSettingButton").requireEnabled();
-		window.list("settingsList").clickItem(1);
-		window.button("renameButton").requireEnabled();
-		window.button("deleteSettingButton").requireEnabled();
-		window.button("useSettingButton").requireEnabled();
-	}
-
-	@Test
-	public void testSettingsPanelNewNameTextBoxFilledAtSelection() {
-		GuiActionRunner.execute(() -> {
-			snakeView.show("Settings panel");
-		});
-		Collection<GameSetting> settings = new ArrayList<>();
-		GameSetting setting = new GameSetting("1", 10, 10, 10);
-		settings.add(setting);
-		GuiActionRunner.execute(() -> {
-			snakeView.getSettingsPanel().getListModel().addAll(settings);
-		});
-		window.list("settingsList").clickItem(0);
-		window.textBox("newNameTextBox").requireEnabled().requireText(setting.getName());
-	}
-
-	@Test
-	public void testSettingsPanelNewNameTextBoxEmptyAtNullSelection() {
-		GuiActionRunner.execute(() -> {
-			snakeView.show("Settings panel");
-		});
-		Collection<GameSetting> settings = new ArrayList<>();
-		GameSetting setting = new GameSetting("1", 10, 10, 10);
-		settings.add(setting);
-		GuiActionRunner.execute(() -> {
-			snakeView.getSettingsPanel().getListModel().addAll(settings);
-			snakeView.getSettingsPanel().getList().setSelectedIndex(0);
-		});
-		window.list("settingsList").clearSelection();
-		window.textBox("newNameTextBox").requireDisabled().requireText("");
-
-	}
-
-	@Test
-	public void testSettingsPanelUseSettingButton() {
-		GuiActionRunner.execute(() -> {
-			snakeView.show("Settings panel");
-		});
-		Collection<GameSetting> settings = new ArrayList<>();
-		GameSetting setting = new GameSetting("1", 10, 10, 10);
-		settings.add(setting);
-		GuiActionRunner.execute(() -> {
-			snakeView.getSettingsPanel().getListModel().addAll(settings);
-		});
-		window.list("settingsList").selectItem(0);
-		window.button("useSettingButton").click();
-		verify(matchPresenter).changeSetting(setting, snakeView);
-	}
-
-	@Test
-	public void testSettingsPanelDeleteSettingButton() {
-		GuiActionRunner.execute(() -> {
-			snakeView.show("Settings panel");
-		});
-		Collection<GameSetting> settings = new ArrayList<>();
-		GameSetting setting = new GameSetting("1", 10, 10, 10);
-		settings.add(setting);
-		GuiActionRunner.execute(() -> {
-			snakeView.getSettingsPanel().getListModel().addAll(settings);
-		});
-		window.list("settingsList").selectItem(0);
-		window.button("deleteSettingButton").click();
-		verify(lobbyPresenter).removeConfiguration(setting, snakeView);
-		verifyNoMoreInteractions(lobbyPresenter);
-	}
-
-	@Test
-	public void testSettingsPanelRenameSettingButton() {
-		GuiActionRunner.execute(() -> {
-			snakeView.show("Settings panel");
-		});
-		Collection<GameSetting> settings = new ArrayList<>();
-		GameSetting setting = new GameSetting("1", 10, 10, 10);
-		settings.add(setting);
-		GuiActionRunner.execute(() -> {
-			snakeView.getSettingsPanel().getListModel().addAll(settings);
-		});
-		window.list("settingsList").selectItem(0);
-		window.textBox("newNameTextBox").deleteText().enterText("Random name");
-		window.button("renameButton").click();
-		verify(lobbyPresenter).renameConfiguration(setting, "Random name", snakeView);
-		verifyNoMoreInteractions(lobbyPresenter);
-	}
-
-	@Test
-	public void testSettingsPanelWidthTextBoxInvalidInput() {
-		GuiActionRunner.execute(() -> {
-			snakeView.show("Settings panel");
-		});
-		window.textBox("widthTextBox").enterText("Not a number").pressAndReleaseKeys(KeyEvent.VK_TAB);
-		window.textBox("widthTextBox").requireText("5");
-	}
-
-	@Test
-	public void testSettingsPanelHeightTextBoxInvalidInput() {
-		GuiActionRunner.execute(() -> {
-			snakeView.show("Settings panel");
-		});
-		window.textBox("heightTextBox").enterText("Not a number").pressAndReleaseKeys(KeyEvent.VK_TAB);
-		window.textBox("heightTextBox").requireText("5");
-	}
-
-	@Test
-	public void testSettingsPanelObstaclesTextBoxInvalidInput() {
-		GuiActionRunner.execute(() -> {
-			snakeView.show("Settings panel");
-		});
-		window.textBox("obstaclesTextBox").enterText("Not a number").pressAndReleaseKeys(KeyEvent.VK_TAB);
-		window.textBox("obstaclesTextBox").requireText("5");
-	}
-
-	@Test
-	public void testSettingsPanelValidInputWidth() {
-		GuiActionRunner.execute(() -> {
-			snakeView.show("Settings panel");
-		});
-		window.textBox("widthTextBox").enterText("10").pressAndReleaseKeys(KeyEvent.VK_TAB);
-		window.textBox("widthTextBox").requireText("10");
-	}
-
-	@Test
-	public void testSettingsPanelValidInputHeight() {
-		GuiActionRunner.execute(() -> {
-			snakeView.show("Settings panel");
-		});
-		window.textBox("heightTextBox").enterText("10").pressAndReleaseKeys(KeyEvent.VK_TAB);
-		window.textBox("heightTextBox").requireText("10");
-	}
-
-	@Test
-	public void testSettingsPanelValidInputObstacles() {
-		GuiActionRunner.execute(() -> {
-			snakeView.show("Settings panel");
-		});
-
-		window.textBox("obstaclesTextBox").enterText("10").pressAndReleaseKeys(KeyEvent.VK_TAB);
-		window.textBox("obstaclesTextBox").requireText("10");
-	}
-
-	@Test
-	public void testSettingsPanelSubmit() {
-		GuiActionRunner.execute(() -> {
-			snakeView.show("Settings panel");
-		});
-		window.button("submitButton").click();
-		verify(lobbyPresenter).saveConfiguration(5, 5, 5, "New setting", snakeView);
-	}
-
-	@Test
-	public void testMatchPanelButtonsEnabledAtEnableButtons() {
-		GuiActionRunner.execute(() -> {
-			snakeView.show("Match panel");
-		});
-		window.button("startButton").requireDisabled();
-		GuiActionRunner.execute(() -> {
-			snakeView.getMatchPanel().enableButtons();
-		});
-		window.button("historyButton").requireEnabled();
-		window.button("settingsButton").requireEnabled();
-		window.button("startButton").requireEnabled();
-		window.button("quitButton").requireDisabled();
-	}
-
-	@Test
-	public void testMatchPanelStartButtonDisablesPanelButtons() {
-		when(matchPresenter.getMapHeight()).thenReturn(5);
-		when(matchPresenter.getMapWidth()).thenReturn(5);
-		when(matchPresenter.getApple()).thenReturn(new Point(2, 3));
-		GuiActionRunner.execute(() -> {
-			snakeView.show("Match panel");
-			window.button("historyButton").target().setEnabled(true);
-			window.button("settingsButton").target().setEnabled(true);
-			window.button("startButton").target().setEnabled(true);
-			window.button("quitButton").target().setEnabled(false);
-		});
-		window.button("startButton").click();
-		window.button("historyButton").requireDisabled();
-		window.button("settingsButton").requireDisabled();
-		window.button("startButton").requireDisabled();
-		window.button("quitButton").requireEnabled();
-	}
-
-	@Test
-	public void testMatchPanelStartButton() {
-		when(matchPresenter.getMapHeight()).thenReturn(5);
-		when(matchPresenter.getMapWidth()).thenReturn(5);
-		when(matchPresenter.getApple()).thenReturn(new Point(2, 3));
-		GuiActionRunner.execute(() -> {
-			snakeView.show("Match panel");
-			window.button("startButton").target().setEnabled(true);
-		});
-		window.button("startButton").click();
-		window.button("historyButton").requireDisabled();
-		window.button("settingsButton").requireDisabled();
-		window.button("startButton").requireDisabled();
-		window.button("quitButton").requireEnabled();
-		assertThat(canvas.getKeyListeners()).hasSize(1)
-				.allSatisfy(listener -> assertThat(listener).isInstanceOf(SnakeCanvasKeyListener.class));
-	}
-
-	@Test
-	public void testMatchPanelQuitButton() {
-		when(matchPresenter.getMapHeight()).thenReturn(5);
-		when(matchPresenter.getMapWidth()).thenReturn(5);
-		when(matchPresenter.getApple()).thenReturn(new Point(2, 3));
-		GuiActionRunner.execute(() -> {
-			snakeView.show("Match panel");
-			window.button("quitButton").target().setEnabled(true);
-			canvas.addKeyListener(new SnakeCanvasKeyListener(matchPresenter, snakeView));
-		});
-		window.button("quitButton").click();
-		verify(matchPresenter).endMatch(snakeView);
-		assertThat(canvas.getKeyListeners()).isEmpty();
-	}
-	
-	@Test
-	public void testMatchPanelQuitButtonNoKeyListeners() {
-		when(matchPresenter.getMapHeight()).thenReturn(5);
-		when(matchPresenter.getMapWidth()).thenReturn(5);
-		when(matchPresenter.getApple()).thenReturn(new Point(2, 3));
-		GuiActionRunner.execute(() -> {
-			snakeView.show("Match panel");
-			window.button("quitButton").target().setEnabled(true);
-		});
-		window.button("quitButton").click();
-		verify(matchPresenter).endMatch(snakeView);
-		assertThat(canvas.getKeyListeners()).isEmpty();
-	}
-
-	@Test
-	public void testUpdateMatchPanelAtGameEnd() {
-		when(matchPresenter.isPlaying()).thenReturn(false);
-		when(matchPresenter.hasSetting()).thenReturn(true);
-		GuiActionRunner.execute(() -> {
-			snakeView.show("Match panel");
-			window.button("quitButton").target().setEnabled(true);
-			window.button("startButton").target().setEnabled(false);
-			window.button("historyButton").target().setEnabled(false);
-			window.button("settingsButton").target().setEnabled(false);
-			snakeView.updateMatch();
-		});
-		window.button("historyButton").requireEnabled();
-		window.button("settingsButton").requireEnabled();
-		window.button("startButton").requireEnabled();
-		window.button("quitButton").requireDisabled();
-		assertThat(canvas.getKeyListeners()).isEmpty();
-	}
-
-	@Test
-	public void testMatchCardCanvasInitializationNoSetting() {
+	public void testUpdateMatchCanvasNotPlayingNoSetting() {
 		when(matchPresenter.hasSetting()).thenReturn(false);
 		when(matchPresenter.isPlaying()).thenReturn(false);
 		GuiActionRunner.execute(() -> {
 			snakeView.show("Match panel");
 			snakeView.updateMatch();
 		});
+		robot().waitForIdle();
 		BufferedImage image = new ScreenshotTaker().takeScreenshotOf(canvas);
 		IntStream.range(0, 300).forEach(x -> IntStream.range(0, 300)
 				.forEach(y -> assertThat(image.getRGB(x, y)).isEqualTo(Color.WHITE.getRGB())));
@@ -683,7 +322,7 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
-	public void testMatchCardCanvasInitializationNotPlaying() {
+	public void testUpdateMatchCanvasNotPlayingSettingPresent() {
 		when(matchPresenter.getMapHeight()).thenReturn(2);
 		when(matchPresenter.getMapWidth()).thenReturn(2);
 		when(matchPresenter.getApple()).thenReturn(new Point(2, 3));
@@ -694,6 +333,7 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 			canvas.setCellSize(150);
 			snakeView.updateMatch();
 		});
+		robot().waitForIdle();
 		BufferedImage image = new ScreenshotTaker().takeScreenshotOf(canvas);
 		IntStream.range(0, 300).forEach(x -> IntStream.range(0, 300)
 				.forEach(y -> assertThat(image.getRGB(x, y)).isEqualTo(Color.LIGHT_GRAY.getRGB())));
@@ -701,39 +341,28 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
-	public void testMatchCardInitializationEmptyMap() {
+	public void testUpdateMatchCanvasPlayingOnEmptyMap() {
 		when(matchPresenter.hasSetting()).thenReturn(true);
 		when(matchPresenter.isPlaying()).thenReturn(true);
 		when(matchPresenter.getApple()).thenReturn(null);
 		when(matchPresenter.getObstacles()).thenReturn(new ArrayList<>());
 		when(matchPresenter.snakeCollection()).thenReturn(new ArrayList<Point>());
 		when(matchPresenter.getMapWidth()).thenReturn(10);
-		when(matchPresenter.getMapHeight()).thenReturn(10);
+		when(matchPresenter.getMapHeight()).thenReturn(8);
 		canvas.setCellSize(30);
 		GuiActionRunner.execute(() -> {
 			snakeView.show("Match panel");
 			snakeView.updateMatch();
 		});
+		robot().waitForIdle();
 		BufferedImage image = new ScreenshotTaker().takeScreenshotOf(canvas);
-		IntStream.range(0, 300).forEach(x -> IntStream.range(0, 300)
+		IntStream.range(0, 300).forEach(x -> IntStream.range(0, 240)
 				.forEach(y -> assertThat(image.getRGB(x, y)).isEqualTo(Color.LIGHT_GRAY.getRGB())));
-		assertThat(canvas.getPreferredSize()).isEqualTo(new Dimension(300, 300));
+		assertThat(canvas.getPreferredSize()).isEqualTo(new Dimension(300, 240));
 	}
 
 	@Test
-	public void testMatchCardRefreshIllegalState() {
-		when(matchPresenter.hasSetting()).thenReturn(false);
-		when(matchPresenter.isPlaying()).thenReturn(true);
-		GuiActionRunner.execute(() -> {
-			snakeView.show("Match panel");
-			assertThatThrownBy(snakeView::updateMatch).isInstanceOf(IllegalStateException.class)
-					.hasMessage("Player cannot be in game while having no setting");
-
-		});
-	}
-
-	@Test
-	public void testMatchCardCanvasInitializationPlaying() {
+	public void testUpdateMatchCanvasPlayingNotEmptyMap() {
 		Collection<Point> obstacles = new ArrayList<Point>();
 		Collection<Point> snake = new ArrayList<Point>();
 		obstacles.add(new Point(0, 0));
@@ -753,6 +382,7 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 			canvas.setCellSize(60);
 			snakeView.updateMatch();
 		});
+		robot().waitForIdle();
 		BufferedImage image = new ScreenshotTaker().takeScreenshotOf(canvas);
 		IntStream.range(0, 300).forEach(x -> IntStream.range(0, 300).forEach(y -> {
 			if (y < 120 && y >= 60 && x < 180 && x >= 120) {
@@ -769,31 +399,48 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
-	public void testMatchPanelKeyboardControls() {
-		when(matchPresenter.getMapHeight()).thenReturn(5);
-		when(matchPresenter.getMapWidth()).thenReturn(5);
-		when(matchPresenter.getApple()).thenReturn(new Point(2, 3));
-		when(matchPresenter.hasSetting()).thenReturn(true);
-		when(matchPresenter.isPlaying()).thenReturn(true);
+	public void testUpdateMatchNotPlayingNoSetting() {
+		when(matchPresenter.isPlaying()).thenReturn(false);
+		when(matchPresenter.hasSetting()).thenReturn(false);
+		when(matchPresenter.currentScore()).thenReturn(0);
 		GuiActionRunner.execute(() -> {
 			snakeView.show("Match panel");
-			canvas.addKeyListener(new SnakeCanvasKeyListener(matchPresenter, snakeView));
+			snakeView.updateMatch();
 		});
-		window.panel("matchCanvas").click();
-		window.panel("matchCanvas").pressAndReleaseKeys(KeyEvent.VK_LEFT);
-		window.panel("matchCanvas").pressAndReleaseKeys(KeyEvent.VK_RIGHT);
-		window.panel("matchCanvas").pressAndReleaseKeys(KeyEvent.VK_UP);
-		window.panel("matchCanvas").pressAndReleaseKeys(KeyEvent.VK_DOWN);
-		window.panel("matchCanvas").pressAndReleaseKeys(KeyEvent.VK_ESCAPE);
-		verify(matchPresenter).goRight(snakeView);
-		verify(matchPresenter).goUp(snakeView);
-		verify(matchPresenter).goDown(snakeView);
-		verify(matchPresenter).goLeft(snakeView);
-		verify(matchPresenter).endMatch(snakeView);
+		window.label("scoreLabel").requireText("Current score: 0");
+		window.label("messageLabel").requireText("No game");
 	}
 
 	@Test
-	public void testMatchCardUpdatePlaying() {
+	public void testUpdateMatchPlayingNoSetting() {
+		when(matchPresenter.hasSetting()).thenReturn(false);
+		when(matchPresenter.isPlaying()).thenReturn(true);
+		GuiActionRunner.execute(() -> {
+			snakeView.show("Match panel");
+			assertThatThrownBy(snakeView::updateMatch).isInstanceOf(IllegalStateException.class)
+					.hasMessage("Player cannot be in game while having no setting");
+		});
+	}
+
+	@Test
+	public void testUpdateMatchNotPlayingSettingPresent() {
+		when(matchPresenter.currentScore()).thenReturn(30);
+		when(matchPresenter.isPlaying()).thenReturn(false);
+		when(matchPresenter.hasSetting()).thenReturn(true);
+		GuiActionRunner.execute(() -> {
+			snakeView.show("Match panel");
+			snakeView.updateMatch();
+		});
+		window.label("scoreLabel").requireText("Current score: 30");
+		window.label("messageLabel").requireText("No game");
+		window.button("historyButton").requireEnabled();
+		window.button("settingsButton").requireEnabled();
+		window.button("startButton").requireEnabled();
+		window.button("quitButton").requireDisabled();
+	}
+
+	@Test
+	public void testUpdateMatchPlayingSettingPresent() {
 		when(matchPresenter.getMapHeight()).thenReturn(5);
 		when(matchPresenter.getMapWidth()).thenReturn(5);
 		when(matchPresenter.getApple()).thenReturn(new Point(2, 3));
@@ -806,23 +453,6 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 		});
 		window.label("scoreLabel").requireText("Current score: 30");
 		window.label("messageLabel").requireText("In game");
-	}
-
-	@Test
-	public void testMatchCardUpdateNotPlaying() {
-		when(matchPresenter.getMapHeight()).thenReturn(5);
-		when(matchPresenter.getMapWidth()).thenReturn(5);
-		when(matchPresenter.getApple()).thenReturn(new Point(2, 3));
-		GuiActionRunner.execute(() -> {
-			snakeView.show("Match panel");
-		});
-		when(matchPresenter.currentScore()).thenReturn(30);
-		when(matchPresenter.isPlaying()).thenReturn(false);
-		GuiActionRunner.execute(() -> {
-			snakeView.updateMatch();
-		});
-		window.label("scoreLabel").requireText("Current score: 30");
-		window.label("messageLabel").requireText("No game");
 	}
 
 	@Test

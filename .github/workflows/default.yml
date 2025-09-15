@@ -33,7 +33,7 @@ jobs:
                ~/.sonar/cache
             key: ${{matrix.os}}-m2&sonar-${{hashFiles('**/pom.xml', '**/*.yml')}}
             restore-keys: ${{matrix.os}}-m2&sonar-
-      -  name: Build with Maven and SonarCloud
+      -  name: Build with Maven
          if: ${{always()}}
          run: xvfb-run mvn verify -Pcode-coverage -Pmutation-testing 
          working-directory: ./snake
@@ -53,3 +53,4 @@ jobs:
                **/target/site
                **/target/pit-reports
                **/surefire-reports
+               **/failsafe-reports

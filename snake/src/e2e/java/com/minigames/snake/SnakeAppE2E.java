@@ -138,6 +138,7 @@ public class SnakeAppE2E extends AssertJSwingJUnitTestCase {
 		window.button("useSettingButton").click();
 		window.button("matchButton").click();
 		window.button("startButton").requireEnabled();
+		robot().waitForIdle();
 		BufferedImage img = new ScreenshotTaker().takeScreenshotOf(window.panel("matchCanvas").target());
 		assertThat(img.getHeight()).isEqualTo(300);
 		assertThat(img.getWidth()).isEqualTo(300);
@@ -195,6 +196,7 @@ public class SnakeAppE2E extends AssertJSwingJUnitTestCase {
 		window.button("quitButton").requireEnabled();
 		window.button("historyButton").requireDisabled();
 		window.button("settingsButton").requireDisabled();
+		robot().waitForIdle();
 		BufferedImage img = new ScreenshotTaker().takeScreenshotOf(window.panel("matchCanvas").target());
 
 		Collection<Point> rectList = IntStream.range(0, 5)
@@ -220,10 +222,12 @@ public class SnakeAppE2E extends AssertJSwingJUnitTestCase {
 		window.button("useSettingButton").click();
 		window.button("matchButton").click();
 		window.button("startButton").click();
+		robot().waitForIdle();
 		BufferedImage img1 = new ScreenshotTaker().takeScreenshotOf(window.panel("matchCanvas").target());
 		Point start = findColor(5, 5, img1, Color.GREEN);
 		Point apple = findColor(5, 5, img1, Color.RED);
 		Point newPos = moveOneCellWhileAvoidingApple(start, apple, new Dimension(5, 5));
+		robot().waitForIdle();
 		BufferedImage img2 = new ScreenshotTaker().takeScreenshotOf(window.panel("matchCanvas").target());
 		window.label("scoreLabel").requireText("Current score: 0");
 		window.label("messageLabel").requireText("In game");
@@ -244,13 +248,16 @@ public class SnakeAppE2E extends AssertJSwingJUnitTestCase {
 		window.button("useSettingButton").click();
 		window.button("matchButton").click();
 		window.button("startButton").click();
+		robot().waitForIdle();
 		BufferedImage img1 = new ScreenshotTaker().takeScreenshotOf(window.panel("matchCanvas").target());
 		Point firstApple = findColor(5, 5, img1, Color.RED);
 		moveFromXToYAvoidingZ(findColor(5, 5, img1, Color.GREEN), firstApple, null);
 		window.label("scoreLabel").requireText("Current score: 1");
 		window.label("messageLabel").requireText("In game");
+		robot().waitForIdle();
 		BufferedImage img2 = new ScreenshotTaker().takeScreenshotOf(window.panel("matchCanvas").target());
 		Point newPos = moveOneCellWhileAvoidingApple(firstApple, findColor(5, 5, img2, Color.RED), new Dimension(5, 5));
+		robot().waitForIdle();
 		BufferedImage img3 = new ScreenshotTaker().takeScreenshotOf(window.panel("matchCanvas").target());
 		assertThat(checkRectInImgIsOfColor(img3, firstApple.x * 60, firstApple.y * 60, 60, 60, Color.GREEN)).isTrue();
 		assertThat(checkRectInImgIsOfColor(img3, newPos.x * 60, newPos.y * 60, 60, 60, Color.GREEN)).isTrue();
@@ -265,6 +272,7 @@ public class SnakeAppE2E extends AssertJSwingJUnitTestCase {
 		window.button("useSettingButton").click();
 		window.button("matchButton").click();
 		window.button("startButton").click();
+		robot().waitForIdle();
 		BufferedImage img1 = new ScreenshotTaker().takeScreenshotOf(window.panel("matchCanvas").target());
 		goOutOfMapBoundsWhileAvoidingApples(findColor(5, 5, img1, Color.GREEN), findColor(5, 5, img1, Color.RED),
 				new Dimension(5, 5));
@@ -288,9 +296,11 @@ public class SnakeAppE2E extends AssertJSwingJUnitTestCase {
 		window.button("useSettingButton").click();
 		window.button("matchButton").click();
 		window.button("startButton").click();
+		robot().waitForIdle();
 		BufferedImage img1 = new ScreenshotTaker().takeScreenshotOf(window.panel("matchCanvas").target());
 		Point firstApple = findColor(5, 5, img1, Color.RED);
 		moveFromXToYAvoidingZ(findColor(5, 5, img1, Color.GREEN), firstApple, null);
+		robot().waitForIdle();
 		BufferedImage img2 = new ScreenshotTaker().takeScreenshotOf(window.panel("matchCanvas").target());
 		Point newPos = moveOneCellWhileAvoidingApple(firstApple, findColor(5, 5, img2, Color.RED), new Dimension(5, 5));
 		moveFromXToYAvoidingZ(newPos, firstApple, null);
@@ -314,6 +324,7 @@ public class SnakeAppE2E extends AssertJSwingJUnitTestCase {
 		window.button("useSettingButton").click();
 		window.button("matchButton").click();
 		window.button("startButton").click();
+		robot().waitForIdle();
 		BufferedImage img1 = new ScreenshotTaker().takeScreenshotOf(window.panel("matchCanvas").target());
 		moveFromXToYAvoidingZ(findColor(5, 5, img1, Color.GREEN), findColor(5, 5, img1, Color.DARK_GRAY),
 				findColor(5, 5, img1, Color.RED));
@@ -337,6 +348,7 @@ public class SnakeAppE2E extends AssertJSwingJUnitTestCase {
 		window.button("useSettingButton").click();
 		window.button("matchButton").click();
 		window.button("startButton").click();
+		robot().waitForIdle();
 		BufferedImage img1 = new ScreenshotTaker().takeScreenshotOf(window.panel("matchCanvas").target());
 		moveFromXToYAvoidingZ(findColor(5, 5, img1, Color.GREEN), findColor(5, 5, img1, Color.RED), null);
 		window.button("quitButton").click();

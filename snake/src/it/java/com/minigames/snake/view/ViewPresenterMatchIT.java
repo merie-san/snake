@@ -22,7 +22,6 @@ import org.assertj.swing.fixture.FrameFixture;
 import org.assertj.swing.image.ScreenshotTaker;
 import org.assertj.swing.junit.runner.GUITestRunner;
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
-import org.assertj.swing.timing.Pause;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -109,8 +108,8 @@ public class ViewPresenterMatchIT extends AssertJSwingJUnitTestCase {
 		});
 		window.button("startButton").click();
 		assertThat(matchPresenter.isPlaying()).isTrue();
+		robot().waitForIdle();
 		BufferedImage canvas = new ScreenshotTaker().takeScreenshotOf(snakeView.getMatchPanel().getCanvas());
-
 		Collection<Point> rectList = IntStream.range(0, 5)
 				.mapToObj(i -> IntStream.range(0, 5).mapToObj(j -> new Point(i, j))).flatMap(Function.identity())
 				.collect(Collectors.toList());
@@ -169,8 +168,10 @@ public class ViewPresenterMatchIT extends AssertJSwingJUnitTestCase {
 		});
 
 		window.button("startButton").click();
+		robot().waitForIdle();
 		BufferedImage canvas1 = new ScreenshotTaker().takeScreenshotOf(snakeView.getMatchPanel().getCanvas());
 		window.panel("matchCanvas").pressAndReleaseKeys(KeyEvent.VK_DOWN);
+		robot().waitForIdle();
 		BufferedImage canvas2 = new ScreenshotTaker().takeScreenshotOf(snakeView.getMatchPanel().getCanvas());
 		List<Point> rectList = IntStream.range(0, 5).mapToObj(i -> IntStream.range(0, 5).mapToObj(j -> new Point(i, j)))
 				.flatMap(Function.identity())
@@ -191,7 +192,7 @@ public class ViewPresenterMatchIT extends AssertJSwingJUnitTestCase {
 
 		window.button("startButton").click();
 		window.panel("matchCanvas").pressAndReleaseKeys(KeyEvent.VK_DOWN);
-		Pause.pause(100);
+		robot().waitForIdle();
 		BufferedImage canvas = new ScreenshotTaker().takeScreenshotOf(snakeView.getMatchPanel().getCanvas());
 
 		IntStream.range(0, 300)
