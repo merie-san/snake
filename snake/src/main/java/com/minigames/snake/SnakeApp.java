@@ -64,7 +64,6 @@ public class SnakeApp {
 				formatter.printHelp("SnakeApp", "App options: ", options.getOptions(), null, true);
 				return;
 			}
-
 			Map<String, String> map = new HashMap<>();
 			map.put(PersistenceConfiguration.JDBC_DRIVER, "com.mysql.cj.jdbc.Driver");
 			map.put(PersistenceConfiguration.JDBC_URL,

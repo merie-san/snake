@@ -411,6 +411,30 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 		window.label("messageLabel").requireText("No game");
 	}
 
+	
+	@Test
+	public void testUpdateMatchRemovesKeyboardListeners() {
+		when(matchPresenter.isPlaying()).thenReturn(false);
+		when(matchPresenter.hasSetting()).thenReturn(false);
+		GuiActionRunner.execute(() -> {
+			snakeView.show("Match panel");
+			canvas.addKeyListener(new SnakeCanvasKeyListener(matchPresenter, snakeView));
+			snakeView.updateMatch();
+		});
+		assertThat(canvas.getKeyListeners()).isEmpty();
+	}
+	
+	@Test
+	public void testUpdateMatchWhenNoListeners() {
+		when(matchPresenter.isPlaying()).thenReturn(false);
+		when(matchPresenter.hasSetting()).thenReturn(false);
+		GuiActionRunner.execute(() -> {
+			snakeView.show("Match panel");
+			snakeView.updateMatch();
+		});
+		assertThat(canvas.getKeyListeners()).isEmpty();
+	}
+
 	@Test
 	public void testUpdateMatchPlayingNoSetting() {
 		when(matchPresenter.hasSetting()).thenReturn(false);

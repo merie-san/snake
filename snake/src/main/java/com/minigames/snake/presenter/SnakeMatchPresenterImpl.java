@@ -55,10 +55,12 @@ public class SnakeMatchPresenterImpl implements SnakeMatchPresenter {
 
 	@Override
 	public void endMatch(SnakeView snakeView) {
-		repository.createRecord(ModelFactory.gameRecord(currentScore(), LocalDate.now(), configuration));
-		playing = false;
-		snakeView.updateLobby();
-		snakeView.updateMatch();
+		if (playing) {
+			repository.createRecord(ModelFactory.gameRecord(currentScore(), LocalDate.now(), configuration));
+			playing = false;
+			snakeView.updateLobby();
+			snakeView.updateMatch();
+		}
 	}
 
 	@Override

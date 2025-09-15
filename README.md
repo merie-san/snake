@@ -16,7 +16,7 @@ If you only need the standalone jar file then run
 mvn -f snake/pom.xml package
 ```
 ## Running the APP
-To start the app you will need to provide an URL for a mySQL server, by specifying to the executable the host address, the port number, the username and the password.<br>
+To start the app you will need to provide an URL for a mySQL server by specifying to the jar the host address, the port number, the username and the password.<br>
 The available options are:
 ```
 -H, --host	mySQL host address
@@ -26,6 +26,9 @@ The available options are:
 -P, --password	mySQL login password
 -h, --help	print help
 ```
-If not set, the default values will be used.
+If not set, the default values will be used. For example:
+```
+java -jar path/to/snake-0.0.1-SNAPSHOT-jar-with-dependencies.jar -H localhost -p 3306 -d snakedb -P admin
+```
 
 
