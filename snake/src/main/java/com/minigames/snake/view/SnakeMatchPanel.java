@@ -4,6 +4,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.MouseEvent;
+import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -110,6 +111,9 @@ public class SnakeMatchPanel extends JPanel {
 	}
 
 	public void refresh() {
+		if (!presenter.isPlaying()) {
+			Arrays.stream(matchCanvas.getKeyListeners()).forEach(listener -> matchCanvas.removeKeyListener(listener));
+		}
 		if (presenter.hasSetting() && !presenter.isPlaying()) {
 			enableButtons();
 		}

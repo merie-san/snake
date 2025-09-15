@@ -204,12 +204,13 @@ public class SnakeMatchPresenterImplTest {
 	}
 
 	@Test
-	public void testEndMatch() {
+	public void testEndMatchPlaying() {
 		ArrayList<Point> obstacles = new ArrayList<Point>();
 		GameSetting setting = new GameSetting("1", 10, 10, 0);
 		presenter.setMap(SnakeMap.of(10, 10, obstacles));
 		presenter.setRawScore(10);
 		presenter.setConfiguration(setting);
+		presenter.setPlaying(true);
 		presenter.endMatch(snakeView);
 		ArgumentCaptor<GameRecord> recordCaptor = ArgumentCaptor.forClass(GameRecord.class);
 		verify(snakeView).updateLobby();
@@ -222,6 +223,14 @@ public class SnakeMatchPresenterImplTest {
 		assertThat(presenter.isPlaying()).isFalse();
 		assertThat(newRecord.getSetting()).isEqualTo(setting);
 		assertThat(newRecord.getScore()).isEqualTo(10);
+	}
+
+	@Test
+	public void testEndMatchNotPlaying() {
+		presenter.setPlaying(false);
+		presenter.endMatch(snakeView);
+		verifyNoInteractions(snakeView);
+		verifyNoInteractions(repository);
 	}
 
 	@Test
@@ -569,6 +578,7 @@ public class SnakeMatchPresenterImplTest {
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
 		presenter.setRawScore(2);
+		presenter.setPlaying(true);
 		presenter.goUp(snakeView);
 		assertThat(presenter.isPlaying()).isFalse();
 		ArgumentCaptor<GameRecord> recordCaptor = ArgumentCaptor.forClass(GameRecord.class);
@@ -597,6 +607,7 @@ public class SnakeMatchPresenterImplTest {
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
 		presenter.setRawScore(1);
+		presenter.setPlaying(true);
 		presenter.goUp(snakeView);
 		assertThat(presenter.isPlaying()).isFalse();
 		ArgumentCaptor<GameRecord> recordCaptor = ArgumentCaptor.forClass(GameRecord.class);
@@ -625,6 +636,7 @@ public class SnakeMatchPresenterImplTest {
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
 		presenter.setRawScore(2);
+		presenter.setPlaying(true);
 		presenter.goDown(snakeView);
 		assertThat(presenter.isPlaying()).isFalse();
 		ArgumentCaptor<GameRecord> recordCaptor = ArgumentCaptor.forClass(GameRecord.class);
@@ -653,6 +665,7 @@ public class SnakeMatchPresenterImplTest {
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
 		presenter.setRawScore(1);
+		presenter.setPlaying(true);
 		presenter.goDown(snakeView);
 		assertThat(presenter.isPlaying()).isFalse();
 		ArgumentCaptor<GameRecord> recordCaptor = ArgumentCaptor.forClass(GameRecord.class);
@@ -681,6 +694,7 @@ public class SnakeMatchPresenterImplTest {
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
 		presenter.setRawScore(2);
+		presenter.setPlaying(true);
 		presenter.goLeft(snakeView);
 		assertThat(presenter.isPlaying()).isFalse();
 		ArgumentCaptor<GameRecord> recordCaptor = ArgumentCaptor.forClass(GameRecord.class);
@@ -709,6 +723,7 @@ public class SnakeMatchPresenterImplTest {
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
 		presenter.setRawScore(1);
+		presenter.setPlaying(true);
 		presenter.goLeft(snakeView);
 		assertThat(presenter.isPlaying()).isFalse();
 		ArgumentCaptor<GameRecord> recordCaptor = ArgumentCaptor.forClass(GameRecord.class);
@@ -737,6 +752,7 @@ public class SnakeMatchPresenterImplTest {
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
 		presenter.setRawScore(2);
+		presenter.setPlaying(true);
 		presenter.goRight(snakeView);
 		assertThat(presenter.isPlaying()).isFalse();
 		ArgumentCaptor<GameRecord> recordCaptor = ArgumentCaptor.forClass(GameRecord.class);
@@ -765,6 +781,7 @@ public class SnakeMatchPresenterImplTest {
 		presenter.setConfiguration(configuration);
 		presenter.setMap(map);
 		presenter.setRawScore(1);
+		presenter.setPlaying(true);
 		presenter.goRight(snakeView);
 		assertThat(presenter.isPlaying()).isFalse();
 		ArgumentCaptor<GameRecord> recordCaptor = ArgumentCaptor.forClass(GameRecord.class);
