@@ -25,7 +25,6 @@ import com.minigames.snake.presenter.SnakeLobbyPresenterImpl;
 import com.minigames.snake.presenter.SnakeMatchPresenter;
 
 @RunWith(GUITestRunner.class)
-@SuppressWarnings("java:S2699")
 public class ViewPresenterLobbyIT extends AssertJSwingJUnitTestCase {
 
 	private SnakeRepository repository;

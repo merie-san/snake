@@ -25,6 +25,19 @@
 			${project.build.directory}/failsafe-reports
 		</sonar.junit.reportPaths>
 		<argLine>--add-opens java.base/java.util=ALL-UNNAMED</argLine>
+		<sonar.issue.ignore.multicriteria>e1,e2,e3,e4,e5,e6</sonar.issue.ignore.multicriteria>
+		<sonar.issue.ignore.multicriteria.e1.ruleKey>java:S2699</sonar.issue.ignore.multicriteria.e1.ruleKey>
+		<sonar.issue.ignore.multicriteria.e1.resourceKey>**test**view/*.java</sonar.issue.ignore.multicriteria.e1.resourceKey>
+		<sonar.issue.ignore.multicriteria.e2.ruleKey>java:S2699</sonar.issue.ignore.multicriteria.e2.ruleKey>
+		<sonar.issue.ignore.multicriteria.e2.resourceKey>**e2e**.java</sonar.issue.ignore.multicriteria.e2.resourceKey>
+		<sonar.issue.ignore.multicriteria.e3.ruleKey>java:S2699</sonar.issue.ignore.multicriteria.e3.ruleKey>
+		<sonar.issue.ignore.multicriteria.e3.resourceKey>**it**view/*.java</sonar.issue.ignore.multicriteria.e3.resourceKey>
+		<sonar.issue.ignore.multicriteria.e4.ruleKey>java:S3577</sonar.issue.ignore.multicriteria.e4.ruleKey>
+		<sonar.issue.ignore.multicriteria.e4.resourceKey>**E2E.java</sonar.issue.ignore.multicriteria.e4.resourceKey>
+		<sonar.issue.ignore.multicriteria.e5.ruleKey>java:S2160</sonar.issue.ignore.multicriteria.e5.ruleKey>
+		<sonar.issue.ignore.multicriteria.e5.resourceKey>**GameSetting.java</sonar.issue.ignore.multicriteria.e5.resourceKey>
+		<sonar.issue.ignore.multicriteria.e6.ruleKey>java:S2160</sonar.issue.ignore.multicriteria.e6.ruleKey>
+		<sonar.issue.ignore.multicriteria.e6.resourceKey>**GameRecord.java</sonar.issue.ignore.multicriteria.e6.resourceKey>
 	</properties>
 
 	<dependencyManagement>

@@ -15,7 +15,6 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
-@SuppressWarnings("java:S2699")
 public class SettingsWindowCreateSettingBoundaryInputTest {
 
 	private FrameFixture window;

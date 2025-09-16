@@ -37,7 +37,6 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceConfiguration;
 
 @RunWith(GUITestRunner.class)
-@SuppressWarnings({ "java:S2699", "java:S3577" })
 public class SnakeAppE2E extends AssertJSwingJUnitTestCase {
 
 	private FrameFixture window;

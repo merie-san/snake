@@ -10,7 +10,6 @@ import jakarta.persistence.ManyToOne;
 @Entity
 //we suppress warnings on equals overriding since equality between entities is always implemented with UUID,
 //so there is no need to override the base method. 
-@SuppressWarnings("java:S2160")
 public class GameRecord extends BaseEntity {
 
 	@Column(nullable = false)
