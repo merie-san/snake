@@ -38,7 +38,6 @@ import com.minigames.snake.presenter.SnakeMap;
 import com.minigames.snake.presenter.SnakeMatchPresenterImpl;
 
 @RunWith(GUITestRunner.class)
-@SuppressWarnings("java:S2699")
 public class ViewPresenterMatchIT extends AssertJSwingJUnitTestCase {
 
 	private SnakeRepository repository;

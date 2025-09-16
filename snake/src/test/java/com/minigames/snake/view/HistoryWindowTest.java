@@ -23,7 +23,6 @@ import com.minigames.snake.presenter.SnakeLobbyPresenter;
 import com.minigames.snake.presenter.SnakeMatchPresenter;
 
 @RunWith(GUITestRunner.class)
-@SuppressWarnings("java:S2699")
 public class HistoryWindowTest extends AssertJSwingJUnitTestCase {
 
 	private FrameFixture window;
