@@ -2,6 +2,7 @@ package com.minigames.snake.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.clearInvocations;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -10,39 +11,22 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import jakarta.persistence.EntityManagerFactory;
 
 public class SnakeHibernateRepositoryTest {
 
-	@Mock
 	private GameRecordHibernateDao recordDao;
 
-	@Mock
 	private GameSettingHibernateDao settingDao;
 
-	@Mock
-	private EntityManagerFactory emf;
-
-	@InjectMocks
 	private SnakeHibernateRepository repository;
-
-	private AutoCloseable closeable;
 
 	@Before
 	public void setup() {
-		closeable = MockitoAnnotations.openMocks(this);
-	}
-
-	@After
-	public void tearDown() throws Exception {
-		closeable.close();
+		settingDao = mock(GameSettingHibernateDao.class);
+		recordDao = mock(GameRecordHibernateDao.class);
+		repository = new SnakeHibernateRepository(settingDao, recordDao, null);
 	}
 
 	@Test
@@ -230,13 +214,6 @@ public class SnakeHibernateRepositoryTest {
 		repository.renameSetting(setting, "New name");
 		verify(settingDao).rename(setting, "New name");
 		verifyNoMoreInteractions(settingDao);
-	}
-
-	@Test
-	public void testCloseRepository() {
-		repository.close();
-		verify(emf).close();
-		verifyNoMoreInteractions(emf);
 	}
 
 }

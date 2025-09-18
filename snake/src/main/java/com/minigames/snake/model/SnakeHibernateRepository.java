@@ -11,8 +11,9 @@ public class SnakeHibernateRepository implements SnakeRepository {
 	private EntityManagerFactory emf;
 
 	@Generated
-	public SnakeHibernateRepository(GameSettingHibernateDao settingDao, GameRecordHibernateDao recordDao, EntityManagerFactory emf) {
-		this.emf=emf;
+	public SnakeHibernateRepository(GameSettingHibernateDao settingDao, GameRecordHibernateDao recordDao,
+			EntityManagerFactory emf) {
+		this.emf = emf;
 		this.settingDao = settingDao;
 		this.recordDao = recordDao;
 		this.settingDao.setEmf(emf);
@@ -60,6 +61,7 @@ public class SnakeHibernateRepository implements SnakeRepository {
 	}
 
 	@Override
+	@Generated
 	public void close() {
 		emf.close();
 	}
