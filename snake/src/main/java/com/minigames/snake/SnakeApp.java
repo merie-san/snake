@@ -2,6 +2,9 @@ package com.minigames.snake;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,6 +25,8 @@ import com.minigames.snake.model.GameSettingHibernateDao;
 import com.minigames.snake.model.GameSettingHibernateDaoImpl;
 import com.minigames.snake.model.Generated;
 import com.minigames.snake.model.SnakeHibernateRepository;
+import com.minigames.snake.model.SnakeJsonRepository;
+import com.minigames.snake.model.SnakeRepository;
 import com.minigames.snake.presenter.RandomObstaclesSupplier;
 import com.minigames.snake.presenter.RandomPositionSupplier;
 import com.minigames.snake.presenter.SnakeLobbyPresenterImpl;
@@ -45,6 +50,8 @@ public class SnakeApp {
 	private static final String DF_HOST_ADDRESS = "localhost";
 	private static final String DF_HOST_PORT = "3306";
 	private static final String DF_DATABASE_NAME = "snakedb";
+	private static final String DEFAULT_RECORDS_JSON_DB_PATH = "jsonDB/snake_records_db.json";
+	private static final String DEFAULT_SETTINGS_JSON_DB_PATH = "jsonDB/snake_settings_db.json";
 
 	public static void main(String[] args) {
 		Options options = new Options();
@@ -54,6 +61,9 @@ public class SnakeApp {
 		options.addOption("U", "username", true, "login username");
 		options.addOption("P", "password", true, "login password");
 		options.addOption("t", "test", false, "test the app");
+		options.addOption("j", "json", false, "use a json file for storage");
+		options.addOption("jr", "json-records", true, "json file for game record storage");
+		options.addOption("js", "json-settings", true, "json file for game setting storage");
 		options.addOption("h", "help", false, "show help");
 
 		HelpFormatter formatter = HelpFormatter.builder().get();
@@ -64,30 +74,15 @@ public class SnakeApp {
 				formatter.printHelp("SnakeApp", "App options: ", options.getOptions(), null, true);
 				return;
 			}
-			Map<String, String> map = new HashMap<>();
-			map.put(PersistenceConfiguration.JDBC_DRIVER, "com.mysql.cj.jdbc.Driver");
-			map.put(PersistenceConfiguration.JDBC_URL,
-					String.format("jdbc:mysql://%s:%s/%s", 
-							cmd.hasOption("H") ? cmd.getOptionValue("H") : DF_HOST_ADDRESS,
-							cmd.hasOption("p") ? cmd.getOptionValue("p") : DF_HOST_PORT,
-							cmd.hasOption("n") ? cmd.getOptionValue("d") : DF_DATABASE_NAME));
-			map.put(PersistenceConfiguration.JDBC_USER,
-					cmd.hasOption("U") ? cmd.getOptionValue("U") : DEFAULT_USERNAME);
-			map.put(PersistenceConfiguration.JDBC_PASSWORD,
-					cmd.hasOption("P") ? cmd.getOptionValue("P") : DEFAULT_PASSWORD);
-
-			EntityManagerFactory emf = new PersistenceConfiguration("SnakePU").properties(map)
-					.managedClass(BaseEntity.class).managedClass(GameRecord.class).managedClass(GameSetting.class)
-					.createEntityManagerFactory();
-			checkDatabaseSchema(emf);
-
-			GameRecordHibernateDao recordDAO = new GameRecordHibernateDaoImpl();
-			GameSettingHibernateDao settingDAO = new GameSettingHibernateDaoImpl();
-			SnakeHibernateRepository repository = new SnakeHibernateRepository(settingDAO, recordDAO, emf);
+			SnakeRepository repository;
+			if (cmd.hasOption("j")) {
+				repository = initializeJsonRepository(cmd);
+			} else {
+				repository = initializeHibernateRepository(cmd);
+			}
 			SnakeLobbyPresenterImpl lobbyPresenter = new SnakeLobbyPresenterImpl(repository);
 			SnakeMatchPresenterImpl matchPresenter = new SnakeMatchPresenterImpl(repository,
 					new RandomObstaclesSupplier(), new RandomPositionSupplier());
-
 			EventQueue.invokeLater(() -> {
 				frame = new SnakeWindowView(lobbyPresenter, matchPresenter);
 				frame.setCloseAction(() -> {
@@ -102,9 +97,42 @@ public class SnakeApp {
 					frame.close();
 				}
 			});
+
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());
 		}
+	}
+
+	private static SnakeRepository initializeHibernateRepository(CommandLine cmd) {
+		SnakeRepository repository;
+		Map<String, String> map = new HashMap<>();
+		map.put(PersistenceConfiguration.JDBC_DRIVER, "com.mysql.cj.jdbc.Driver");
+		map.put(PersistenceConfiguration.JDBC_URL,
+				String.format("jdbc:mysql://%s:%s/%s", cmd.hasOption("H") ? cmd.getOptionValue("H") : DF_HOST_ADDRESS,
+						cmd.hasOption("p") ? cmd.getOptionValue("p") : DF_HOST_PORT,
+						cmd.hasOption("n") ? cmd.getOptionValue("d") : DF_DATABASE_NAME));
+		map.put(PersistenceConfiguration.JDBC_USER, cmd.hasOption("U") ? cmd.getOptionValue("U") : DEFAULT_USERNAME);
+		map.put(PersistenceConfiguration.JDBC_PASSWORD,
+				cmd.hasOption("P") ? cmd.getOptionValue("P") : DEFAULT_PASSWORD);
+
+		EntityManagerFactory emf = new PersistenceConfiguration("SnakePU").properties(map)
+				.managedClass(BaseEntity.class).managedClass(GameRecord.class).managedClass(GameSetting.class)
+				.createEntityManagerFactory();
+		checkDatabaseSchema(emf);
+
+		GameRecordHibernateDao recordDAO = new GameRecordHibernateDaoImpl();
+		GameSettingHibernateDao settingDAO = new GameSettingHibernateDaoImpl();
+		repository = new SnakeHibernateRepository(settingDAO, recordDAO, emf);
+		return repository;
+	}
+
+	private static SnakeRepository initializeJsonRepository(CommandLine cmd) throws IOException {
+		SnakeRepository repository;
+		repository = new SnakeJsonRepository(
+				cmd.hasOption("jr") ? new File(cmd.getOptionValue("jr")) : new File(DEFAULT_RECORDS_JSON_DB_PATH),
+				cmd.hasOption("js") ? new File(cmd.getOptionValue("js")) : new File(DEFAULT_SETTINGS_JSON_DB_PATH),
+				() -> new ArrayList<>(), () -> new ArrayList<>());
+		return repository;
 	}
 
 	private static void checkDatabaseSchema(EntityManagerFactory emf) {
