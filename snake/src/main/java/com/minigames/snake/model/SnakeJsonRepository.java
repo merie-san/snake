@@ -41,12 +41,14 @@ public class SnakeJsonRepository implements SnakeRepository {
 			});
 		} else {
 			records = recordsSupplier.get();
+			this.recordsFile.getParentFile().mkdirs();
 			mapper.writeValue(this.recordsFile, records);
 		}
 		if (this.settingsFile.exists()) {
 			settings = mapper.readValue(this.settingsFile, new TypeReference<Collection<GameSetting>>() {
 			});
 		} else {
+			this.settingsFile.getParentFile().mkdirs();
 			settings = settingsSupplier.get();
 			mapper.writeValue(this.settingsFile, settings);
 		}

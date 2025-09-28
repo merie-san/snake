@@ -21,7 +21,11 @@ public class SnakeJsonRepositoryConstructorTest {
 
 	@After
 	public void tearDown() {
-		Stream.of(new File("jsonDB").listFiles()).forEach(File::delete);
+		File dir = new File("jsonDB");
+		if (dir.exists()) {
+			Stream.of(dir.listFiles()).forEach(File::delete);
+			dir.delete();
+		}
 	}
 
 	@Test
@@ -114,7 +118,9 @@ public class SnakeJsonRepositoryConstructorTest {
 			GameSetting setting2 = new GameSetting("4", 1, 30, 2);
 			settings.add(setting1);
 			settings.add(setting2);
-			mapper.writeValue(new File("jsonDB/snake_settings_db.json"), settings);
+			File file = new File("jsonDB/snake_settings_db.json");
+			file.getParentFile().mkdirs();
+			mapper.writeValue(file, settings);
 			Collection<GameRecord> records = new ArrayList<>();
 			GameRecord record1 = new GameRecord("1", 20, LocalDate.now(), setting1);
 			GameRecord record2 = new GameRecord("2", 30, LocalDate.now(), setting2);

@@ -40,7 +40,9 @@ public class SnakeJsonRespositoryTest {
 
 	@After
 	public void tearDown() {
-		Stream.of(new File("jsonDB").listFiles()).forEach(File::delete);
+		File dir = new File("jsonDB");
+		Stream.of(dir.listFiles()).forEach(File::delete);
+		dir.delete();
 	}
 
 	@Test
