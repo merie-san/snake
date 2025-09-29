@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import org.junit.After;
@@ -25,17 +24,7 @@ public class SnakeJsonRespositoryTest {
 
 	@Before
 	public void setUp() throws IOException {
-		repository = new SnakeJsonRepository(null, null, new Supplier<Collection<GameRecord>>() {
-			@Override
-			public Collection<GameRecord> get() {
-				return new ArrayList<GameRecord>();
-			}
-		}, new Supplier<Collection<GameSetting>>() {
-			@Override
-			public Collection<GameSetting> get() {
-				return new ArrayList<GameSetting>();
-			}
-		});
+		repository = new SnakeJsonRepository(null, null, ArrayList<GameRecord>::new, ArrayList<GameSetting>::new);
 	}
 
 	@After

@@ -29,7 +29,7 @@ import jakarta.persistence.PersistenceConfiguration;
 import jakarta.persistence.SchemaValidationException;
 import jakarta.persistence.TypedQuery;
 
-public class PresenterMatchModelIT {
+public class PresenterMatchJpaModelIT {
 
 	private SnakeMatchPresenterImpl presenter;
 	private static EntityManagerFactory emf;

@@ -37,7 +37,7 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceConfiguration;
 
 @RunWith(GUITestRunner.class)
-public class SnakeAppE2E extends AssertJSwingJUnitTestCase {
+public class SnakeAppJpaE2E extends AssertJSwingJUnitTestCase {
 
 	private FrameFixture window;
 	private EntityManagerFactory emf;

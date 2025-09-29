@@ -24,14 +24,22 @@ The available options are:
 -d, --db-name	mySQL database name
 -U, --username	mySQL login username
 -P, --password	mySQL login password
+-j, --json  use json files for storage
+-jr, --json-records     json file for game record storage
+-js, --json-settings    json file for game setting storage
 -h, --help	print help
 ```
-If not set, the default values will be used. For example:
+By default the app will connect to a mysql server. If the -j option is present json files will be used for storage.<br> 
+Using mysql:
 ```
-java -jar path/to/snake-0.0.1-SNAPSHOT-jar-with-dependencies.jar -H localhost -p 3306 -d snakedb -P admin
+java -jar path/to/snake-0.0.1-jar-with-dependencies.jar -H localhost -p 3306 -d snakedb -P admin
+```
+Using json:
+```
+java -jar path/to/snake-0.0.1-jar-with-dependencies.jar -j -jr jsonDB/snake_records_db.json -js jsonDB/snake_settings_db.json 
 ```
 ## Starting a docker mySQL server
-run the following command to start a mySQL container to which the app will connect by default:
+Run the following command to start a mySQL container to which the app will connect by default:
 ```
 docker run -p 3306:3306 --rm --name mysql-container -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=snakedb -d mysql:8.0.33 
 ```

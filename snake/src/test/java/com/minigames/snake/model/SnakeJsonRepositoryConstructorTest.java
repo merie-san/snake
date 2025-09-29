@@ -30,12 +30,7 @@ public class SnakeJsonRepositoryConstructorTest {
 
 	@Test
 	public void testRecordsSupplierNull() {
-		Supplier<Collection<GameSetting>> supplier = new Supplier<Collection<GameSetting>>() {
-			@Override
-			public Collection<GameSetting> get() {
-				return new ArrayList<GameSetting>();
-			}
-		};
+		Supplier<Collection<GameSetting>> supplier = ArrayList<GameSetting>::new;
 		assertThatThrownBy(() -> new SnakeJsonRepository(null, null, null, supplier))
 				.isInstanceOf(IllegalArgumentException.class)
 				.hasMessage("Collection suppliers need to be both provided");
@@ -43,12 +38,7 @@ public class SnakeJsonRepositoryConstructorTest {
 
 	@Test
 	public void testSettingsSupplierNull() {
-		Supplier<Collection<GameRecord>> supplier = new Supplier<Collection<GameRecord>>() {
-			@Override
-			public Collection<GameRecord> get() {
-				return new ArrayList<GameRecord>();
-			}
-		};
+		Supplier<Collection<GameRecord>> supplier = ArrayList<GameRecord>::new;
 		assertThatThrownBy(() -> new SnakeJsonRepository(null, null, supplier, null))
 				.isInstanceOf(IllegalArgumentException.class)
 				.hasMessage("Collection suppliers need to be both provided");
@@ -64,18 +54,8 @@ public class SnakeJsonRepositoryConstructorTest {
 	@Test
 	public void testDefaultFiles() {
 		assertThatCode(() -> {
-			SnakeJsonRepository repository = new SnakeJsonRepository(null, null,
-					new Supplier<Collection<GameRecord>>() {
-						@Override
-						public Collection<GameRecord> get() {
-							return new ArrayList<GameRecord>();
-						}
-					}, new Supplier<Collection<GameSetting>>() {
-						@Override
-						public Collection<GameSetting> get() {
-							return new ArrayList<GameSetting>();
-						}
-					});
+			SnakeJsonRepository repository = new SnakeJsonRepository(null, null, ArrayList<GameRecord>::new,
+					ArrayList<GameSetting>::new);
 			assertThat(repository.getRecordsFile().getPath()).isEqualTo("jsonDB/snake_records_db.json");
 			assertThat(repository.getSettingsFile().getPath()).isEqualTo("jsonDB/snake_settings_db.json");
 			assertThat(new File("jsonDB").list()).containsExactlyInAnyOrder("snake_records_db.json",
@@ -89,18 +69,8 @@ public class SnakeJsonRepositoryConstructorTest {
 	@Test
 	public void testNewFiles() {
 		assertThatCode(() -> {
-			SnakeJsonRepository repository = new SnakeJsonRepository(new File("jsonDB/records.json"),
-					new File("jsonDB/settings.json"), new Supplier<Collection<GameRecord>>() {
-						@Override
-						public Collection<GameRecord> get() {
-							return new ArrayList<GameRecord>();
-						}
-					}, new Supplier<Collection<GameSetting>>() {
-						@Override
-						public Collection<GameSetting> get() {
-							return new ArrayList<GameSetting>();
-						}
-					});
+			SnakeJsonRepository repository = new SnakeJsonRepository(null, null, ArrayList<GameRecord>::new,
+					ArrayList<GameSetting>::new);
 			assertThat(repository.getRecordsFile().getPath()).isEqualTo("jsonDB/records.json");
 			assertThat(repository.getSettingsFile().getPath()).isEqualTo("jsonDB/settings.json");
 			assertThat(new File("jsonDB").list()).containsExactlyInAnyOrder("records.json", "settings.json");
@@ -127,18 +97,8 @@ public class SnakeJsonRepositoryConstructorTest {
 			records.add(record1);
 			records.add(record2);
 			mapper.writeValue(new File("jsonDB/snake_records_db.json"), records);
-			SnakeJsonRepository repository = new SnakeJsonRepository(null, null,
-					new Supplier<Collection<GameRecord>>() {
-						@Override
-						public Collection<GameRecord> get() {
-							return new ArrayList<GameRecord>();
-						}
-					}, new Supplier<Collection<GameSetting>>() {
-						@Override
-						public Collection<GameSetting> get() {
-							return new ArrayList<GameSetting>();
-						}
-					});
+			SnakeJsonRepository repository = new SnakeJsonRepository(null, null, ArrayList<GameRecord>::new,
+					ArrayList<GameSetting>::new);
 			assertThat(repository.getRecordsFile().getPath()).isEqualTo("jsonDB/snake_records_db.json");
 			assertThat(repository.getSettingsFile().getPath()).isEqualTo("jsonDB/snake_settings_db.json");
 			assertThat(new File("jsonDB").list()).containsExactlyInAnyOrder("snake_records_db.json",
