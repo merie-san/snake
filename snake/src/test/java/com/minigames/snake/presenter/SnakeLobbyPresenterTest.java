@@ -7,7 +7,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -48,7 +47,7 @@ public class SnakeLobbyPresenterTest {
 	}
 
 	@Test
-	public void testClosePresenter() throws IOException {
+	public void testClosePresenter() {
 		presenter.close();
 		verify(repository).close();
 		verifyNoMoreInteractions(repository);
