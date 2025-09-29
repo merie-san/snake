@@ -19,6 +19,6 @@ public interface SnakeRepository {
 	void deleteSetting(GameSetting setting);
 
 	void renameSetting(GameSetting setting, String newName);
-	
+
 	void close();
 }

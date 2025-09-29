@@ -30,7 +30,7 @@ import jakarta.persistence.PersistenceConfiguration;
 import jakarta.persistence.SchemaValidationException;
 import jakarta.persistence.TypedQuery;
 
-public class PresenterLobbyModelIT {
+public class PresenterLobbyJpaModelIT {
 	private SnakeLobbyPresenter presenter;
 	private static EntityManagerFactory emf;
 	private GameSettingHibernateDao settingDao;

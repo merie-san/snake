@@ -2,6 +2,8 @@ package com.minigames.snake.model;
 
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,6 +14,7 @@ import jakarta.persistence.MappedSuperclass;
 public abstract class BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@JsonIgnore
 	private long id;
 	@Column(unique = true)
 	private String uuid;
@@ -19,6 +22,20 @@ public abstract class BaseEntity {
 	// for JPA
 	@Generated
 	protected BaseEntity() {
+	}
+
+	// for Jackson
+	@Generated
+	public String getUuid() {
+		return uuid;
+	}
+
+	// for Jackson
+	@Generated
+	public void setUuid(String uuid) {
+		if (uuid == null)
+			throw new IllegalArgumentException("uuid cannot be null");
+		this.uuid = uuid;
 	}
 
 	@Generated

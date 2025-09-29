@@ -486,7 +486,8 @@ public class SnakeWindowViewTest extends AssertJSwingJUnitTestCase {
 			window.close();
 			verify(lobbyPresenter).close();
 		}).doesNotThrowAnyException();
-
 	}
+	
+	
 
 }
