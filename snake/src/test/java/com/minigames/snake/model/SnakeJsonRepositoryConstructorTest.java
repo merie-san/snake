@@ -69,7 +69,7 @@ public class SnakeJsonRepositoryConstructorTest {
 	@Test
 	public void testNewFiles() {
 		assertThatCode(() -> {
-			SnakeJsonRepository repository = new SnakeJsonRepository(null, null, ArrayList<GameRecord>::new,
+			SnakeJsonRepository repository = new SnakeJsonRepository(new File("jsonDB/records.json"), new File("jsonDB/settings.json"), ArrayList<GameRecord>::new,
 					ArrayList<GameSetting>::new);
 			assertThat(repository.getRecordsFile().getPath()).isEqualTo("jsonDB/records.json");
 			assertThat(repository.getSettingsFile().getPath()).isEqualTo("jsonDB/settings.json");
